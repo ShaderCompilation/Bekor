@@ -1,0 +1,380 @@
+{
+  "public": {
+    "id": "js-deep-clone-ii",
+    "slug": "js-deep-clone-ii",
+    "version": "1.0.0",
+    "title": "Deep Clone II",
+    "description": "input {nodes,root,edits}; nodes is an object mapping IDs to {value,edges:[IDs]}, representing a possibly cyclic graph. Clone the reachable graph from root, preserving IDs and edge order. Then apply edits {id,value} only to clone node values (edited IDs are reachable). Return {original:nodes,clone:reachableNodes}; unreachable original nodes stay only in original. This explicit graph adapter tests cycle-safe traversal and clone-only changes without relying on object identity. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["graphs", "cloning"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "nodes": {
+                  "a": {
+                    "value": 1,
+                    "edges": ["a"]
+                  }
+                },
+                "root": "a",
+                "edits": [
+                  {
+                    "id": "a",
+                    "value": 2
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "original": {
+                "a": {
+                  "value": 1,
+                  "edges": ["a"]
+                }
+              },
+              "clone": {
+                "a": {
+                  "value": 2,
+                  "edges": ["a"]
+                }
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "nodes": {
+                  "a": {
+                    "value": 0,
+                    "edges": ["b"]
+                  },
+                  "b": {
+                    "value": 1,
+                    "edges": ["a"]
+                  }
+                },
+                "root": "a",
+                "edits": []
+              }
+            ],
+            "expected": {
+              "original": {
+                "a": {
+                  "value": 0,
+                  "edges": ["b"]
+                },
+                "b": {
+                  "value": 1,
+                  "edges": ["a"]
+                }
+              },
+              "clone": {
+                "a": {
+                  "value": 0,
+                  "edges": ["b"]
+                },
+                "b": {
+                  "value": 1,
+                  "edges": ["a"]
+                }
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "nodes": {
+                  "a": {
+                    "value": 1,
+                    "edges": ["a"]
+                  }
+                },
+                "root": "a",
+                "edits": [
+                  {
+                    "id": "a",
+                    "value": 2
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "original": {
+                "a": {
+                  "value": 1,
+                  "edges": ["a"]
+                }
+              },
+              "clone": {
+                "a": {
+                  "value": 2,
+                  "edges": ["a"]
+                }
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "nodes": {
+                  "a": {
+                    "value": 0,
+                    "edges": ["b"]
+                  },
+                  "b": {
+                    "value": 1,
+                    "edges": ["a"]
+                  }
+                },
+                "root": "a",
+                "edits": []
+              }
+            ],
+            "expected": {
+              "original": {
+                "a": {
+                  "value": 0,
+                  "edges": ["b"]
+                },
+                "b": {
+                  "value": 1,
+                  "edges": ["a"]
+                }
+              },
+              "clone": {
+                "a": {
+                  "value": 0,
+                  "edges": ["b"]
+                },
+                "b": {
+                  "value": 1,
+                  "edges": ["a"]
+                }
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "nodes": {
+            "a": {
+              "value": null,
+              "edges": []
+            }
+          },
+          "root": "a",
+          "edits": []
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": {
+            "value": null,
+            "edges": []
+          }
+        },
+        "clone": {
+          "a": {
+            "value": null,
+            "edges": []
+          }
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "nodes": {
+            "a": {
+              "value": 1,
+              "edges": []
+            },
+            "b": {
+              "value": 2,
+              "edges": []
+            }
+          },
+          "root": "a",
+          "edits": []
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": {
+            "value": 1,
+            "edges": []
+          },
+          "b": {
+            "value": 2,
+            "edges": []
+          }
+        },
+        "clone": {
+          "a": {
+            "value": 1,
+            "edges": []
+          }
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "nodes": {
+            "a": {
+              "value": 1,
+              "edges": ["b", "b"]
+            },
+            "b": {
+              "value": 2,
+              "edges": []
+            }
+          },
+          "root": "a",
+          "edits": [
+            {
+              "id": "b",
+              "value": 3
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": {
+            "value": 1,
+            "edges": ["b", "b"]
+          },
+          "b": {
+            "value": 2,
+            "edges": []
+          }
+        },
+        "clone": {
+          "a": {
+            "value": 1,
+            "edges": ["b", "b"]
+          },
+          "b": {
+            "value": 3,
+            "edges": []
+          }
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "nodes": {
+            "a": {
+              "value": false,
+              "edges": []
+            }
+          },
+          "root": "a",
+          "edits": [
+            {
+              "id": "a",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": {
+            "value": false,
+            "edges": []
+          }
+        },
+        "clone": {
+          "a": {
+            "value": 0,
+            "edges": []
+          }
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "nodes": {
+            "a": {
+              "value": 1,
+              "edges": []
+            }
+          },
+          "root": "a",
+          "edits": [
+            {
+              "id": "a",
+              "value": 2
+            },
+            {
+              "id": "a",
+              "value": 3
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": {
+            "value": 1,
+            "edges": []
+          }
+        },
+        "clone": {
+          "a": {
+            "value": 3,
+            "edges": []
+          }
+        }
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const clone = (v) => JSON.parse(JSON.stringify(v));\n  const original = clone(d.nodes),\n    result = {};\n  const visit = (id) => {\n    if (Object.hasOwn(result, id)) return;\n    result[id] = clone(d.nodes[id]);\n    for (const next of d.nodes[id].edges) visit(next);\n  };\n  visit(d.root);\n  for (const e of d.edits) result[e.id].value = clone(e.value);\n  return { original, clone: result };\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const clone = (v: any): any => JSON.parse(JSON.stringify(v));\n  const original = clone(d.nodes),\n    result: any = {};\n  const visit = (id: string): void => {\n    if (Object.hasOwn(result, id)) return;\n    result[id] = clone(d.nodes[id]);\n    for (const next of d.nodes[id].edges) visit(next);\n  };\n  visit(d.root);\n  for (const e of d.edits) result[e.id].value = clone(e.value);\n  return { original, clone: result };\n}\n"
+  },
+  "explanation": "Register each copied node before visiting neighbors to break cycles, then mutate only clone values. O(V plus E plus payload bytes) time and space on the reachable graph, plus the original snapshot. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

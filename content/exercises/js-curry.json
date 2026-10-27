@@ -1,0 +1,118 @@
+{
+  "public": {
+    "id": "js-curry",
+    "slug": "js-curry",
+    "version": "1.0.0",
+    "title": "Curry",
+    "description": "Simulate unary currying of a weighted-sum function. weights contains 1 through 6 integer coefficients from -3 through 3. Calls is an array of singleton arrays, providing one integer from -10 through 10 per call; at most weights.length calls occur. Before all arguments arrive, return {done:false,remaining}; after exactly enough calls return {done:true,value}, where value is the sum of corresponding weight times argument. No callbacks are passed across JSON. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "medium",
+    "concepts": ["functions", "currying"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Accumulate supplied unary arguments, test arity, then compute a weighted dot product."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(weights: number[], calls: number[][]): JSON-compatible result",
+        "starter": "export function solve(weights, calls) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 3], [[4], [5]]],
+            "expected": {
+              "done": true,
+              "value": 23
+            }
+          },
+          {
+            "args": [[1, 2, 3], [[5]]],
+            "expected": {
+              "done": false,
+              "remaining": 2
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(weights: number[], calls: number[][]): JSON-compatible result",
+        "starter": "export function solve(weights: number[], calls: number[][]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 3], [[4], [5]]],
+            "expected": {
+              "done": true,
+              "value": 23
+            }
+          },
+          {
+            "args": [[1, 2, 3], [[5]]],
+            "expected": {
+              "done": false,
+              "remaining": 2
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[1], []],
+      "expected": {
+        "done": false,
+        "remaining": 1
+      }
+    },
+    {
+      "args": [[0], [[9]]],
+      "expected": {
+        "done": true,
+        "value": 0
+      }
+    },
+    {
+      "args": [[-2, 1], [[-3], [4]]],
+      "expected": {
+        "done": true,
+        "value": 10
+      }
+    },
+    {
+      "args": [[1, 1], [[0]]],
+      "expected": {
+        "done": false,
+        "remaining": 1
+      }
+    },
+    {
+      "args": [[1, 2, 3], [[1], [2], [3]]],
+      "expected": {
+        "done": true,
+        "value": 14
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(weights, calls) {\n  const args = calls.flat();\n  if (args.length < weights.length) return { done: false, remaining: weights.length - args.length };\n  return { done: true, value: weights.reduce((sum, w, i) => sum + w * args[i], 0) };\n}\n",
+    "typescript": "export function solve(weights: number[], calls: number[][]): any {\n  const args = calls.flat();\n  if (args.length < weights.length) return { done: false, remaining: weights.length - args.length };\n  return { done: true, value: weights.reduce((sum, w, i) => sum + w * args[i], 0) };\n}\n"
+  },
+  "explanation": "Accumulate supplied unary arguments, test arity, then compute a weighted dot product. O(arity) time and space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

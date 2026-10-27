@@ -1,0 +1,321 @@
+{
+  "public": {
+    "id": "js-drizzle-query-builder-iii",
+    "slug": "js-drizzle-query-builder-iii",
+    "version": "1.0.0",
+    "title": "Drizzle Query Builder III",
+    "description": "input {left,right,leftKey,rightKey,kind}; kind is inner or left. Join rows when left[leftKey] strictly equals right[rightKey]. Emit {left:row,right:row} in left source order and then right source order for multiple matches. For left joins emit right:null for unmatched left rows. Both tables contain at most 12 rows with primitive-valued fields; no filtering/projection in this join adapter. Return joined rows. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["queries", "joins"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "left": [
+                  {
+                    "id": 1
+                  },
+                  {
+                    "id": 2
+                  }
+                ],
+                "right": [
+                  {
+                    "fk": 1
+                  }
+                ],
+                "leftKey": "id",
+                "rightKey": "fk",
+                "kind": "inner"
+              }
+            ],
+            "expected": [
+              {
+                "left": {
+                  "id": 1
+                },
+                "right": {
+                  "fk": 1
+                }
+              }
+            ]
+          },
+          {
+            "args": [
+              {
+                "left": [
+                  {
+                    "id": 1
+                  },
+                  {
+                    "id": 2
+                  }
+                ],
+                "right": [
+                  {
+                    "fk": 1
+                  }
+                ],
+                "leftKey": "id",
+                "rightKey": "fk",
+                "kind": "left"
+              }
+            ],
+            "expected": [
+              {
+                "left": {
+                  "id": 1
+                },
+                "right": {
+                  "fk": 1
+                }
+              },
+              {
+                "left": {
+                  "id": 2
+                },
+                "right": null
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "left": [
+                  {
+                    "id": 1
+                  },
+                  {
+                    "id": 2
+                  }
+                ],
+                "right": [
+                  {
+                    "fk": 1
+                  }
+                ],
+                "leftKey": "id",
+                "rightKey": "fk",
+                "kind": "inner"
+              }
+            ],
+            "expected": [
+              {
+                "left": {
+                  "id": 1
+                },
+                "right": {
+                  "fk": 1
+                }
+              }
+            ]
+          },
+          {
+            "args": [
+              {
+                "left": [
+                  {
+                    "id": 1
+                  },
+                  {
+                    "id": 2
+                  }
+                ],
+                "right": [
+                  {
+                    "fk": 1
+                  }
+                ],
+                "leftKey": "id",
+                "rightKey": "fk",
+                "kind": "left"
+              }
+            ],
+            "expected": [
+              {
+                "left": {
+                  "id": 1
+                },
+                "right": {
+                  "fk": 1
+                }
+              },
+              {
+                "left": {
+                  "id": 2
+                },
+                "right": null
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "left": [],
+          "right": [],
+          "leftKey": "id",
+          "rightKey": "fk",
+          "kind": "left"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "left": [
+            {
+              "id": 1
+            }
+          ],
+          "right": [],
+          "leftKey": "id",
+          "rightKey": "fk",
+          "kind": "inner"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "left": [
+            {
+              "id": 1
+            }
+          ],
+          "right": [
+            {
+              "fk": 1,
+              "x": 1
+            },
+            {
+              "fk": 1,
+              "x": 2
+            }
+          ],
+          "leftKey": "id",
+          "rightKey": "fk",
+          "kind": "inner"
+        }
+      ],
+      "expected": [
+        {
+          "left": {
+            "id": 1
+          },
+          "right": {
+            "fk": 1,
+            "x": 1
+          }
+        },
+        {
+          "left": {
+            "id": 1
+          },
+          "right": {
+            "fk": 1,
+            "x": 2
+          }
+        }
+      ]
+    },
+    {
+      "args": [
+        {
+          "left": [
+            {
+              "id": 0
+            }
+          ],
+          "right": [
+            {
+              "fk": false
+            }
+          ],
+          "leftKey": "id",
+          "rightKey": "fk",
+          "kind": "left"
+        }
+      ],
+      "expected": [
+        {
+          "left": {
+            "id": 0
+          },
+          "right": null
+        }
+      ]
+    },
+    {
+      "args": [
+        {
+          "left": [
+            {
+              "id": 2
+            }
+          ],
+          "right": [
+            {
+              "fk": 1
+            }
+          ],
+          "leftKey": "id",
+          "rightKey": "fk",
+          "kind": "left"
+        }
+      ],
+      "expected": [
+        {
+          "left": {
+            "id": 2
+          },
+          "right": null
+        }
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const out = [];\n  for (const left of d.left) {\n    let matched = false;\n    for (const right of d.right)\n      if (left[d.leftKey] === right[d.rightKey]) {\n        out.push({ left, right });\n        matched = true;\n      }\n    if (!matched && d.kind === \"left\") out.push({ left, right: null });\n  }\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const out: any[] = [];\n  for (const left of d.left) {\n    let matched = false;\n    for (const right of d.right)\n      if (left[d.leftKey] === right[d.rightKey]) {\n        out.push({ left, right });\n        matched = true;\n      }\n    if (!matched && d.kind === \"left\") out.push({ left, right: null });\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Nested-loop joins preserve both source orders and track whether a left row found any match. O(L times R plus output) time and output-sized space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

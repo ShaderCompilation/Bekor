@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-intersection",
+    "slug": "js-intersection",
+    "version": "1.0.0",
+    "title": "Intersection",
+    "description": "Return the unique scalar values appearing in every input array, ordered by first appearance in the first array. There are 0 through 6 arrays, each with at most 30 JSON scalar elements. Empty outer input returns []; scalar equality is strict, so false and zero differ. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["sets", "arrays"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Deduplicate the first array, then retain candidates contained in every array."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(arrays: any[][]): JSON-compatible result",
+        "starter": "export function solve(arrays) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[[2, 1, 2, 3], [3, 2], [2, 3, 4]]],
+            "expected": [2, 3]
+          },
+          {
+            "args": [[[false, 0], [0]]],
+            "expected": [0]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(arrays: any[][]): JSON-compatible result",
+        "starter": "export function solve(arrays: any[][]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[[2, 1, 2, 3], [3, 2], [2, 3, 4]]],
+            "expected": [2, 3]
+          },
+          {
+            "args": [[[false, 0], [0]]],
+            "expected": [0]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[[]]],
+      "expected": []
+    },
+    {
+      "args": [[[1, 1, 2]]],
+      "expected": [1, 2]
+    },
+    {
+      "args": [[[1], []]],
+      "expected": []
+    },
+    {
+      "args": [[["b", "a"], ["a", "b"]]],
+      "expected": ["b", "a"]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(arrays) {\n  if (!arrays.length) return [];\n  const candidates = [...new Set(arrays[0])];\n  return candidates.filter((x) => arrays.every((a) => a.includes(x)));\n}\n",
+    "typescript": "export function solve(arrays: any[][]): any {\n  if (!arrays.length) return [];\n  const candidates = [...new Set(arrays[0])];\n  return candidates.filter((x) => arrays.every((a) => a.includes(x)));\n}\n"
+  },
+  "explanation": "Deduplicate the first array, then retain candidates contained in every array. O(first length times total input length) time and O(first length) space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

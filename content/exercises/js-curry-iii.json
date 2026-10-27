@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-curry-iii",
+    "slug": "js-curry-iii",
+    "version": "1.0.0",
+    "title": "Curry III",
+    "description": "input is a list of integer-array call groups. Model a variadic curried sum: each nonempty group accumulates arguments, while an empty group terminates the current chain, emits its sum and starts a fresh chain. Unfinished trailing arguments emit nothing. Return emitted sums. This explicit call transcript replaces higher-order function values in JSON. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["functions", "state-machines"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 2], [3], []]],
+            "expected": [6]
+          },
+          {
+            "args": [[[], []]],
+            "expected": [0, 0]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 2], [3], []]],
+            "expected": [6]
+          },
+          {
+            "args": [[[], []]],
+            "expected": [0, 0]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[[1]]],
+      "expected": []
+    },
+    {
+      "args": [[[1], [], [2], []]],
+      "expected": [1, 2]
+    },
+    {
+      "args": [[[-1, 1], []]],
+      "expected": [0]
+    },
+    {
+      "args": [[[2, 3], [4, 5], []]],
+      "expected": [14]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const out = [];\n  let total = 0;\n  for (const group of d) {\n    if (group.length === 0) {\n      out.push(total);\n      total = 0;\n    } else for (const n of group) total += n;\n  }\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const out: number[] = [];\n  let total = 0;\n  for (const group of d) {\n    if (group.length === 0) {\n      out.push(total);\n      total = 0;\n    } else for (const n of group) total += n;\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Accumulate arguments until a terminating empty call, then reset the chain. O(total arguments plus calls) time and O(output) space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

@@ -1,0 +1,154 @@
+{
+  "public": {
+    "id": "js-array-map",
+    "slug": "js-array-map",
+    "version": "1.0.0",
+    "title": "Array.prototype.map",
+    "description": "Map a dense numeric array through a callback descriptor {factor,offset,indexFactor}. For element x at zero-based index i, return factor times x plus offset plus indexFactor times i. All input numbers and coefficients are integers from -20 through 20, and there are at most 50 elements. Preserve order and return a new array. This adapter excludes sparse arrays and arbitrary callback source. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "callbacks"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Evaluate the descriptor using both the value and its original index."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(values: number[], mapper: {factor:number,offset:number,indexFactor:number}): JSON-compatible result",
+        "starter": "export function solve(values, mapper) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [2, 4],
+              {
+                "factor": 2,
+                "offset": 1,
+                "indexFactor": 3
+              }
+            ],
+            "expected": [5, 12]
+          },
+          {
+            "args": [
+              [-1, 0, 1],
+              {
+                "factor": -1,
+                "offset": 0,
+                "indexFactor": 0
+              }
+            ],
+            "expected": [1, 0, -1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(values: number[], mapper: {factor:number,offset:number,indexFactor:number}): JSON-compatible result",
+        "starter": "export function solve(\n  values: number[],\n  mapper: { factor: number; offset: number; indexFactor: number },\n): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [2, 4],
+              {
+                "factor": 2,
+                "offset": 1,
+                "indexFactor": 3
+              }
+            ],
+            "expected": [5, 12]
+          },
+          {
+            "args": [
+              [-1, 0, 1],
+              {
+                "factor": -1,
+                "offset": 0,
+                "indexFactor": 0
+              }
+            ],
+            "expected": [1, 0, -1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        [],
+        {
+          "factor": 1,
+          "offset": 0,
+          "indexFactor": 1
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        [0, 0, 0],
+        {
+          "factor": 0,
+          "offset": 0,
+          "indexFactor": 2
+        }
+      ],
+      "expected": [0, 2, 4]
+    },
+    {
+      "args": [
+        [5],
+        {
+          "factor": 0,
+          "offset": 3,
+          "indexFactor": 4
+        }
+      ],
+      "expected": [3]
+    },
+    {
+      "args": [
+        [1, 1],
+        {
+          "factor": 1,
+          "offset": -1,
+          "indexFactor": -2
+        }
+      ],
+      "expected": [0, -2]
+    },
+    {
+      "args": [
+        [20, -20],
+        {
+          "factor": 20,
+          "offset": 20,
+          "indexFactor": 20
+        }
+      ],
+      "expected": [420, -360]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(values, mapper) {\n  return values.map((x, i) => mapper.factor * x + mapper.offset + mapper.indexFactor * i);\n}\n",
+    "typescript": "export function solve(\n  values: number[],\n  mapper: { factor: number; offset: number; indexFactor: number },\n): any {\n  return values.map((x, i) => mapper.factor * x + mapper.offset + mapper.indexFactor * i);\n}\n"
+  },
+  "explanation": "Evaluate the descriptor using both the value and its original index. O(n) time and output. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

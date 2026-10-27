@@ -1,0 +1,218 @@
+{
+  "public": {
+    "id": "js-map-with-history",
+    "slug": "js-map-with-history",
+    "version": "1.0.0",
+    "title": "Map With History",
+    "description": "input is an operation array: set {key,value,time} stores a version and get {key,time} returns the most recent value at or before query time, or null if none. Set times for each key are strictly increasing, though reads may query any time and keys may interleave. Return one result per get in operation order. Keys are strings, times are nonnegative integers. This is a versioned map, not an undo stack. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["history", "stacks"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "op": "set",
+                  "key": "a",
+                  "value": "x",
+                  "time": 2
+                },
+                {
+                  "op": "get",
+                  "key": "a",
+                  "time": 3
+                }
+              ]
+            ],
+            "expected": ["x"]
+          },
+          {
+            "args": [
+              [
+                {
+                  "op": "get",
+                  "key": "a",
+                  "time": 0
+                }
+              ]
+            ],
+            "expected": [null]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "op": "set",
+                  "key": "a",
+                  "value": "x",
+                  "time": 2
+                },
+                {
+                  "op": "get",
+                  "key": "a",
+                  "time": 3
+                }
+              ]
+            ],
+            "expected": ["x"]
+          },
+          {
+            "args": [
+              [
+                {
+                  "op": "get",
+                  "key": "a",
+                  "time": 0
+                }
+              ]
+            ],
+            "expected": [null]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "op": "set",
+            "key": "a",
+            "value": "x",
+            "time": 2
+          },
+          {
+            "op": "get",
+            "key": "a",
+            "time": 1
+          }
+        ]
+      ],
+      "expected": [null]
+    },
+    {
+      "args": [
+        [
+          {
+            "op": "set",
+            "key": "a",
+            "value": 0,
+            "time": 1
+          },
+          {
+            "op": "set",
+            "key": "a",
+            "value": 2,
+            "time": 4
+          },
+          {
+            "op": "get",
+            "key": "a",
+            "time": 1
+          },
+          {
+            "op": "get",
+            "key": "a",
+            "time": 3
+          },
+          {
+            "op": "get",
+            "key": "a",
+            "time": 4
+          }
+        ]
+      ],
+      "expected": [0, 0, 2]
+    },
+    {
+      "args": [
+        [
+          {
+            "op": "set",
+            "key": "a",
+            "value": false,
+            "time": 0
+          },
+          {
+            "op": "get",
+            "key": "b",
+            "time": 5
+          },
+          {
+            "op": "get",
+            "key": "a",
+            "time": 0
+          }
+        ]
+      ],
+      "expected": [null, false]
+    },
+    {
+      "args": [
+        [
+          {
+            "op": "set",
+            "key": "a",
+            "value": 1,
+            "time": 2
+          },
+          {
+            "op": "set",
+            "key": "b",
+            "value": 2,
+            "time": 1
+          },
+          {
+            "op": "get",
+            "key": "b",
+            "time": 2
+          }
+        ]
+      ],
+      "expected": [2]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const histories = new Map(),\n    out = [];\n  for (const op of d) {\n    if (op.op === \"set\") {\n      if (!histories.has(op.key)) histories.set(op.key, []);\n      histories.get(op.key).push([op.time, op.value]);\n    } else {\n      const h = histories.get(op.key) ?? [];\n      let value = null;\n      for (const [time, v] of h) {\n        if (time <= op.time) value = v;\n        else break;\n      }\n      out.push(value);\n    }\n  }\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const histories = new Map<string, any[]>(),\n    out: any[] = [];\n  for (const op of d) {\n    if (op.op === \"set\") {\n      if (!histories.has(op.key)) histories.set(op.key, []);\n      histories.get(op.key)!.push([op.time, op.value]);\n    } else {\n      const h = histories.get(op.key) ?? [];\n      let value: any = null;\n      for (const [time, v] of h) {\n        if (time <= op.time) value = v;\n        else break;\n      }\n      out.push(value);\n    }\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Store each key history in timestamp order and scan up to the query boundary. O(operations squared) worst-case time, O(stored values plus outputs) space; binary search is an optional optimization. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

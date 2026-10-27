@@ -1,0 +1,254 @@
+{
+  "public": {
+    "id": "js-object-update-ii",
+    "slug": "js-object-update-ii",
+    "version": "1.0.0",
+    "title": "Object Update II",
+    "description": "input {value,updates}; each update has path (nonempty key/index array), op set or add, and value. Set replaces the final value; add increments an existing integer leaf. Missing ancestors are created as arrays if the next token is numeric, otherwise objects. Existing ancestors have correct kinds, array writes are contiguous. Return {original,updated}. At most 8 path segments and 20 updates; this fixed add updater substitutes for callback values. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["immutability", "objects"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "value": {
+                  "a": 1
+                },
+                "updates": [
+                  {
+                    "path": ["a"],
+                    "op": "add",
+                    "value": 2
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "original": {
+                "a": 1
+              },
+              "updated": {
+                "a": 3
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "value": {},
+                "updates": [
+                  {
+                    "path": ["a", 0],
+                    "op": "set",
+                    "value": 3
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "original": {},
+              "updated": {
+                "a": [3]
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "value": {
+                  "a": 1
+                },
+                "updates": [
+                  {
+                    "path": ["a"],
+                    "op": "add",
+                    "value": 2
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "original": {
+                "a": 1
+              },
+              "updated": {
+                "a": 3
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "value": {},
+                "updates": [
+                  {
+                    "path": ["a", 0],
+                    "op": "set",
+                    "value": 3
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "original": {},
+              "updated": {
+                "a": [3]
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "value": {},
+          "updates": []
+        }
+      ],
+      "expected": {
+        "original": {},
+        "updated": {}
+      }
+    },
+    {
+      "args": [
+        {
+          "value": {
+            "a": [1]
+          },
+          "updates": [
+            {
+              "path": ["a", 0],
+              "op": "add",
+              "value": -1
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": [1]
+        },
+        "updated": {
+          "a": [0]
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "value": {
+            "a": 1
+          },
+          "updates": [
+            {
+              "path": ["a"],
+              "op": "set",
+              "value": null
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": 1
+        },
+        "updated": {
+          "a": null
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "value": {
+            "a": 1
+          },
+          "updates": [
+            {
+              "path": ["a"],
+              "op": "add",
+              "value": 1
+            },
+            {
+              "path": ["a"],
+              "op": "add",
+              "value": 1
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": 1
+        },
+        "updated": {
+          "a": 3
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "value": [],
+          "updates": [
+            {
+              "path": [0, "x"],
+              "op": "set",
+              "value": false
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "original": [],
+        "updated": [
+          {
+            "x": false
+          }
+        ]
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const clone = (v) => JSON.parse(JSON.stringify(v));\n  const original = clone(d.value),\n    updated = clone(d.value);\n  for (const u of d.updates) {\n    let n = updated;\n    for (let i = 0; i < u.path.length - 1; i++) {\n      const k = u.path[i];\n      if (!Object.hasOwn(n, k)) n[k] = typeof u.path[i + 1] === \"number\" ? [] : {};\n      n = n[k];\n    }\n    const k = u.path.at(-1);\n    n[k] = u.op === \"add\" ? n[k] + u.value : clone(u.value);\n  }\n  return { original, updated };\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const clone = (v: any): any => JSON.parse(JSON.stringify(v));\n  const original = clone(d.value),\n    updated = clone(d.value);\n  for (const u of d.updates) {\n    let n = updated;\n    for (let i = 0; i < u.path.length - 1; i++) {\n      const k = u.path[i];\n      if (!Object.hasOwn(n, k)) n[k] = typeof u.path[i + 1] === \"number\" ? [] : {};\n      n = n[k];\n    }\n    const k = u.path.at(-1);\n    n[k] = u.op === \"add\" ? n[k] + u.value : clone(u.value);\n  }\n  return { original, updated };\n}\n"
+  },
+  "explanation": "Deep-copy once, create missing containers on demand, and dispatch explicit updater operations. O(input plus inserted data plus total path lengths) time and space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

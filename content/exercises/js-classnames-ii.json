@@ -1,0 +1,160 @@
+{
+  "public": {
+    "id": "js-classnames-ii",
+    "slug": "js-classnames-ii",
+    "version": "1.0.0",
+    "title": "Classnames II",
+    "description": "Build deduplicated class tokens. Each top-level input is a string token, an array of nested inputs, an object mapping tokens to booleans, or {fn:string} representing a zero-argument function returning one string token. Process depth first in array order and Object.keys order. Adding an existing token preserves its position; an object false removes it; a later add appends a removed token. Empty strings are ignored. The fn key is reserved exclusively for function descriptors. Return the active tokens joined with single spaces. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "medium",
+    "concepts": ["sets", "recursion"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "An insertion-ordered set supports activation, deletion and later re-addition."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(values: any[]): JSON-compatible result",
+        "starter": "export function solve(values) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                "a",
+                "b",
+                "a",
+                {
+                  "a": false
+                },
+                "a"
+              ]
+            ],
+            "expected": "b a"
+          },
+          {
+            "args": [
+              [
+                {
+                  "fn": "wide"
+                },
+                ["wide", "small"]
+              ]
+            ],
+            "expected": "wide small"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(values: any[]): JSON-compatible result",
+        "starter": "export function solve(values: any[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                "a",
+                "b",
+                "a",
+                {
+                  "a": false
+                },
+                "a"
+              ]
+            ],
+            "expected": "b a"
+          },
+          {
+            "args": [
+              [
+                {
+                  "fn": "wide"
+                },
+                ["wide", "small"]
+              ]
+            ],
+            "expected": "wide small"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": ""
+    },
+    {
+      "args": [
+        [
+          "x",
+          {
+            "x": false
+          }
+        ]
+      ],
+      "expected": ""
+    },
+    {
+      "args": [
+        [
+          {
+            "a": true,
+            "b": true
+          },
+          {
+            "a": false
+          },
+          {
+            "a": true
+          }
+        ]
+      ],
+      "expected": "b a"
+    },
+    {
+      "args": [
+        [
+          "",
+          {
+            "fn": ""
+          }
+        ]
+      ],
+      "expected": ""
+    },
+    {
+      "args": [
+        [
+          ["a", ["b"]],
+          {
+            "b": false,
+            "c": true
+          }
+        ]
+      ],
+      "expected": "a c"
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(values) {\n  const active = new Set();\n  const walk = (x) => {\n    if (typeof x === \"string\") {\n      if (x) active.add(x);\n    } else if (Array.isArray(x)) {\n      for (const y of x) walk(y);\n    } else if (Object.hasOwn(x, \"fn\")) {\n      walk(x.fn);\n    } else\n      for (const k of Object.keys(x)) {\n        if (x[k]) active.add(k);\n        else active.delete(k);\n      }\n  };\n  walk(values);\n  return [...active].join(\" \");\n}\n",
+    "typescript": "export function solve(values: any[]): any {\n  const active = new Set<string>();\n  const walk = (x: any): void => {\n    if (typeof x === \"string\") {\n      if (x) active.add(x);\n    } else if (Array.isArray(x)) {\n      for (const y of x) walk(y);\n    } else if (Object.hasOwn(x, \"fn\")) {\n      walk(x.fn);\n    } else\n      for (const k of Object.keys(x)) {\n        if (x[k]) active.add(k);\n        else active.delete(k);\n      }\n  };\n  walk(values);\n  return [...active].join(\" \");\n}\n"
+  },
+  "explanation": "An insertion-ordered set supports activation, deletion and later re-addition. O(n + output length) time and O(k + depth) space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

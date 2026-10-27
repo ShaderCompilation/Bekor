@@ -1,0 +1,157 @@
+{
+  "public": {
+    "id": "js-template-engine-ii",
+    "slug": "js-template-engine-ii",
+    "version": "1.0.0",
+    "title": "Template Engine II",
+    "description": "input {template,data}; placeholders are {{a.b}} for escaped output and {{{a.b}}} for raw output. Paths consist of dot-separated safe alphanumeric keys; missing/null values produce empty strings, others are strings or integers and stringify normally. Escape ampersand, less/greater signs, double/single quotes. Process placeholders once from source left to right; replacement text is never reparsed. Unmatched text is literal. Template length at most 300, values at most 60 characters. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["strings", "templates"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "template": "Hi {{user.name}}",
+                "data": {
+                  "user": {
+                    "name": "Ada"
+                  }
+                }
+              }
+            ],
+            "expected": "Hi Ada"
+          },
+          {
+            "args": [
+              {
+                "template": "{{x}} {{{x}}}",
+                "data": {
+                  "x": "<b>"
+                }
+              }
+            ],
+            "expected": "&lt;b&gt; <b>"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "template": "Hi {{user.name}}",
+                "data": {
+                  "user": {
+                    "name": "Ada"
+                  }
+                }
+              }
+            ],
+            "expected": "Hi Ada"
+          },
+          {
+            "args": [
+              {
+                "template": "{{x}} {{{x}}}",
+                "data": {
+                  "x": "<b>"
+                }
+              }
+            ],
+            "expected": "&lt;b&gt; <b>"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "template": "{{missing}}",
+          "data": {}
+        }
+      ],
+      "expected": ""
+    },
+    {
+      "args": [
+        {
+          "template": "{{x}}",
+          "data": {
+            "x": 0
+          }
+        }
+      ],
+      "expected": "0"
+    },
+    {
+      "args": [
+        {
+          "template": "{{x}}",
+          "data": {
+            "x": "{{y}}",
+            "y": "z"
+          }
+        }
+      ],
+      "expected": "{{y}}"
+    },
+    {
+      "args": [
+        {
+          "template": "{{a.b}}",
+          "data": {
+            "a": null
+          }
+        }
+      ],
+      "expected": ""
+    },
+    {
+      "args": [
+        {
+          "template": "{{x}}",
+          "data": {
+            "x": "&\"'"
+          }
+        }
+      ],
+      "expected": "&amp;&quot;&#39;"
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const escape = (s) =>\n    s\n      .replaceAll(\"&\", \"&amp;\")\n      .replaceAll(\"<\", \"&lt;\")\n      .replaceAll(\">\", \"&gt;\")\n      .replaceAll('\"', \"&quot;\")\n      .replaceAll(\"'\", \"&#39;\");\n  const get = (v, p) => p.reduce((x, k) => (x != null && Object.hasOwn(x, k) ? x[k] : null), v);\n  return d.template.replace(/{{{([a-zA-Z0-9_.]+)}}}|{{([a-zA-Z0-9_.]+)}}/g, (_m, raw, escaped) => {\n    const v = get(d.data, (raw ?? escaped).split(\".\"));\n    const text = v === null ? \"\" : String(v);\n    return raw ? text : escape(text);\n  });\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const escape = (s: string): string =>\n    s\n      .replaceAll(\"&\", \"&amp;\")\n      .replaceAll(\"<\", \"&lt;\")\n      .replaceAll(\">\", \"&gt;\")\n      .replaceAll('\"', \"&quot;\")\n      .replaceAll(\"'\", \"&#39;\");\n  const get = (v: any, p: string[]): any =>\n    p.reduce((x: any, k: string) => (x != null && Object.hasOwn(x, k) ? x[k] : null), v);\n  return d.template.replace(\n    /{{{([a-zA-Z0-9_.]+)}}}|{{([a-zA-Z0-9_.]+)}}/g,\n    (_m: string, raw: string, escaped: string) => {\n      const v = get(d.data, (raw ?? escaped).split(\".\"));\n      const text = v === null ? \"\" : String(v);\n      return raw ? text : escape(text);\n    },\n  );\n}\n"
+  },
+  "explanation": "Scan placeholders with one replacement pass and resolve each path using own-key lookup. O(template length plus path traversal and escaped output) time and output-sized space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

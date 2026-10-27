@@ -1,0 +1,158 @@
+{
+  "public": {
+    "id": "js-schema-validator-ii",
+    "slug": "js-schema-validator-ii",
+    "version": "1.0.0",
+    "title": "Schema Validator II",
+    "description": "input {type,min?,max?,value}; type is integer or string. Reject type mismatches first. For integer validate inclusive min/max of the value; for string validate inclusive min/max of character length. Return an array of error labels in order: [\"type\"] on type mismatch, otherwise any failed \"min\" then \"max\" constraints. Missing constraints are skipped; min may exceed max so both can fail. This descriptor encodes chained validation rules. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["validation", "objects"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "type": "integer",
+                "min": 2,
+                "max": 5,
+                "value": 2
+              }
+            ],
+            "expected": []
+          },
+          {
+            "args": [
+              {
+                "type": "string",
+                "min": 3,
+                "value": "ab"
+              }
+            ],
+            "expected": ["min"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "type": "integer",
+                "min": 2,
+                "max": 5,
+                "value": 2
+              }
+            ],
+            "expected": []
+          },
+          {
+            "args": [
+              {
+                "type": "string",
+                "min": 3,
+                "value": "ab"
+              }
+            ],
+            "expected": ["min"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "type": "integer",
+          "value": "2"
+        }
+      ],
+      "expected": ["type"]
+    },
+    {
+      "args": [
+        {
+          "type": "integer",
+          "max": 3,
+          "value": 4
+        }
+      ],
+      "expected": ["max"]
+    },
+    {
+      "args": [
+        {
+          "type": "string",
+          "min": 0,
+          "max": 0,
+          "value": ""
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "type": "integer",
+          "min": 5,
+          "max": 1,
+          "value": 3
+        }
+      ],
+      "expected": ["min", "max"]
+    },
+    {
+      "args": [
+        {
+          "type": "string",
+          "max": 2,
+          "value": "abc"
+        }
+      ],
+      "expected": ["max"]
+    },
+    {
+      "args": [
+        {
+          "type": "integer",
+          "min": 2,
+          "value": 2
+        }
+      ],
+      "expected": []
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const valid = d.type === \"integer\" ? Number.isSafeInteger(d.value) : typeof d.value === \"string\";\n  if (!valid) return [\"type\"];\n  const n = d.type === \"string\" ? d.value.length : d.value;\n  const out = [];\n  if (d.min !== undefined && n < d.min) out.push(\"min\");\n  if (d.max !== undefined && n > d.max) out.push(\"max\");\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const valid = d.type === \"integer\" ? Number.isSafeInteger(d.value) : typeof d.value === \"string\";\n  if (!valid) return [\"type\"];\n  const n = d.type === \"string\" ? d.value.length : d.value;\n  const out: string[] = [];\n  if (d.min !== undefined && n < d.min) out.push(\"min\");\n  if (d.max !== undefined && n > d.max) out.push(\"max\");\n  return out;\n}\n"
+  },
+  "explanation": "Check type once, derive numeric magnitude or string length, then apply ordered inclusive rules. O(1) time and space for ASCII strings. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

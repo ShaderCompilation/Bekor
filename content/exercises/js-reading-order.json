@@ -1,0 +1,177 @@
+{
+  "public": {
+    "id": "js-reading-order",
+    "slug": "js-reading-order",
+    "version": "1.0.0",
+    "title": "Reading Order",
+    "description": "Each box is {id,x,y}. Return IDs sorted by ascending y, then x, then original index for ties. Coordinates are integers. This adapter uses supplied layout rectangles rather than measuring a browser. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["sorting", "geometry"],
+    "hints": [
+      "Decorate every box with its original index to resolve complete ties.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(boxes): JSON value",
+        "starter": "export function solve(boxes) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "id": "a",
+                  "x": 2,
+                  "y": 0
+                },
+                {
+                  "id": "b",
+                  "x": 1,
+                  "y": 0
+                }
+              ]
+            ],
+            "expected": ["b", "a"]
+          },
+          {
+            "args": [[]],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(boxes): JSON value",
+        "starter": "type Value = any;\nexport function solve(boxes: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "id": "a",
+                  "x": 2,
+                  "y": 0
+                },
+                {
+                  "id": "b",
+                  "x": 1,
+                  "y": 0
+                }
+              ]
+            ],
+            "expected": ["b", "a"]
+          },
+          {
+            "args": [[]],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        [
+          {
+            "id": "a",
+            "x": 0,
+            "y": 2
+          },
+          {
+            "id": "b",
+            "x": 9,
+            "y": 1
+          }
+        ]
+      ],
+      "expected": ["b", "a"]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": "x",
+            "x": 0,
+            "y": 0
+          }
+        ]
+      ],
+      "expected": ["x"]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": "z",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "id": "a",
+            "x": 0,
+            "y": 0
+          }
+        ]
+      ],
+      "expected": ["z", "a"]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": "a",
+            "x": -1,
+            "y": 0
+          },
+          {
+            "id": "b",
+            "x": 0,
+            "y": 0
+          }
+        ]
+      ],
+      "expected": ["a", "b"]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": "a",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "id": "b",
+            "x": 0,
+            "y": -1
+          }
+        ]
+      ],
+      "expected": ["b", "a"]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(boxes) {\n  return boxes\n    .map((box, i) => ({ ...box, i }))\n    .sort((a, b) => a.y - b.y || a.x - b.x || a.i - b.i)\n    .map((box) => box.id);\n}\n",
+    "typescript": "type Value = any;\nexport function solve(boxes: Value): Value {\n  return boxes\n    .map((box: Value, i: Value) => ({ ...box, i }))\n    .sort((a: Value, b: Value) => a.y - b.y || a.x - b.x || a.i - b.i)\n    .map((box: Value) => box.id);\n}\n"
+  },
+  "explanation": "Compare y first, then x, then index; project IDs after sorting. O(n log n) time and O(n) space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

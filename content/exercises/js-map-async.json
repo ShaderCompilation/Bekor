@@ -1,0 +1,190 @@
+{
+  "public": {
+    "id": "js-map-async",
+    "slug": "js-map-async",
+    "version": "1.0.0",
+    "title": "Map Async",
+    "description": "Map integer values using an asynchronous affine mapper descriptor {factor,offset,delay}. The mapped result is value times factor plus offset; each task takes delay virtual time units. Values, factor and offset are integers from -20 through 20; delay from 0 through 10, at most 20 values. Return {values,starts,ends}, all arrays in input order. The adapter tests dispatch and completion scheduling, without wall-clock timers or arbitrary callbacks. All tasks succeed. Start every task at virtual time 0. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["promises", "arrays"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Apply the mapper to each item and record simultaneous start times."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(values: number[], mapper: {factor:number,offset:number,delay:number}): JSON-compatible result",
+        "starter": "export function solve(values, mapper) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [2, 4],
+              {
+                "factor": 3,
+                "offset": 1,
+                "delay": 5
+              }
+            ],
+            "expected": {
+              "values": [7, 13],
+              "starts": [0, 0],
+              "ends": [5, 5]
+            }
+          },
+          {
+            "args": [
+              [-1, 0],
+              {
+                "factor": -2,
+                "offset": 0,
+                "delay": 0
+              }
+            ],
+            "expected": {
+              "values": [2, 0],
+              "starts": [0, 0],
+              "ends": [0, 0]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(values: number[], mapper: {factor:number,offset:number,delay:number}): JSON-compatible result",
+        "starter": "export function solve(\n  values: number[],\n  mapper: { factor: number; offset: number; delay: number },\n): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [2, 4],
+              {
+                "factor": 3,
+                "offset": 1,
+                "delay": 5
+              }
+            ],
+            "expected": {
+              "values": [7, 13],
+              "starts": [0, 0],
+              "ends": [5, 5]
+            }
+          },
+          {
+            "args": [
+              [-1, 0],
+              {
+                "factor": -2,
+                "offset": 0,
+                "delay": 0
+              }
+            ],
+            "expected": {
+              "values": [2, 0],
+              "starts": [0, 0],
+              "ends": [0, 0]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        [],
+        {
+          "factor": 1,
+          "offset": 0,
+          "delay": 2
+        }
+      ],
+      "expected": {
+        "values": [],
+        "starts": [],
+        "ends": []
+      }
+    },
+    {
+      "args": [
+        [1],
+        {
+          "factor": 0,
+          "offset": 4,
+          "delay": 3
+        }
+      ],
+      "expected": {
+        "values": [4],
+        "starts": [0],
+        "ends": [3]
+      }
+    },
+    {
+      "args": [
+        [3, 3],
+        {
+          "factor": 1,
+          "offset": -3,
+          "delay": 1
+        }
+      ],
+      "expected": {
+        "values": [0, 0],
+        "starts": [0, 0],
+        "ends": [1, 1]
+      }
+    },
+    {
+      "args": [
+        [0],
+        {
+          "factor": 4,
+          "offset": 2,
+          "delay": 10
+        }
+      ],
+      "expected": {
+        "values": [2],
+        "starts": [0],
+        "ends": [10]
+      }
+    },
+    {
+      "args": [
+        [20, -20],
+        {
+          "factor": 20,
+          "offset": 20,
+          "delay": 1
+        }
+      ],
+      "expected": {
+        "values": [420, -380],
+        "starts": [0, 0],
+        "ends": [1, 1]
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(values, mapper) {\n  return {\n    values: values.map((x) => x * mapper.factor + mapper.offset),\n    starts: values.map(() => 0),\n    ends: values.map(() => mapper.delay),\n  };\n}\n",
+    "typescript": "export function solve(\n  values: number[],\n  mapper: { factor: number; offset: number; delay: number },\n): any {\n  return {\n    values: values.map((x) => x * mapper.factor + mapper.offset),\n    starts: values.map(() => 0),\n    ends: values.map(() => mapper.delay),\n  };\n}\n"
+  },
+  "explanation": "Apply the mapper to each item and record simultaneous start times. O(n) time and output. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

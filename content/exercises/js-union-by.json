@@ -1,0 +1,213 @@
+{
+  "public": {
+    "id": "js-union-by",
+    "slug": "js-union-by",
+    "version": "1.0.0",
+    "title": "Union By",
+    "description": "Traverse row arrays in order, returning only the first row for each selected scalar key. Each row contains key with an integer or string; types remain distinct. Preserve encounter order. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["sets", "deduplication"],
+    "hints": [
+      "The first representative wins across every source array.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(arrays, key): JSON value",
+        "starter": "export function solve(arrays, key) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                [
+                  {
+                    "k": 1
+                  }
+                ],
+                [
+                  {
+                    "k": 1
+                  },
+                  {
+                    "k": 2
+                  }
+                ]
+              ],
+              "k"
+            ],
+            "expected": [
+              {
+                "k": 1
+              },
+              {
+                "k": 2
+              }
+            ]
+          },
+          {
+            "args": [[], "k"],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(arrays, key): JSON value",
+        "starter": "type Value = any;\nexport function solve(arrays: Value, key: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                [
+                  {
+                    "k": 1
+                  }
+                ],
+                [
+                  {
+                    "k": 1
+                  },
+                  {
+                    "k": 2
+                  }
+                ]
+              ],
+              "k"
+            ],
+            "expected": [
+              {
+                "k": 1
+              },
+              {
+                "k": 2
+              }
+            ]
+          },
+          {
+            "args": [[], "k"],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[[], []], "k"],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          [
+            {
+              "k": 0
+            }
+          ]
+        ],
+        "k"
+      ],
+      "expected": [
+        {
+          "k": 0
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          [
+            {
+              "k": 1
+            },
+            {
+              "k": "1"
+            }
+          ]
+        ],
+        "k"
+      ],
+      "expected": [
+        {
+          "k": 1
+        },
+        {
+          "k": "1"
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          [
+            {
+              "k": "a",
+              "v": 1
+            }
+          ],
+          [
+            {
+              "k": "a",
+              "v": 2
+            }
+          ]
+        ],
+        "k"
+      ],
+      "expected": [
+        {
+          "k": "a",
+          "v": 1
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          [
+            {
+              "k": 2
+            }
+          ],
+          [
+            {
+              "k": 1
+            }
+          ]
+        ],
+        "k"
+      ],
+      "expected": [
+        {
+          "k": 2
+        },
+        {
+          "k": 1
+        }
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(arrays, key) {\n  const seen = new Set();\n  const out = [];\n  for (const rows of arrays)\n    for (const row of rows)\n      if (!seen.has(row[key])) {\n        seen.add(row[key]);\n        out.push(row);\n      }\n  return out;\n}\n",
+    "typescript": "type Value = any;\nexport function solve(arrays: Value, key: Value): Value {\n  const seen = new Set();\n  const out: Value[] = [];\n  for (const rows of arrays)\n    for (const row of rows)\n      if (!seen.has(row[key])) {\n        seen.add(row[key]);\n        out.push(row);\n      }\n  return out;\n}\n"
+  },
+  "explanation": "Use one shared set while traversing arrays in order. O(n) expected time and O(n) output/set space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

@@ -1,0 +1,262 @@
+{
+  "public": {
+    "id": "js-text-between-nodes",
+    "slug": "js-text-between-nodes",
+    "version": "1.0.0",
+    "title": "Text Between Nodes",
+    "description": "input {nodes,start,end}; nodes is a flat reading-order array of {id,text}, with unique IDs. Start and end name existing nodes and start precedes end. Return concatenated text of nodes strictly between them, with no separator. This is an explicit flattened document adapter, excluding boundary text. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["strings", "arrays"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "nodes": [
+                  {
+                    "id": "a",
+                    "text": "A"
+                  },
+                  {
+                    "id": "b",
+                    "text": "B"
+                  },
+                  {
+                    "id": "c",
+                    "text": "C"
+                  }
+                ],
+                "start": "a",
+                "end": "c"
+              }
+            ],
+            "expected": "B"
+          },
+          {
+            "args": [
+              {
+                "nodes": [
+                  {
+                    "id": "a",
+                    "text": "A"
+                  },
+                  {
+                    "id": "b",
+                    "text": "B"
+                  }
+                ],
+                "start": "a",
+                "end": "b"
+              }
+            ],
+            "expected": ""
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "nodes": [
+                  {
+                    "id": "a",
+                    "text": "A"
+                  },
+                  {
+                    "id": "b",
+                    "text": "B"
+                  },
+                  {
+                    "id": "c",
+                    "text": "C"
+                  }
+                ],
+                "start": "a",
+                "end": "c"
+              }
+            ],
+            "expected": "B"
+          },
+          {
+            "args": [
+              {
+                "nodes": [
+                  {
+                    "id": "a",
+                    "text": "A"
+                  },
+                  {
+                    "id": "b",
+                    "text": "B"
+                  }
+                ],
+                "start": "a",
+                "end": "b"
+              }
+            ],
+            "expected": ""
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "nodes": [
+            {
+              "id": "a",
+              "text": ""
+            },
+            {
+              "id": "b",
+              "text": ""
+            },
+            {
+              "id": "c",
+              "text": ""
+            }
+          ],
+          "start": "a",
+          "end": "c"
+        }
+      ],
+      "expected": ""
+    },
+    {
+      "args": [
+        {
+          "nodes": [
+            {
+              "id": "a",
+              "text": "x"
+            },
+            {
+              "id": "b",
+              "text": "1"
+            },
+            {
+              "id": "c",
+              "text": "2"
+            },
+            {
+              "id": "d",
+              "text": "y"
+            }
+          ],
+          "start": "a",
+          "end": "d"
+        }
+      ],
+      "expected": "12"
+    },
+    {
+      "args": [
+        {
+          "nodes": [
+            {
+              "id": "a",
+              "text": "x"
+            },
+            {
+              "id": "b",
+              "text": " "
+            },
+            {
+              "id": "c",
+              "text": "y"
+            }
+          ],
+          "start": "a",
+          "end": "c"
+        }
+      ],
+      "expected": " "
+    },
+    {
+      "args": [
+        {
+          "nodes": [
+            {
+              "id": "a",
+              "text": "x"
+            },
+            {
+              "id": "b",
+              "text": "q"
+            },
+            {
+              "id": "c",
+              "text": "y"
+            }
+          ],
+          "start": "b",
+          "end": "c"
+        }
+      ],
+      "expected": ""
+    },
+    {
+      "args": [
+        {
+          "nodes": [
+            {
+              "id": "a",
+              "text": "x"
+            },
+            {
+              "id": "b",
+              "text": "hi"
+            },
+            {
+              "id": "c",
+              "text": "y"
+            },
+            {
+              "id": "d",
+              "text": "z"
+            }
+          ],
+          "start": "a",
+          "end": "c"
+        }
+      ],
+      "expected": "hi"
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const a = d.nodes.findIndex((n) => n.id === d.start),\n    b = d.nodes.findIndex((n) => n.id === d.end);\n  return d.nodes\n    .slice(a + 1, b)\n    .map((n) => n.text)\n    .join(\"\");\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const a = d.nodes.findIndex((n: any) => n.id === d.start),\n    b = d.nodes.findIndex((n: any) => n.id === d.end);\n  return d.nodes\n    .slice(a + 1, b)\n    .map((n: any) => n.text)\n    .join(\"\");\n}\n"
+  },
+  "explanation": "Locate both boundaries then join only interior nodes. O(n plus output length) time and space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

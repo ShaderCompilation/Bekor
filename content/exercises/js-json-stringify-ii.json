@@ -1,0 +1,144 @@
+{
+  "public": {
+    "id": "js-json-stringify-ii",
+    "slug": "js-json-stringify-ii",
+    "version": "1.0.0",
+    "title": "JSON.stringify II",
+    "description": "Serialize a JSON value using a replacer-key allowlist and indentation. keys is an array of at most 10 unique ASCII-letter strings. Only object properties named in keys are included, in keys order at every depth; array positions are never removed. indent is 0, 1 or 2 spaces. Return the same text as JSON.stringify(value, keys, indent), without a trailing newline. No functions, undefined, special objects or cycles occur. Native JSON methods are permitted; tests establish the output contract only. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "medium",
+    "concepts": ["serialization", "objects"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "The native replacer-array traversal filters and orders object keys, while the space parameter controls formatting."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(value: any, keys: string[], indent: number): JSON-compatible result",
+        "starter": "export function solve(value, keys, indent) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "b": 2,
+                "a": 1
+              },
+              ["a", "b"],
+              0
+            ],
+            "expected": "{\"a\":1,\"b\":2}"
+          },
+          {
+            "args": [
+              {
+                "a": 1,
+                "b": 2
+              },
+              ["b"],
+              2
+            ],
+            "expected": "{\n  \"b\": 2\n}"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(value: any, keys: string[], indent: number): JSON-compatible result",
+        "starter": "export function solve(value: any, keys: string[], indent: number): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "b": 2,
+                "a": 1
+              },
+              ["a", "b"],
+              0
+            ],
+            "expected": "{\"a\":1,\"b\":2}"
+          },
+          {
+            "args": [
+              {
+                "a": 1,
+                "b": 2
+              },
+              ["b"],
+              2
+            ],
+            "expected": "{\n  \"b\": 2\n}"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], [], 1],
+      "expected": "[]"
+    },
+    {
+      "args": [
+        {
+          "a": {
+            "b": 2,
+            "c": 3
+          }
+        },
+        ["a", "b"],
+        0
+      ],
+      "expected": "{\"a\":{\"b\":2}}"
+    },
+    {
+      "args": [
+        [
+          {
+            "a": 1,
+            "b": 2
+          },
+          3
+        ],
+        ["a"],
+        0
+      ],
+      "expected": "[{\"a\":1},3]"
+    },
+    {
+      "args": [
+        {
+          "a": 1
+        },
+        [],
+        0
+      ],
+      "expected": "{}"
+    },
+    {
+      "args": ["x", [], 2],
+      "expected": "\"x\""
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(value, keys, indent) {\n  return JSON.stringify(value, keys, indent);\n}\n",
+    "typescript": "export function solve(value: any, keys: string[], indent: number): any {\n  return JSON.stringify(value, keys, indent);\n}\n"
+  },
+  "explanation": "The native replacer-array traversal filters and orders object keys, while the space parameter controls formatting. O(encoded size + examined properties times allowlist length) time and O(encoded size + depth) space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

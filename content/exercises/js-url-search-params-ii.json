@@ -1,0 +1,214 @@
+{
+  "public": {
+    "id": "js-url-search-params-ii",
+    "slug": "js-url-search-params-ii",
+    "version": "1.0.0",
+    "title": "URLSearchParams II",
+    "description": "input {pairs,operations}; pairs is an ordered array of [key,value] strings. Operations are append {key,value}, set {key,value}, delete {key}, getAll {key}, and entries. Set replaces the first occurrence and removes later duplicates, or appends when absent. Mutations emit nothing, getAll emits all matching values, entries emits the current pairs. Return emitted results. No URL parsing or percent encoding is included in this ordered-multimap adapter. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["maps", "strings"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "pairs": [["a", "1"], ["a", "2"]],
+                "operations": [
+                  {
+                    "op": "getAll",
+                    "key": "a"
+                  }
+                ]
+              }
+            ],
+            "expected": [["1", "2"]]
+          },
+          {
+            "args": [
+              {
+                "pairs": [["a", "1"], ["b", "2"], ["a", "3"]],
+                "operations": [
+                  {
+                    "op": "set",
+                    "key": "a",
+                    "value": "x"
+                  },
+                  {
+                    "op": "entries"
+                  }
+                ]
+              }
+            ],
+            "expected": [[["a", "x"], ["b", "2"]]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "pairs": [["a", "1"], ["a", "2"]],
+                "operations": [
+                  {
+                    "op": "getAll",
+                    "key": "a"
+                  }
+                ]
+              }
+            ],
+            "expected": [["1", "2"]]
+          },
+          {
+            "args": [
+              {
+                "pairs": [["a", "1"], ["b", "2"], ["a", "3"]],
+                "operations": [
+                  {
+                    "op": "set",
+                    "key": "a",
+                    "value": "x"
+                  },
+                  {
+                    "op": "entries"
+                  }
+                ]
+              }
+            ],
+            "expected": [[["a", "x"], ["b", "2"]]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "pairs": [],
+          "operations": []
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "pairs": [],
+          "operations": [
+            {
+              "op": "set",
+              "key": "a",
+              "value": "1"
+            },
+            {
+              "op": "entries"
+            }
+          ]
+        }
+      ],
+      "expected": [[["a", "1"]]]
+    },
+    {
+      "args": [
+        {
+          "pairs": [["a", "1"]],
+          "operations": [
+            {
+              "op": "delete",
+              "key": "a"
+            },
+            {
+              "op": "entries"
+            }
+          ]
+        }
+      ],
+      "expected": [[]]
+    },
+    {
+      "args": [
+        {
+          "pairs": [],
+          "operations": [
+            {
+              "op": "append",
+              "key": "a",
+              "value": ""
+            },
+            {
+              "op": "getAll",
+              "key": "a"
+            }
+          ]
+        }
+      ],
+      "expected": [[""]]
+    },
+    {
+      "args": [
+        {
+          "pairs": [["a", "1"]],
+          "operations": [
+            {
+              "op": "getAll",
+              "key": "x"
+            }
+          ]
+        }
+      ],
+      "expected": [[]]
+    },
+    {
+      "args": [
+        {
+          "pairs": [["a", "1"], ["a", "2"]],
+          "operations": [
+            {
+              "op": "set",
+              "key": "a",
+              "value": "3"
+            },
+            {
+              "op": "entries"
+            }
+          ]
+        }
+      ],
+      "expected": [[["a", "3"]]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  let pairs = d.pairs.map((p) => [...p]);\n  const out = [];\n  for (const op of d.operations) {\n    if (op.op === \"append\") pairs.push([op.key, op.value]);\n    else if (op.op === \"delete\") pairs = pairs.filter((p) => p[0] !== op.key);\n    else if (op.op === \"set\") {\n      let seen = false;\n      pairs = pairs.filter((p) => {\n        if (p[0] !== op.key) return true;\n        if (seen) return false;\n        seen = true;\n        p[1] = op.value;\n        return true;\n      });\n      if (!seen) pairs.push([op.key, op.value]);\n    } else if (op.op === \"getAll\") out.push(pairs.filter((p) => p[0] === op.key).map((p) => p[1]));\n    else out.push(pairs.map((p) => [...p]));\n  }\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  let pairs = d.pairs.map((p: string[]) => [...p]);\n  const out: any[] = [];\n  for (const op of d.operations) {\n    if (op.op === \"append\") pairs.push([op.key, op.value]);\n    else if (op.op === \"delete\") pairs = pairs.filter((p: string[]) => p[0] !== op.key);\n    else if (op.op === \"set\") {\n      let seen = false;\n      pairs = pairs.filter((p: string[]) => {\n        if (p[0] !== op.key) return true;\n        if (seen) return false;\n        seen = true;\n        p[1] = op.value;\n        return true;\n      });\n      if (!seen) pairs.push([op.key, op.value]);\n    } else if (op.op === \"getAll\")\n      out.push(pairs.filter((p: string[]) => p[0] === op.key).map((p: string[]) => p[1]));\n    else out.push(pairs.map((p: string[]) => [...p]));\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Represent parameters as ordered pairs to preserve duplicates; scan for each mutation/query. O(q times maximum pair count plus output) time and space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

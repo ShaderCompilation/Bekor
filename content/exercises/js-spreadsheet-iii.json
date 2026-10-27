@@ -1,0 +1,257 @@
+{
+  "public": {
+    "id": "js-spreadsheet-iii",
+    "slug": "js-spreadsheet-iii",
+    "version": "1.0.0",
+    "title": "Spreadsheet III",
+    "description": "input {cells,operations}; initial cells map names to integers or {sum:[names]} and are acyclic. Operations are get {cell}, set {cell,value} (must keep graph acyclic), or trySet {cell,value}. A trySet commits only if the entire resulting graph is acyclic, emitting true on success and false on rejection; rejection restores the prior value or absence. Get emits current recursively evaluated integer with missing cells as zero; set emits nothing. Return all emitted results. At most 12 cells, 20 operations, 3 terms/formula, accepted dependency depth 5. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["graphs", "cycle-detection"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "cells": {
+                  "A": 1,
+                  "B": {
+                    "sum": ["A"]
+                  }
+                },
+                "operations": [
+                  {
+                    "op": "trySet",
+                    "cell": "A",
+                    "value": {
+                      "sum": ["B"]
+                    }
+                  },
+                  {
+                    "op": "get",
+                    "cell": "A"
+                  }
+                ]
+              }
+            ],
+            "expected": [false, 1]
+          },
+          {
+            "args": [
+              {
+                "cells": {
+                  "A": 1
+                },
+                "operations": [
+                  {
+                    "op": "trySet",
+                    "cell": "B",
+                    "value": {
+                      "sum": ["A"]
+                    }
+                  },
+                  {
+                    "op": "get",
+                    "cell": "B"
+                  }
+                ]
+              }
+            ],
+            "expected": [true, 1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "cells": {
+                  "A": 1,
+                  "B": {
+                    "sum": ["A"]
+                  }
+                },
+                "operations": [
+                  {
+                    "op": "trySet",
+                    "cell": "A",
+                    "value": {
+                      "sum": ["B"]
+                    }
+                  },
+                  {
+                    "op": "get",
+                    "cell": "A"
+                  }
+                ]
+              }
+            ],
+            "expected": [false, 1]
+          },
+          {
+            "args": [
+              {
+                "cells": {
+                  "A": 1
+                },
+                "operations": [
+                  {
+                    "op": "trySet",
+                    "cell": "B",
+                    "value": {
+                      "sum": ["A"]
+                    }
+                  },
+                  {
+                    "op": "get",
+                    "cell": "B"
+                  }
+                ]
+              }
+            ],
+            "expected": [true, 1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "cells": {},
+          "operations": []
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "cells": {},
+          "operations": [
+            {
+              "op": "trySet",
+              "cell": "A",
+              "value": {
+                "sum": ["A"]
+              }
+            },
+            {
+              "op": "get",
+              "cell": "A"
+            }
+          ]
+        }
+      ],
+      "expected": [false, 0]
+    },
+    {
+      "args": [
+        {
+          "cells": {
+            "A": 1,
+            "B": {
+              "sum": ["A", "A"]
+            }
+          },
+          "operations": [
+            {
+              "op": "set",
+              "cell": "A",
+              "value": 3
+            },
+            {
+              "op": "get",
+              "cell": "B"
+            }
+          ]
+        }
+      ],
+      "expected": [6]
+    },
+    {
+      "args": [
+        {
+          "cells": {
+            "A": 2,
+            "B": {
+              "sum": ["A"]
+            }
+          },
+          "operations": [
+            {
+              "op": "trySet",
+              "cell": "A",
+              "value": 5
+            },
+            {
+              "op": "get",
+              "cell": "B"
+            }
+          ]
+        }
+      ],
+      "expected": [true, 5]
+    },
+    {
+      "args": [
+        {
+          "cells": {
+            "A": {
+              "sum": ["B"]
+            },
+            "B": 2
+          },
+          "operations": [
+            {
+              "op": "trySet",
+              "cell": "B",
+              "value": {
+                "sum": ["A"]
+              }
+            },
+            {
+              "op": "get",
+              "cell": "B"
+            }
+          ]
+        }
+      ],
+      "expected": [false, 2]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const cells = { ...d.cells };\n  const evaluate = (k, active) => {\n    if (active.has(k)) return \"CYCLE\";\n    const v = cells[k] ?? 0;\n    if (typeof v === \"number\") return v;\n    const next = new Set(active);\n    next.add(k);\n    let total = 0;\n    for (const name of v.sum) {\n      const x = evaluate(name, next);\n      if (x === \"CYCLE\") return x;\n      total += x;\n    }\n    return total;\n  };\n  const out = [];\n  for (const op of d.operations) {\n    if (op.op === \"set\") cells[op.cell] = op.value;\n    else if (op.op === \"get\") out.push(evaluate(op.cell, new Set()));\n    else {\n      const old = cells[op.cell];\n      cells[op.cell] = op.value;\n      let bad = false;\n      for (const k of Object.keys(cells)) if (evaluate(k, new Set()) === \"CYCLE\") bad = true;\n      if (bad) {\n        if (old === undefined) delete cells[op.cell];\n        else cells[op.cell] = old;\n      }\n      out.push(!bad);\n    }\n  }\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const cells: any = { ...d.cells };\n  const evaluate = (k: string, active: Set<string>): any => {\n    if (active.has(k)) return \"CYCLE\";\n    const v = cells[k] ?? 0;\n    if (typeof v === \"number\") return v;\n    const next = new Set(active);\n    next.add(k);\n    let total = 0;\n    for (const name of v.sum) {\n      const x = evaluate(name, next);\n      if (x === \"CYCLE\") return x;\n      total += x;\n    }\n    return total;\n  };\n  const out: any[] = [];\n  for (const op of d.operations) {\n    if (op.op === \"set\") cells[op.cell] = op.value;\n    else if (op.op === \"get\") out.push(evaluate(op.cell, new Set()));\n    else {\n      const old = cells[op.cell];\n      cells[op.cell] = op.value;\n      let bad = false;\n      for (const k of Object.keys(cells)) if (evaluate(k, new Set()) === \"CYCLE\") bad = true;\n      if (bad) {\n        if (old === undefined) delete cells[op.cell];\n        else cells[op.cell] = old;\n      }\n      out.push(!bad);\n    }\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Tentatively write, detect cycles using active recursion paths, and roll back rejected writes. Naive full validation is O(V times 3 to the V) worst case on this bounded graph; accepted reads use depth at most 5. Space O(V) for recursion paths and stored cells. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

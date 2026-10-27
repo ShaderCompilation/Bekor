@@ -1,0 +1,246 @@
+{
+  "public": {
+    "id": "js-superjson",
+    "slug": "js-superjson",
+    "version": "1.0.0",
+    "title": "Superjson",
+    "description": "input uses mode serialize or deserialize. Serialize receives {mode:\"serialize\",value}; deserialize receives {mode:\"deserialize\",json,meta}. The serialization value is a JSON tree in which reserved tagged leaves {$type:\"date\" or \"bigint\",value:string} represent non-JSON values. Serialize returns {json,meta}: replace each tagged leaf by its string value and collect [path,type] entries in preorder, with path a string-key array (array indices are decimal strings). Other object keys keep insertion order for metadata traversal. No ordinary object contains $type. This adapter encodes type metadata; it does not construct Date or BigInt values. Deserialization restores reserved tagged-leaf descriptors at each supplied [path,type], returning the reconstructed value; metadata is valid, paths are distinct and never descend into another tagged leaf. No metadata entry means the value stays ordinary JSON. Both directions preserve collection insertion order. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["serialization", "trees"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "mode": "serialize",
+                "value": {
+                  "$type": "bigint",
+                  "value": "12"
+                }
+              }
+            ],
+            "expected": {
+              "json": "12",
+              "meta": [[[], "bigint"]]
+            }
+          },
+          {
+            "args": [
+              {
+                "mode": "serialize",
+                "value": {
+                  "a": {
+                    "$type": "date",
+                    "value": "2020-01-01"
+                  }
+                }
+              }
+            ],
+            "expected": {
+              "json": {
+                "a": "2020-01-01"
+              },
+              "meta": [[["a"], "date"]]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "mode": "serialize",
+                "value": {
+                  "$type": "bigint",
+                  "value": "12"
+                }
+              }
+            ],
+            "expected": {
+              "json": "12",
+              "meta": [[[], "bigint"]]
+            }
+          },
+          {
+            "args": [
+              {
+                "mode": "serialize",
+                "value": {
+                  "a": {
+                    "$type": "date",
+                    "value": "2020-01-01"
+                  }
+                }
+              }
+            ],
+            "expected": {
+              "json": {
+                "a": "2020-01-01"
+              },
+              "meta": [[["a"], "date"]]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "mode": "serialize",
+          "value": null
+        }
+      ],
+      "expected": {
+        "json": null,
+        "meta": []
+      }
+    },
+    {
+      "args": [
+        {
+          "mode": "serialize",
+          "value": [
+            {
+              "$type": "bigint",
+              "value": "0"
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "json": ["0"],
+        "meta": [[["0"], "bigint"]]
+      }
+    },
+    {
+      "args": [
+        {
+          "mode": "serialize",
+          "value": {
+            "a": 2
+          }
+        }
+      ],
+      "expected": {
+        "json": {
+          "a": 2
+        },
+        "meta": []
+      }
+    },
+    {
+      "args": [
+        {
+          "mode": "serialize",
+          "value": {
+            "a": [
+              {
+                "$type": "date",
+                "value": "x"
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "json": {
+          "a": ["x"]
+        },
+        "meta": [[["a", "0"], "date"]]
+      }
+    },
+    {
+      "args": [
+        {
+          "mode": "serialize",
+          "value": [true, "x"]
+        }
+      ],
+      "expected": {
+        "json": [true, "x"],
+        "meta": []
+      }
+    },
+    {
+      "args": [
+        {
+          "mode": "serialize",
+          "value": [
+            1,
+            {
+              "$type": "bigint",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "json": [1, "2"],
+        "meta": [[["1"], "bigint"]]
+      }
+    },
+    {
+      "args": [
+        {
+          "mode": "deserialize",
+          "json": {
+            "a": "12"
+          },
+          "meta": [[["a"], "bigint"]]
+        }
+      ],
+      "expected": {
+        "a": {
+          "$type": "bigint",
+          "value": "12"
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "mode": "deserialize",
+          "json": ["x"],
+          "meta": []
+        }
+      ],
+      "expected": ["x"]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  if (d.mode === \"deserialize\") {\n    let result = JSON.parse(JSON.stringify(d.json));\n    for (const [p, type] of d.meta) {\n      if (p.length === 0) {\n        result = { $type: type, value: result };\n        continue;\n      }\n      let n = result;\n      for (const k of p.slice(0, -1)) n = n[k];\n      const k = p.at(-1);\n      n[k] = { $type: type, value: n[k] };\n    }\n    return result;\n  }\n  const meta = [];\n  const visit = (v, p) => {\n    if (v && typeof v === \"object\" && !Array.isArray(v) && Object.hasOwn(v, \"$type\")) {\n      meta.push([p, v.$type]);\n      return v.value;\n    }\n    if (Array.isArray(v)) return v.map((x, i) => visit(x, p.concat(String(i))));\n    if (v && typeof v === \"object\")\n      return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, visit(x, p.concat(k))]));\n    return v;\n  };\n  return { json: visit(d.value, []), meta };\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  if (d.mode === \"deserialize\") {\n    let result: any = JSON.parse(JSON.stringify(d.json));\n    for (const [p, type] of d.meta) {\n      if (p.length === 0) {\n        result = { $type: type, value: result };\n        continue;\n      }\n      let n = result;\n      for (const k of p.slice(0, -1)) n = n[k];\n      const k = p.at(-1);\n      n[k] = { $type: type, value: n[k] };\n    }\n    return result;\n  }\n  const meta: any[] = [];\n  const visit = (v: any, p: string[]): any => {\n    if (v && typeof v === \"object\" && !Array.isArray(v) && Object.hasOwn(v, \"$type\")) {\n      meta.push([p, v.$type]);\n      return v.value;\n    }\n    if (Array.isArray(v)) return v.map((x: any, i: number) => visit(x, p.concat(String(i))));\n    if (v && typeof v === \"object\")\n      return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, visit(x, p.concat(k))]));\n    return v;\n  };\n  return { json: visit(d.value, []), meta };\n}\n"
+  },
+  "explanation": "Walk the tree once while tracking paths; record each tagged leaf before descending elsewhere. O(n times h) time/metadata space in the worst case because paths are copied. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

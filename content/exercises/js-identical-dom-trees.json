@@ -1,0 +1,220 @@
+{
+  "public": {
+    "id": "js-identical-dom-trees",
+    "slug": "js-identical-dom-trees",
+    "version": "1.0.0",
+    "title": "Identical Element Trees",
+    "description": "Each tree is {tag,attributes,children}; attributes maps strings to strings and children are ordered trees. Return whether both trees have exactly equal case-sensitive tags, attributes (key order irrelevant), and corresponding children. This JSON element-tree adapter excludes text nodes and browser properties. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["trees", "structural-equality"],
+    "hints": [
+      "Compare attribute key sets independently of property insertion order.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(left, right): JSON value",
+        "starter": "export function solve(left, right) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "tag": "div",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "tag": "div",
+                "attributes": {},
+                "children": []
+              }
+            ],
+            "expected": true
+          },
+          {
+            "args": [
+              {
+                "tag": "p",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "tag": "div",
+                "attributes": {},
+                "children": []
+              }
+            ],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(left, right): JSON value",
+        "starter": "type Value = any;\nexport function solve(left: Value, right: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "tag": "div",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "tag": "div",
+                "attributes": {},
+                "children": []
+              }
+            ],
+            "expected": true
+          },
+          {
+            "args": [
+              {
+                "tag": "p",
+                "attributes": {},
+                "children": []
+              },
+              {
+                "tag": "div",
+                "attributes": {},
+                "children": []
+              }
+            ],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "tag": "div",
+          "attributes": {
+            "a": "1"
+          },
+          "children": []
+        },
+        {
+          "tag": "div",
+          "attributes": {},
+          "children": []
+        }
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        {
+          "tag": "div",
+          "attributes": {
+            "a": "1",
+            "b": "2"
+          },
+          "children": []
+        },
+        {
+          "tag": "div",
+          "attributes": {
+            "b": "2",
+            "a": "1"
+          },
+          "children": []
+        }
+      ],
+      "expected": true
+    },
+    {
+      "args": [
+        {
+          "tag": "div",
+          "attributes": {},
+          "children": [
+            {
+              "tag": "p",
+              "attributes": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "tag": "div",
+          "attributes": {},
+          "children": [
+            {
+              "tag": "div",
+              "attributes": {},
+              "children": []
+            }
+          ]
+        }
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        {
+          "tag": "div",
+          "attributes": {},
+          "children": [
+            {
+              "tag": "p",
+              "attributes": {},
+              "children": []
+            }
+          ]
+        },
+        {
+          "tag": "div",
+          "attributes": {},
+          "children": []
+        }
+      ],
+      "expected": false
+    },
+    {
+      "args": [
+        {
+          "tag": "div",
+          "attributes": {
+            "a": "1"
+          },
+          "children": []
+        },
+        {
+          "tag": "div",
+          "attributes": {
+            "a": "2"
+          },
+          "children": []
+        }
+      ],
+      "expected": false
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(left, right) {\n  function same(a, b) {\n    if (a.tag !== b.tag || a.children.length !== b.children.length) return false;\n    const keys = Object.keys(a.attributes);\n    if (\n      keys.length !== Object.keys(b.attributes).length ||\n      keys.some((k) => !Object.hasOwn(b.attributes, k) || a.attributes[k] !== b.attributes[k])\n    )\n      return false;\n    return a.children.every((child, i) => same(child, b.children[i]));\n  }\n  return same(left, right);\n}\n",
+    "typescript": "type Value = any;\nexport function solve(left: Value, right: Value): Value {\n  function same(a: Value, b: Value): Value {\n    if (a.tag !== b.tag || a.children.length !== b.children.length) return false;\n    const keys = Object.keys(a.attributes);\n    if (\n      keys.length !== Object.keys(b.attributes).length ||\n      keys.some(\n        (k: Value) => !Object.hasOwn(b.attributes, k) || a.attributes[k] !== b.attributes[k],\n      )\n    )\n      return false;\n    return a.children.every((child: Value, i: Value) => same(child, b.children[i]));\n  }\n  return same(left, right);\n}\n"
+  },
+  "explanation": "Require equal tags, attribute sets and values, child counts, and recursively equal corresponding children. O(total nodes and attributes) time and O(height plus widest attribute set) auxiliary space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

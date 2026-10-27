@@ -1,0 +1,119 @@
+{
+  "public": {
+    "id": "js-deep-equal",
+    "slug": "js-deep-equal",
+    "version": "1.0.0",
+    "title": "Deep Equal",
+    "description": "Determine structural equality of two JSON values. Scalars require strict equality; arrays require equal length and element order; objects require exactly the same own keys and recursively equal values, ignoring key order. Arrays and objects are distinct. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["recursion", "objects"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Compare types, own-key sets and recursive children."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(left: any, right: any): JSON-compatible result",
+        "starter": "export function solve(left, right) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "a": [1, 2]
+              },
+              {
+                "a": [1, 2]
+              }
+            ],
+            "expected": true
+          },
+          {
+            "args": [[1, 2], [2, 1]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(left: any, right: any): JSON-compatible result",
+        "starter": "export function solve(left: any, right: any): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "a": [1, 2]
+              },
+              {
+                "a": [1, 2]
+              }
+            ],
+            "expected": true
+          },
+          {
+            "args": [[1, 2], [2, 1]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [null, null],
+      "expected": true
+    },
+    {
+      "args": [false, 0],
+      "expected": false
+    },
+    {
+      "args": [{}, []],
+      "expected": false
+    },
+    {
+      "args": [
+        {
+          "a": 1,
+          "b": 2
+        },
+        {
+          "b": 2,
+          "a": 1
+        }
+      ],
+      "expected": true
+    },
+    {
+      "args": [
+        {
+          "a": null
+        },
+        {}
+      ],
+      "expected": false
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(left, right) {\n  const equal = (a, b) => {\n    if (a === b) return true;\n    if (\n      a === null ||\n      b === null ||\n      typeof a !== \"object\" ||\n      typeof b !== \"object\" ||\n      Array.isArray(a) !== Array.isArray(b)\n    )\n      return false;\n    const keys = Object.keys(a);\n    return (\n      keys.length === Object.keys(b).length &&\n      keys.every((k) => Object.hasOwn(b, k) && equal(a[k], b[k]))\n    );\n  };\n  return equal(left, right);\n}\n",
+    "typescript": "export function solve(left: any, right: any): any {\n  const equal = (a: any, b: any): boolean => {\n    if (a === b) return true;\n    if (\n      a === null ||\n      b === null ||\n      typeof a !== \"object\" ||\n      typeof b !== \"object\" ||\n      Array.isArray(a) !== Array.isArray(b)\n    )\n      return false;\n    const keys = Object.keys(a);\n    return (\n      keys.length === Object.keys(b).length &&\n      keys.every((k) => Object.hasOwn(b, k) && equal(a[k], b[k]))\n    );\n  };\n  return equal(left, right);\n}\n"
+  },
+  "explanation": "Compare types, own-key sets and recursive children. O(total compared nodes) time and O(depth) recursion, plus temporary key arrays. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

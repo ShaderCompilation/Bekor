@@ -1,0 +1,95 @@
+{
+  "public": {
+    "id": "js-event-emitter-ii",
+    "slug": "js-event-emitter-ii",
+    "version": "1.0.0",
+    "title": "Event Emitter With Once",
+    "description": "Operations are [\"on\",event,id], [\"once\",event,id], [\"off\",event,id], or [\"emit\",event]. Listener IDs are unique while registered. on/once register in order; off removes that listener; emit returns invoked IDs in registration order and removes once listeners. Other operations return null. No reentrant callbacks in this adapter. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["events", "state-machines"],
+    "hints": [
+      "Remove once listeners after they fire, while retaining normal listeners.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(operations): JSON value",
+        "starter": "export function solve(operations) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[["once", "x", "a"], ["emit", "x"], ["emit", "x"]]],
+            "expected": [null, ["a"], []]
+          },
+          {
+            "args": [[["on", "x", "a"], ["emit", "x"], ["emit", "x"]]],
+            "expected": [null, ["a"], ["a"]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(operations): JSON value",
+        "starter": "type Value = any;\nexport function solve(operations: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[["once", "x", "a"], ["emit", "x"], ["emit", "x"]]],
+            "expected": [null, ["a"], []]
+          },
+          {
+            "args": [[["on", "x", "a"], ["emit", "x"], ["emit", "x"]]],
+            "expected": [null, ["a"], ["a"]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[["emit", "x"]]],
+      "expected": [[]]
+    },
+    {
+      "args": [[["on", "x", "a"], ["off", "x", "a"], ["emit", "x"]]],
+      "expected": [null, null, []]
+    },
+    {
+      "args": [[["on", "x", "a"], ["once", "x", "b"], ["emit", "x"]]],
+      "expected": [null, null, ["a", "b"]]
+    },
+    {
+      "args": [[["on", "y", "a"], ["emit", "x"]]],
+      "expected": [null, []]
+    },
+    {
+      "args": [[["once", "z", "first"], ["emit", "z"], ["emit", "z"]]],
+      "expected": [null, ["first"], []]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(operations) {\n  const listeners = [];\n  return operations.map(([op, event, id]) => {\n    if (op === \"on\" || op === \"once\") {\n      listeners.push({ event, id, once: op === \"once\" });\n      return null;\n    }\n    if (op === \"off\") {\n      const i = listeners.findIndex((x) => x.event === event && x.id === id);\n      if (i >= 0) listeners.splice(i, 1);\n      return null;\n    }\n    const result = listeners.filter((x) => x.event === event).map((x) => x.id);\n    for (let i = listeners.length - 1; i >= 0; i--)\n      if (listeners[i].event === event && listeners[i].once) listeners.splice(i, 1);\n    return result;\n  });\n}\n",
+    "typescript": "type Value = any;\nexport function solve(operations: Value): Value {\n  const listeners: Value[] = [];\n  return operations.map(([op, event, id]: Value) => {\n    if (op === \"on\" || op === \"once\") {\n      listeners.push({ event, id, once: op === \"once\" });\n      return null;\n    }\n    if (op === \"off\") {\n      const i = listeners.findIndex((x: Value) => x.event === event && x.id === id);\n      if (i >= 0) listeners.splice(i, 1);\n      return null;\n    }\n    const result = listeners.filter((x: Value) => x.event === event).map((x: Value) => x.id);\n    for (let i = listeners.length - 1; i >= 0; i--)\n      if (listeners[i].event === event && listeners[i].once) listeners.splice(i, 1);\n    return result;\n  });\n}\n"
+  },
+  "explanation": "Store registration order, filter by event for emission, then remove matching one-shot registrations. O(n squared) worst-case time and output space over n operations. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

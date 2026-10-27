@@ -1,0 +1,322 @@
+{
+  "public": {
+    "id": "js-undoable-database",
+    "slug": "js-undoable-database",
+    "version": "1.0.0",
+    "title": "Undoable Database",
+    "description": "input {initial,operations}; users are {id,name}, with distinct integer IDs, kept in creation order. Operations: create {user} (new ID), update {id,changes:{name}} (existing ID), delete {id} (existing ID), undo and redo. Every CRUD operation creates one checkpoint and clears redo. Return complete user arrays after each operation. Boundary undo/redo is a no-op. At most 20 operations and 12 users. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["history", "databases"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "initial": [],
+                "operations": [
+                  {
+                    "op": "create",
+                    "user": {
+                      "id": 1,
+                      "name": "A"
+                    }
+                  },
+                  {
+                    "op": "undo"
+                  },
+                  {
+                    "op": "redo"
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              [
+                {
+                  "id": 1,
+                  "name": "A"
+                }
+              ],
+              [],
+              [
+                {
+                  "id": 1,
+                  "name": "A"
+                }
+              ]
+            ]
+          },
+          {
+            "args": [
+              {
+                "initial": [
+                  {
+                    "id": 1,
+                    "name": "A"
+                  }
+                ],
+                "operations": [
+                  {
+                    "op": "update",
+                    "id": 1,
+                    "changes": {
+                      "name": "B"
+                    }
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              [
+                {
+                  "id": 1,
+                  "name": "B"
+                }
+              ]
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "initial": [],
+                "operations": [
+                  {
+                    "op": "create",
+                    "user": {
+                      "id": 1,
+                      "name": "A"
+                    }
+                  },
+                  {
+                    "op": "undo"
+                  },
+                  {
+                    "op": "redo"
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              [
+                {
+                  "id": 1,
+                  "name": "A"
+                }
+              ],
+              [],
+              [
+                {
+                  "id": 1,
+                  "name": "A"
+                }
+              ]
+            ]
+          },
+          {
+            "args": [
+              {
+                "initial": [
+                  {
+                    "id": 1,
+                    "name": "A"
+                  }
+                ],
+                "operations": [
+                  {
+                    "op": "update",
+                    "id": 1,
+                    "changes": {
+                      "name": "B"
+                    }
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              [
+                {
+                  "id": 1,
+                  "name": "B"
+                }
+              ]
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "initial": [],
+          "operations": []
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "initial": [
+            {
+              "id": 1,
+              "name": "A"
+            }
+          ],
+          "operations": [
+            {
+              "op": "delete",
+              "id": 1
+            },
+            {
+              "op": "undo"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        [],
+        [
+          {
+            "id": 1,
+            "name": "A"
+          }
+        ]
+      ]
+    },
+    {
+      "args": [
+        {
+          "initial": [],
+          "operations": [
+            {
+              "op": "undo"
+            },
+            {
+              "op": "redo"
+            }
+          ]
+        }
+      ],
+      "expected": [[], []]
+    },
+    {
+      "args": [
+        {
+          "initial": [],
+          "operations": [
+            {
+              "op": "create",
+              "user": {
+                "id": 1,
+                "name": "A"
+              }
+            },
+            {
+              "op": "undo"
+            },
+            {
+              "op": "create",
+              "user": {
+                "id": 2,
+                "name": "B"
+              }
+            },
+            {
+              "op": "redo"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        [
+          {
+            "id": 1,
+            "name": "A"
+          }
+        ],
+        [],
+        [
+          {
+            "id": 2,
+            "name": "B"
+          }
+        ],
+        [
+          {
+            "id": 2,
+            "name": "B"
+          }
+        ]
+      ]
+    },
+    {
+      "args": [
+        {
+          "initial": [
+            {
+              "id": 1,
+              "name": "A"
+            },
+            {
+              "id": 2,
+              "name": "B"
+            }
+          ],
+          "operations": [
+            {
+              "op": "delete",
+              "id": 1
+            }
+          ]
+        }
+      ],
+      "expected": [
+        [
+          {
+            "id": 2,
+            "name": "B"
+          }
+        ]
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const clone = (v) => JSON.parse(JSON.stringify(v));\n  let users = clone(d.initial);\n  let past = [],\n    future = [];\n  const out = [];\n  for (const op of d.operations) {\n    if (op.op === \"undo\") {\n      if (past.length) {\n        future.push(clone(users));\n        users = past.pop();\n      }\n    } else if (op.op === \"redo\") {\n      if (future.length) {\n        past.push(clone(users));\n        users = future.pop();\n      }\n    } else {\n      past.push(clone(users));\n      future = [];\n      if (op.op === \"create\") users.push(clone(op.user));\n      else if (op.op === \"delete\") users = users.filter((u) => u.id !== op.id);\n      else {\n        const u = users.find((u) => u.id === op.id);\n        Object.assign(u, op.changes);\n      }\n    }\n    out.push(clone(users));\n  }\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const clone = (v: any): any => JSON.parse(JSON.stringify(v));\n  let users = clone(d.initial);\n  let past: any[] = [],\n    future: any[] = [];\n  const out: any[] = [];\n  for (const op of d.operations) {\n    if (op.op === \"undo\") {\n      if (past.length) {\n        future.push(clone(users));\n        users = past.pop();\n      }\n    } else if (op.op === \"redo\") {\n      if (future.length) {\n        past.push(clone(users));\n        users = future.pop();\n      }\n    } else {\n      past.push(clone(users));\n      future = [];\n      if (op.op === \"create\") users.push(clone(op.user));\n      else if (op.op === \"delete\") users = users.filter((u: any) => u.id !== op.id);\n      else {\n        const u = users.find((u: any) => u.id === op.id);\n        Object.assign(u, op.changes);\n      }\n    }\n    out.push(clone(users));\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Maintain snapshots around CRUD operations and transfer snapshots between undo/redo stacks. O(q times maximum user-state size) time and storage. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

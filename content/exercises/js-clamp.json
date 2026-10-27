@@ -1,0 +1,95 @@
+{
+  "public": {
+    "id": "js-clamp",
+    "slug": "js-clamp",
+    "version": "1.0.0",
+    "title": "Clamp",
+    "description": "Clamp value to the inclusive integer interval from lower through upper. Bounds are ordered, and all three numbers are from -1000 through 1000. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["numbers"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Apply the lower and upper bounds."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(value: number, lower: number, upper: number): JSON-compatible result",
+        "starter": "export function solve(value, lower, upper) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [5, 0, 3],
+            "expected": 3
+          },
+          {
+            "args": [-2, 0, 3],
+            "expected": 0
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(value: number, lower: number, upper: number): JSON-compatible result",
+        "starter": "export function solve(value: number, lower: number, upper: number): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [5, 0, 3],
+            "expected": 3
+          },
+          {
+            "args": [-2, 0, 3],
+            "expected": 0
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [2, 0, 3],
+      "expected": 2
+    },
+    {
+      "args": [0, 0, 3],
+      "expected": 0
+    },
+    {
+      "args": [3, 0, 3],
+      "expected": 3
+    },
+    {
+      "args": [-4, -5, -1],
+      "expected": -4
+    },
+    {
+      "args": [9, 2, 2],
+      "expected": 2
+    },
+    {
+      "args": [-5, 2, 4],
+      "expected": 2
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(value, lower, upper) {\n  return Math.max(lower, Math.min(upper, value));\n}\n",
+    "typescript": "export function solve(value: number, lower: number, upper: number): any {\n  return Math.max(lower, Math.min(upper, value));\n}\n"
+  },
+  "explanation": "Apply the lower and upper bounds. O(1) time and space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

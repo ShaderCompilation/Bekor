@@ -1,0 +1,145 @@
+{
+  "public": {
+    "id": "js-text-search-ii",
+    "slug": "js-text-search-ii",
+    "version": "1.0.0",
+    "title": "Text Search II",
+    "description": "input {text,terms}; text and terms are lowercase ASCII, every term is nonempty. Find all occurrences of every term, including overlapping matches. Return sorted maximal half-open [start,end] highlight ranges by merging overlapping or touching matches. Duplicate terms do not duplicate output. Empty terms array yields []. Text length at most 100, at most 8 terms of length at most 20. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["strings", "search"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "text": "ababa",
+                "terms": ["aba"]
+              }
+            ],
+            "expected": [[0, 5]]
+          },
+          {
+            "args": [
+              {
+                "text": "abc def",
+                "terms": ["abc", "def"]
+              }
+            ],
+            "expected": [[0, 3], [4, 7]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "text": "ababa",
+                "terms": ["aba"]
+              }
+            ],
+            "expected": [[0, 5]]
+          },
+          {
+            "args": [
+              {
+                "text": "abc def",
+                "terms": ["abc", "def"]
+              }
+            ],
+            "expected": [[0, 3], [4, 7]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "text": "",
+          "terms": ["a"]
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "text": "abc",
+          "terms": []
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "text": "abcd",
+          "terms": ["ab", "cd"]
+        }
+      ],
+      "expected": [[0, 4]]
+    },
+    {
+      "args": [
+        {
+          "text": "aaaa",
+          "terms": ["aa", "aaa"]
+        }
+      ],
+      "expected": [[0, 4]]
+    },
+    {
+      "args": [
+        {
+          "text": "abc",
+          "terms": ["z", "ab", "ab"]
+        }
+      ],
+      "expected": [[0, 2]]
+    },
+    {
+      "args": [
+        {
+          "text": "abcd",
+          "terms": ["abcd", "bc"]
+        }
+      ],
+      "expected": [[0, 4]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const matches = [];\n  for (const term of d.terms)\n    for (let i = 0; i + term.length <= d.text.length; i++)\n      if (d.text.slice(i, i + term.length) === term) matches.push([i, i + term.length]);\n  matches.sort((a, b) => a[0] - b[0] || a[1] - b[1]);\n  const out = [];\n  for (const r of matches) {\n    const last = out.at(-1);\n    if (last && r[0] <= last[1]) last[1] = Math.max(last[1], r[1]);\n    else out.push(r);\n  }\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const matches: number[][] = [];\n  for (const term of d.terms)\n    for (let i = 0; i + term.length <= d.text.length; i++)\n      if (d.text.slice(i, i + term.length) === term) matches.push([i, i + term.length]);\n  matches.sort((a: number[], b: number[]) => a[0] - b[0] || a[1] - b[1]);\n  const out: number[][] = [];\n  for (const r of matches) {\n    const last = out.at(-1);\n    if (last && r[0] <= last[1]) last[1] = Math.max(last[1], r[1]);\n    else out.push(r);\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Collect candidate matches, sort and merge their union. O(terms times text length times term length plus matches log matches) time and O(matches) space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

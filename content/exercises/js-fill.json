@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-fill",
+    "slug": "js-fill",
+    "version": "1.0.0",
+    "title": "Fill",
+    "description": "Return a copy of values with indices in the half-open interval from start inclusive to end exclusive filled with value. Bounds are integers from -100 through 100. Normalize a negative bound by adding length, then clamp both bounds independently to the interval from 0 through length. If normalized end is no greater than start, leave the array unchanged. values has at most 50 scalar elements; value is a scalar. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "indexing"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Normalize signed indices, then overwrite the half-open range in a shallow copy."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(values: any[], value: any, start: number, end: number): JSON-compatible result",
+        "starter": "export function solve(values, value, start, end) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, 4], 0, 1, 3],
+            "expected": [1, 0, 0, 4]
+          },
+          {
+            "args": [[1, 2, 3], 9, -2, -1],
+            "expected": [1, 9, 3]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(values: any[], value: any, start: number, end: number): JSON-compatible result",
+        "starter": "export function solve(values: any[], value: any, start: number, end: number): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, 4], 0, 1, 3],
+            "expected": [1, 0, 0, 4]
+          },
+          {
+            "args": [[1, 2, 3], 9, -2, -1],
+            "expected": [1, 9, 3]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 1, 0, 5],
+      "expected": []
+    },
+    {
+      "args": [[1, 2], 0, 2, 1],
+      "expected": [1, 2]
+    },
+    {
+      "args": [[1, 2], false, -10, 10],
+      "expected": [false, false]
+    },
+    {
+      "args": [[1, 2, 3], 7, 0, 0],
+      "expected": [1, 2, 3]
+    },
+    {
+      "args": [[1, 2, 3], null, -1, 3],
+      "expected": [1, 2, null]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(values, value, start, end) {\n  const result = values.slice();\n  const norm = (i) => Math.max(0, Math.min(values.length, i < 0 ? values.length + i : i));\n  for (let i = norm(start); i < norm(end); i++) result[i] = value;\n  return result;\n}\n",
+    "typescript": "export function solve(values: any[], value: any, start: number, end: number): any {\n  const result = values.slice();\n  const norm = (i: number): number =>\n    Math.max(0, Math.min(values.length, i < 0 ? values.length + i : i));\n  for (let i = norm(start); i < norm(end); i++) result[i] = value;\n  return result;\n}\n"
+  },
+  "explanation": "Normalize signed indices, then overwrite the half-open range in a shallow copy. O(n) time and space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

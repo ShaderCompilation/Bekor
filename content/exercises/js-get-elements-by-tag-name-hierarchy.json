@@ -1,0 +1,231 @@
+{
+  "public": {
+    "id": "js-get-elements-by-tag-name-hierarchy",
+    "slug": "js-get-elements-by-tag-name-hierarchy",
+    "version": "1.0.0",
+    "title": "getElementsByTagNameHierarchy",
+    "description": "input {tree,tags}; tree nodes are {id,tag,children}, tags is a nonempty lowercase tag array. Return IDs whose ancestry suffix matches tags exactly with direct parent-child links, in document preorder. The first tag can occur anywhere and matching paths may overlap. This is a supplied document-tree query, not browser DOM. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["trees", "search"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "tree": {
+                  "id": "a",
+                  "tag": "div",
+                  "children": [
+                    {
+                      "id": "b",
+                      "tag": "span",
+                      "children": []
+                    }
+                  ]
+                },
+                "tags": ["div", "span"]
+              }
+            ],
+            "expected": ["b"]
+          },
+          {
+            "args": [
+              {
+                "tree": {
+                  "id": "a",
+                  "tag": "p",
+                  "children": []
+                },
+                "tags": ["p"]
+              }
+            ],
+            "expected": ["a"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "tree": {
+                  "id": "a",
+                  "tag": "div",
+                  "children": [
+                    {
+                      "id": "b",
+                      "tag": "span",
+                      "children": []
+                    }
+                  ]
+                },
+                "tags": ["div", "span"]
+              }
+            ],
+            "expected": ["b"]
+          },
+          {
+            "args": [
+              {
+                "tree": {
+                  "id": "a",
+                  "tag": "p",
+                  "children": []
+                },
+                "tags": ["p"]
+              }
+            ],
+            "expected": ["a"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "tree": {
+            "id": "a",
+            "tag": "div",
+            "children": []
+          },
+          "tags": ["span"]
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "tree": {
+            "id": "a",
+            "tag": "div",
+            "children": [
+              {
+                "id": "b",
+                "tag": "p",
+                "children": [
+                  {
+                    "id": "c",
+                    "tag": "span",
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          "tags": ["div", "span"]
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "tree": {
+            "id": "a",
+            "tag": "x",
+            "children": [
+              {
+                "id": "b",
+                "tag": "div",
+                "children": [
+                  {
+                    "id": "c",
+                    "tag": "span",
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          "tags": ["div", "span"]
+        }
+      ],
+      "expected": ["c"]
+    },
+    {
+      "args": [
+        {
+          "tree": {
+            "id": "a",
+            "tag": "div",
+            "children": [
+              {
+                "id": "b",
+                "tag": "span",
+                "children": []
+              },
+              {
+                "id": "c",
+                "tag": "span",
+                "children": []
+              }
+            ]
+          },
+          "tags": ["div", "span"]
+        }
+      ],
+      "expected": ["b", "c"]
+    },
+    {
+      "args": [
+        {
+          "tree": {
+            "id": "a",
+            "tag": "a",
+            "children": [
+              {
+                "id": "b",
+                "tag": "a",
+                "children": [
+                  {
+                    "id": "c",
+                    "tag": "a",
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          "tags": ["a", "a"]
+        }
+      ],
+      "expected": ["b", "c"]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const out = [];\n  const walk = (n, anc) => {\n    const chain = anc.concat(n.tag);\n    if (\n      chain.length >= d.tags.length &&\n      d.tags.every((tag, i) => chain[chain.length - d.tags.length + i] === tag)\n    )\n      out.push(n.id);\n    for (const c of n.children) walk(c, chain);\n  };\n  walk(d.tree, []);\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const out: string[] = [];\n  const walk = (n: any, anc: string[]): void => {\n    const chain = anc.concat(n.tag);\n    if (\n      chain.length >= d.tags.length &&\n      d.tags.every((tag: string, i: number) => chain[chain.length - d.tags.length + i] === tag)\n    )\n      out.push(n.id);\n    for (const c of n.children) walk(c, chain);\n  };\n  walk(d.tree, []);\n  return out;\n}\n"
+  },
+  "explanation": "DFS carries the ancestry and compares the final tag sequence at every node. O(n times height) time and O(height squared plus output) copied-path space in this bounded implementation. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

@@ -1,0 +1,221 @@
+{
+  "public": {
+    "id": "js-event-delegation",
+    "slug": "js-event-delegation",
+    "version": "1.0.0",
+    "title": "Event Delegation",
+    "description": "nodes form a rooted tree in parent-index order. Each is {id,parent,classes}; root parent is -1. For a bubbling event from target index, return IDs on its target-to-root path whose classes contain className. Include target. This adapter omits browser event objects and capture. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["trees", "events"],
+    "hints": [
+      "Bubbling walks target first, then each parent.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(nodes, target, className): JSON value",
+        "starter": "export function solve(nodes, target, className) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "id": "r",
+                  "parent": -1,
+                  "classes": ["x"]
+                },
+                {
+                  "id": "c",
+                  "parent": 0,
+                  "classes": ["x"]
+                }
+              ],
+              1,
+              "x"
+            ],
+            "expected": ["c", "r"]
+          },
+          {
+            "args": [
+              [
+                {
+                  "id": "r",
+                  "parent": -1,
+                  "classes": []
+                }
+              ],
+              0,
+              "x"
+            ],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(nodes, target, className): JSON value",
+        "starter": "type Value = any;\nexport function solve(nodes: Value, target: Value, className: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "id": "r",
+                  "parent": -1,
+                  "classes": ["x"]
+                },
+                {
+                  "id": "c",
+                  "parent": 0,
+                  "classes": ["x"]
+                }
+              ],
+              1,
+              "x"
+            ],
+            "expected": ["c", "r"]
+          },
+          {
+            "args": [
+              [
+                {
+                  "id": "r",
+                  "parent": -1,
+                  "classes": []
+                }
+              ],
+              0,
+              "x"
+            ],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        [
+          {
+            "id": "r",
+            "parent": -1,
+            "classes": ["x"]
+          }
+        ],
+        0,
+        "x"
+      ],
+      "expected": ["r"]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": "r",
+            "parent": -1,
+            "classes": ["a"]
+          },
+          {
+            "id": "c",
+            "parent": 0,
+            "classes": ["b"]
+          }
+        ],
+        1,
+        "a"
+      ],
+      "expected": ["r"]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": "r",
+            "parent": -1,
+            "classes": ["a"]
+          },
+          {
+            "id": "c",
+            "parent": 0,
+            "classes": ["b"]
+          }
+        ],
+        1,
+        "b"
+      ],
+      "expected": ["c"]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": "r",
+            "parent": -1,
+            "classes": []
+          },
+          {
+            "id": "s",
+            "parent": 0,
+            "classes": ["x"]
+          },
+          {
+            "id": "t",
+            "parent": 0,
+            "classes": []
+          }
+        ],
+        2,
+        "x"
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "id": "r",
+            "parent": -1,
+            "classes": ["x"]
+          },
+          {
+            "id": "c",
+            "parent": 0,
+            "classes": []
+          },
+          {
+            "id": "g",
+            "parent": 1,
+            "classes": ["x"]
+          }
+        ],
+        2,
+        "x"
+      ],
+      "expected": ["g", "r"]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(nodes, target, className) {\n  const out = [];\n  for (let i = target; i !== -1; i = nodes[i].parent)\n    if (nodes[i].classes.includes(className)) out.push(nodes[i].id);\n  return out;\n}\n",
+    "typescript": "type Value = any;\nexport function solve(nodes: Value, target: Value, className: Value): Value {\n  const out: Value[] = [];\n  for (let i = target; i !== -1; i = nodes[i].parent)\n    if (nodes[i].classes.includes(className)) out.push(nodes[i].id);\n  return out;\n}\n"
+  },
+  "explanation": "Follow parent indices and collect only nodes whose classes contain the requested name. O(total class entries on the ancestor path) time and O(height) output space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

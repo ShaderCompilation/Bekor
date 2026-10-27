@@ -1,0 +1,141 @@
+{
+  "public": {
+    "id": "js-html-serializer",
+    "slug": "js-html-serializer",
+    "version": "1.0.0",
+    "title": "HTML Serializer",
+    "description": "Serialize an element tree with two-space indentation. Nodes are either strings or {tag,children}; tag is a lowercase ASCII word, there are at most 20 nodes and depth at most 5. Text strings contain only letters and spaces, at most 20 code units. Emit a leaf string on its own indented line. Emit an element as an opening tag line, its child lines, and a closing tag line, including empty elements on two lines. Join lines with newline and no trailing newline. This adapter has no attributes, void elements or escaping requirements. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["serialization", "trees"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Emit opening, child and closing lines recursively."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(root: any): JSON-compatible result",
+        "starter": "export function solve(root) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "tag": "p",
+                "children": ["hello"]
+              }
+            ],
+            "expected": "<p>\n  hello\n</p>"
+          },
+          {
+            "args": [
+              {
+                "tag": "div",
+                "children": [
+                  {
+                    "tag": "b",
+                    "children": ["x"]
+                  }
+                ]
+              }
+            ],
+            "expected": "<div>\n  <b>\n    x\n  </b>\n</div>"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(root: any): JSON-compatible result",
+        "starter": "export function solve(root: any): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "tag": "p",
+                "children": ["hello"]
+              }
+            ],
+            "expected": "<p>\n  hello\n</p>"
+          },
+          {
+            "args": [
+              {
+                "tag": "div",
+                "children": [
+                  {
+                    "tag": "b",
+                    "children": ["x"]
+                  }
+                ]
+              }
+            ],
+            "expected": "<div>\n  <b>\n    x\n  </b>\n</div>"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["a"],
+      "expected": "a"
+    },
+    {
+      "args": [
+        {
+          "tag": "i",
+          "children": []
+        }
+      ],
+      "expected": "<i>\n</i>"
+    },
+    {
+      "args": [
+        {
+          "tag": "p",
+          "children": ["a", "b"]
+        }
+      ],
+      "expected": "<p>\n  a\n  b\n</p>"
+    },
+    {
+      "args": [""],
+      "expected": ""
+    },
+    {
+      "args": [
+        {
+          "tag": "a",
+          "children": [
+            {
+              "tag": "b",
+              "children": []
+            }
+          ]
+        }
+      ],
+      "expected": "<a>\n  <b>\n  </b>\n</a>"
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(root) {\n  const lines = [];\n  const walk = (n, d) => {\n    const indent = \"  \".repeat(d);\n    if (typeof n === \"string\") lines.push(indent + n);\n    else {\n      lines.push(indent + \"<\" + n.tag + \">\");\n      for (const c of n.children) walk(c, d + 1);\n      lines.push(indent + \"</\" + n.tag + \">\");\n    }\n  };\n  walk(root, 0);\n  return lines.join(\"\\n\");\n}\n",
+    "typescript": "export function solve(root: any): any {\n  const lines: string[] = [];\n  const walk = (n: any, d: number): void => {\n    const indent = \"  \".repeat(d);\n    if (typeof n === \"string\") lines.push(indent + n);\n    else {\n      lines.push(indent + \"<\" + n.tag + \">\");\n      for (const c of n.children) walk(c, d + 1);\n      lines.push(indent + \"</\" + n.tag + \">\");\n    }\n  };\n  walk(root, 0);\n  return lines.join(\"\\n\");\n}\n"
+  },
+  "explanation": "Emit opening, child and closing lines recursively. O(output bytes) time and space, O(depth) recursion. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

@@ -1,0 +1,297 @@
+{
+  "public": {
+    "id": "js-table-of-contents",
+    "slug": "js-table-of-contents",
+    "version": "1.0.0",
+    "title": "Table of Contents",
+    "description": "Construct a nested table of contents from a flat heading sequence. A heading is {id,level,text}; level is an integer from 1 through 6, IDs are unique ASCII strings, and text has at most 40 code units. At most 30 headings. Each heading becomes {id,text,children}; attach it to the nearest preceding heading of strictly smaller level, or the root list if none. Skipped levels create no placeholder headings. Preserve sibling order. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "medium",
+    "concepts": ["trees", "stacks"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Maintain a stack of heading ancestors and pop peers/deeper headings."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(headings: {id:string,level:number,text:string}[]): JSON-compatible result",
+        "starter": "export function solve(headings) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "id": "a",
+                  "level": 1,
+                  "text": "A"
+                },
+                {
+                  "id": "b",
+                  "level": 3,
+                  "text": "B"
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "id": "a",
+                "text": "A",
+                "children": [
+                  {
+                    "id": "b",
+                    "text": "B",
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "args": [
+              [
+                {
+                  "id": "a",
+                  "level": 2,
+                  "text": "A"
+                },
+                {
+                  "id": "b",
+                  "level": 2,
+                  "text": "B"
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "id": "a",
+                "text": "A",
+                "children": []
+              },
+              {
+                "id": "b",
+                "text": "B",
+                "children": []
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(headings: {id:string,level:number,text:string}[]): JSON-compatible result",
+        "starter": "export function solve(headings: { id: string; level: number; text: string }[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "id": "a",
+                  "level": 1,
+                  "text": "A"
+                },
+                {
+                  "id": "b",
+                  "level": 3,
+                  "text": "B"
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "id": "a",
+                "text": "A",
+                "children": [
+                  {
+                    "id": "b",
+                    "text": "B",
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "args": [
+              [
+                {
+                  "id": "a",
+                  "level": 2,
+                  "text": "A"
+                },
+                {
+                  "id": "b",
+                  "level": 2,
+                  "text": "B"
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "id": "a",
+                "text": "A",
+                "children": []
+              },
+              {
+                "id": "b",
+                "text": "B",
+                "children": []
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "id": "a",
+            "level": 6,
+            "text": ""
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "id": "a",
+          "text": "",
+          "children": []
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": "a",
+            "level": 3,
+            "text": "A"
+          },
+          {
+            "id": "b",
+            "level": 1,
+            "text": "B"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "id": "a",
+          "text": "A",
+          "children": []
+        },
+        {
+          "id": "b",
+          "text": "B",
+          "children": []
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": "a",
+            "level": 1,
+            "text": "A"
+          },
+          {
+            "id": "b",
+            "level": 2,
+            "text": "B"
+          },
+          {
+            "id": "c",
+            "level": 2,
+            "text": "C"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "id": "a",
+          "text": "A",
+          "children": [
+            {
+              "id": "b",
+              "text": "B",
+              "children": []
+            },
+            {
+              "id": "c",
+              "text": "C",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": "a",
+            "level": 1,
+            "text": "A"
+          },
+          {
+            "id": "b",
+            "level": 2,
+            "text": "B"
+          },
+          {
+            "id": "c",
+            "level": 1,
+            "text": "C"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "id": "a",
+          "text": "A",
+          "children": [
+            {
+              "id": "b",
+              "text": "B",
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "c",
+          "text": "C",
+          "children": []
+        }
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(headings) {\n  const roots = [],\n    stack = [];\n  for (const h of headings) {\n    const n = { id: h.id, text: h.text, children: [] };\n    while (stack.length && stack[stack.length - 1].level >= h.level) stack.pop();\n    if (stack.length) stack[stack.length - 1].node.children.push(n);\n    else roots.push(n);\n    stack.push({ level: h.level, node: n });\n  }\n  return roots;\n}\n",
+    "typescript": "export function solve(headings: { id: string; level: number; text: string }[]): any {\n  const roots: any[] = [],\n    stack: { level: number; node: any }[] = [];\n  for (const h of headings) {\n    const n = { id: h.id, text: h.text, children: [] as any[] };\n    while (stack.length && stack[stack.length - 1].level >= h.level) stack.pop();\n    if (stack.length) stack[stack.length - 1].node.children.push(n);\n    else roots.push(n);\n    stack.push({ level: h.level, node: n });\n  }\n  return roots;\n}\n"
+  },
+  "explanation": "Maintain a stack of heading ancestors and pop peers/deeper headings. Each heading is pushed and popped once. O(n) time and output, O(depth) stack. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

@@ -1,0 +1,213 @@
+{
+  "public": {
+    "id": "js-immutable-array",
+    "slug": "js-immutable-array",
+    "version": "1.0.0",
+    "title": "Immutable Array",
+    "description": "input {value,operations}; value is an array. Operations are {op:\"push\",value}, {op:\"set\",index,value} with valid existing index, or {op:\"remove\",index} with valid existing index. Return {original,updated}; preserve original and apply edits in sequence, with remove shifting later elements. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["immutability", "arrays"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "value": [1],
+                "operations": [
+                  {
+                    "op": "push",
+                    "value": 2
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "original": [1],
+              "updated": [1, 2]
+            }
+          },
+          {
+            "args": [
+              {
+                "value": [1, 2],
+                "operations": [
+                  {
+                    "op": "remove",
+                    "index": 0
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "original": [1, 2],
+              "updated": [2]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "value": [1],
+                "operations": [
+                  {
+                    "op": "push",
+                    "value": 2
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "original": [1],
+              "updated": [1, 2]
+            }
+          },
+          {
+            "args": [
+              {
+                "value": [1, 2],
+                "operations": [
+                  {
+                    "op": "remove",
+                    "index": 0
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "original": [1, 2],
+              "updated": [2]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "value": [],
+          "operations": []
+        }
+      ],
+      "expected": {
+        "original": [],
+        "updated": []
+      }
+    },
+    {
+      "args": [
+        {
+          "value": [1],
+          "operations": [
+            {
+              "op": "set",
+              "index": 0,
+              "value": null
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "original": [1],
+        "updated": [null]
+      }
+    },
+    {
+      "args": [
+        {
+          "value": [1, 2, 3],
+          "operations": [
+            {
+              "op": "remove",
+              "index": 1
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "original": [1, 2, 3],
+        "updated": [1, 3]
+      }
+    },
+    {
+      "args": [
+        {
+          "value": [],
+          "operations": [
+            {
+              "op": "push",
+              "value": false
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "original": [],
+        "updated": [false]
+      }
+    },
+    {
+      "args": [
+        {
+          "value": [0],
+          "operations": [
+            {
+              "op": "push",
+              "value": 1
+            },
+            {
+              "op": "set",
+              "index": 0,
+              "value": 2
+            },
+            {
+              "op": "remove",
+              "index": 1
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "original": [0],
+        "updated": [2]
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const clone = (v) => JSON.parse(JSON.stringify(v));\n  const original = clone(d.value),\n    updated = clone(d.value);\n  for (const op of d.operations) {\n    if (op.op === \"push\") updated.push(clone(op.value));\n    else if (op.op === \"set\") updated[op.index] = clone(op.value);\n    else updated.splice(op.index, 1);\n  }\n  return { original, updated };\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const clone = (v: any): any => JSON.parse(JSON.stringify(v));\n  const original = clone(d.value),\n    updated = clone(d.value);\n  for (const op of d.operations) {\n    if (op.op === \"push\") updated.push(clone(op.value));\n    else if (op.op === \"set\") updated[op.index] = clone(op.value);\n    else updated.splice(op.index, 1);\n  }\n  return { original, updated };\n}\n"
+  },
+  "explanation": "Copy then process array edits. With n initial elements and q edits, worst-case O(n plus q times (n plus q)) time due to shifts; space O(input plus added values). Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

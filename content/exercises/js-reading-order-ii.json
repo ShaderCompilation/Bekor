@@ -1,0 +1,229 @@
+{
+  "public": {
+    "id": "js-reading-order-ii",
+    "slug": "js-reading-order-ii",
+    "version": "1.0.0",
+    "title": "Reading Order II",
+    "description": "input {elements,tolerance}; each element {id,top,left} has distinct id. Sort elements by top, then left, then original index. Build rows greedily: the first remaining element anchors a row, and subsequent sorted elements join while their top minus that anchor top is at most tolerance. Sort each row by left, then top, then original index; return flattened IDs. Tolerance is nonnegative. This fixed top-anchor rule prevents transitive row drift for misaligned canvas boxes. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["sorting", "geometry"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "elements": [
+                  {
+                    "id": "a",
+                    "top": 0,
+                    "left": 10
+                  },
+                  {
+                    "id": "b",
+                    "top": 2,
+                    "left": 0
+                  }
+                ],
+                "tolerance": 3
+              }
+            ],
+            "expected": ["b", "a"]
+          },
+          {
+            "args": [
+              {
+                "elements": [
+                  {
+                    "id": "a",
+                    "top": 0,
+                    "left": 10
+                  },
+                  {
+                    "id": "b",
+                    "top": 4,
+                    "left": 0
+                  }
+                ],
+                "tolerance": 3
+              }
+            ],
+            "expected": ["a", "b"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "elements": [
+                  {
+                    "id": "a",
+                    "top": 0,
+                    "left": 10
+                  },
+                  {
+                    "id": "b",
+                    "top": 2,
+                    "left": 0
+                  }
+                ],
+                "tolerance": 3
+              }
+            ],
+            "expected": ["b", "a"]
+          },
+          {
+            "args": [
+              {
+                "elements": [
+                  {
+                    "id": "a",
+                    "top": 0,
+                    "left": 10
+                  },
+                  {
+                    "id": "b",
+                    "top": 4,
+                    "left": 0
+                  }
+                ],
+                "tolerance": 3
+              }
+            ],
+            "expected": ["a", "b"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "elements": [],
+          "tolerance": 0
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "elements": [
+            {
+              "id": "a",
+              "top": 0,
+              "left": 10
+            },
+            {
+              "id": "b",
+              "top": 2,
+              "left": 0
+            },
+            {
+              "id": "c",
+              "top": 4,
+              "left": -1
+            }
+          ],
+          "tolerance": 2
+        }
+      ],
+      "expected": ["b", "a", "c"]
+    },
+    {
+      "args": [
+        {
+          "elements": [
+            {
+              "id": "a",
+              "top": 0,
+              "left": 0
+            },
+            {
+              "id": "b",
+              "top": 0,
+              "left": 0
+            }
+          ],
+          "tolerance": 0
+        }
+      ],
+      "expected": ["a", "b"]
+    },
+    {
+      "args": [
+        {
+          "elements": [
+            {
+              "id": "a",
+              "top": 0,
+              "left": 10
+            },
+            {
+              "id": "b",
+              "top": 1,
+              "left": 0
+            }
+          ],
+          "tolerance": 1
+        }
+      ],
+      "expected": ["b", "a"]
+    },
+    {
+      "args": [
+        {
+          "elements": [
+            {
+              "id": "a",
+              "top": 2,
+              "left": 0
+            },
+            {
+              "id": "b",
+              "top": 0,
+              "left": 0
+            }
+          ],
+          "tolerance": 3
+        }
+      ],
+      "expected": ["b", "a"]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const sorted = d.elements\n    .map((x, i) => ({ ...x, i }))\n    .sort((a, b) => a.top - b.top || a.left - b.left || a.i - b.i);\n  const out = [];\n  for (let i = 0; i < sorted.length; ) {\n    let j = i + 1;\n    while (j < sorted.length && sorted[j].top - sorted[i].top <= d.tolerance) j++;\n    const row = sorted.slice(i, j).sort((a, b) => a.left - b.left || a.top - b.top || a.i - b.i);\n    out.push(...row.map((x) => x.id));\n    i = j;\n  }\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const sorted = d.elements\n    .map((x: any, i: number) => ({ ...x, i }))\n    .sort((a: any, b: any) => a.top - b.top || a.left - b.left || a.i - b.i);\n  const out: string[] = [];\n  for (let i = 0; i < sorted.length; ) {\n    let j = i + 1;\n    while (j < sorted.length && sorted[j].top - sorted[i].top <= d.tolerance) j++;\n    const row = sorted\n      .slice(i, j)\n      .sort((a: any, b: any) => a.left - b.left || a.top - b.top || a.i - b.i);\n    out.push(...row.map((x: any) => x.id));\n    i = j;\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Sort by top to anchor rows without drift, then sort within each row by horizontal position. O(n log n) time and O(n) space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

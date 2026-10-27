@@ -1,0 +1,118 @@
+{
+  "public": {
+    "id": "js-mean",
+    "slug": "js-mean",
+    "version": "1.0.0",
+    "title": "Mean",
+    "description": "Return the exact arithmetic mean of a nonempty array of at most 50 integers from -1000 through 1000 as {numerator,denominator}, reduced to lowest terms with a positive denominator. A zero mean is {numerator:0,denominator:1}. Integer-only JSON does not support fractional number outputs. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["numbers", "fractions"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Sum values, then divide numerator and count by their greatest common divisor."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(values: number[]): JSON-compatible result",
+        "starter": "export function solve(values) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2]],
+            "expected": {
+              "numerator": 3,
+              "denominator": 2
+            }
+          },
+          {
+            "args": [[-2, 2]],
+            "expected": {
+              "numerator": 0,
+              "denominator": 1
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(values: number[]): JSON-compatible result",
+        "starter": "export function solve(values: number[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2]],
+            "expected": {
+              "numerator": 3,
+              "denominator": 2
+            }
+          },
+          {
+            "args": [[-2, 2]],
+            "expected": {
+              "numerator": 0,
+              "denominator": 1
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[5]],
+      "expected": {
+        "numerator": 5,
+        "denominator": 1
+      }
+    },
+    {
+      "args": [[2, 4]],
+      "expected": {
+        "numerator": 3,
+        "denominator": 1
+      }
+    },
+    {
+      "args": [[-1, -2]],
+      "expected": {
+        "numerator": -3,
+        "denominator": 2
+      }
+    },
+    {
+      "args": [[0, 0, 1]],
+      "expected": {
+        "numerator": 1,
+        "denominator": 3
+      }
+    },
+    {
+      "args": [[1, 1, 0, 0]],
+      "expected": {
+        "numerator": 1,
+        "denominator": 2
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(values) {\n  const sum = values.reduce((a, b) => a + b, 0);\n  let a = Math.abs(sum),\n    b = values.length;\n  while (b) {\n    const r = a % b;\n    a = b;\n    b = r;\n  }\n  return { numerator: sum / a, denominator: values.length / a };\n}\n",
+    "typescript": "export function solve(values: number[]): any {\n  const sum = values.reduce((a, b) => a + b, 0);\n  let a = Math.abs(sum),\n    b = values.length;\n  while (b) {\n    const r = a % b;\n    a = b;\n    b = r;\n  }\n  return { numerator: sum / a, denominator: values.length / a };\n}\n"
+  },
+  "explanation": "Sum values, then divide numerator and count by their greatest common divisor. O(n + log(sum + n)) time and O(1) auxiliary space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

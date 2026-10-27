@@ -1,0 +1,151 @@
+{
+  "public": {
+    "id": "js-api-client",
+    "slug": "js-api-client",
+    "version": "1.0.0",
+    "title": "API Client Requests",
+    "description": "base is an ASCII origin without trailing slash. Each request is {path,query}, path begins with slash; query is an array of [key,value] string pairs. Return URLs base+path with an optional question mark and encodeURIComponent-encoded pairs joined by ampersands, preserving pair order. This adapter constructs requests without networking. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["urls", "serialization"],
+    "hints": [
+      "Encode keys and values separately before joining pairs.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(base, requests): JSON value",
+        "starter": "export function solve(base, requests) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              "https://a.test",
+              [
+                {
+                  "path": "/x",
+                  "query": [["q", "a b"]]
+                }
+              ]
+            ],
+            "expected": ["https://a.test/x?q=a%20b"]
+          },
+          {
+            "args": ["https://b.test", []],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(base, requests): JSON value",
+        "starter": "type Value = any;\nexport function solve(base: Value, requests: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              "https://a.test",
+              [
+                {
+                  "path": "/x",
+                  "query": [["q", "a b"]]
+                }
+              ]
+            ],
+            "expected": ["https://a.test/x?q=a%20b"]
+          },
+          {
+            "args": ["https://b.test", []],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        "https://a.test",
+        [
+          {
+            "path": "/",
+            "query": []
+          }
+        ]
+      ],
+      "expected": ["https://a.test/"]
+    },
+    {
+      "args": [
+        "https://a.test",
+        [
+          {
+            "path": "/x",
+            "query": [["x", "1"], ["x", "2"]]
+          }
+        ]
+      ],
+      "expected": ["https://a.test/x?x=1&x=2"]
+    },
+    {
+      "args": [
+        "https://a.test",
+        [
+          {
+            "path": "/x",
+            "query": [["&", "="]]
+          }
+        ]
+      ],
+      "expected": ["https://a.test/x?%26=%3D"]
+    },
+    {
+      "args": [
+        "https://a.test",
+        [
+          {
+            "path": "/x",
+            "query": [["a", ""]]
+          }
+        ]
+      ],
+      "expected": ["https://a.test/x?a="]
+    },
+    {
+      "args": [
+        "https://a.test",
+        [
+          {
+            "path": "/a",
+            "query": []
+          },
+          {
+            "path": "/b",
+            "query": []
+          }
+        ]
+      ],
+      "expected": ["https://a.test/a", "https://a.test/b"]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(base, requests) {\n  return requests.map(\n    (r) =>\n      base +\n      r.path +\n      (r.query.length\n        ? \"?\" +\n          r.query.map(([k, v]) => encodeURIComponent(k) + \"=\" + encodeURIComponent(v)).join(\"&\")\n        : \"\"),\n  );\n}\n",
+    "typescript": "type Value = any;\nexport function solve(base: Value, requests: Value): Value {\n  return requests.map(\n    (r: Value) =>\n      base +\n      r.path +\n      (r.query.length\n        ? \"?\" +\n          r.query\n            .map(([k, v]: Value) => encodeURIComponent(k) + \"=\" + encodeURIComponent(v))\n            .join(\"&\")\n        : \"\"),\n  );\n}\n"
+  },
+  "explanation": "Construct each path and preserve repeated query keys through an ordered pair list. Percent encoding protects separators and spaces. O(serialized input plus output length) time and output space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

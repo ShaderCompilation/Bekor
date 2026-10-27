@@ -1,0 +1,154 @@
+{
+  "public": {
+    "id": "js-memoize-ii",
+    "slug": "js-memoize-ii",
+    "version": "1.0.0",
+    "title": "Memoize II",
+    "description": "input {calls}; each call has args (integer array). A memoized function returns the sum of its arguments; cache by the entire argument tuple, preserving order and length. Return {values,executions}, where executions counts actual cache misses. This adapter tests multi-argument caching observably rather than exposing callbacks. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["memoization", "maps"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "calls": [[1, 2], [1, 2]]
+              }
+            ],
+            "expected": {
+              "values": [3, 3],
+              "executions": 1
+            }
+          },
+          {
+            "args": [
+              {
+                "calls": [[1], [1, 0]]
+              }
+            ],
+            "expected": {
+              "values": [1, 1],
+              "executions": 2
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "calls": [[1, 2], [1, 2]]
+              }
+            ],
+            "expected": {
+              "values": [3, 3],
+              "executions": 1
+            }
+          },
+          {
+            "args": [
+              {
+                "calls": [[1], [1, 0]]
+              }
+            ],
+            "expected": {
+              "values": [1, 1],
+              "executions": 2
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "calls": []
+        }
+      ],
+      "expected": {
+        "values": [],
+        "executions": 0
+      }
+    },
+    {
+      "args": [
+        {
+          "calls": [[], []]
+        }
+      ],
+      "expected": {
+        "values": [0, 0],
+        "executions": 1
+      }
+    },
+    {
+      "args": [
+        {
+          "calls": [[0], [0]]
+        }
+      ],
+      "expected": {
+        "values": [0, 0],
+        "executions": 1
+      }
+    },
+    {
+      "args": [
+        {
+          "calls": [[1, 2], [2, 1]]
+        }
+      ],
+      "expected": {
+        "values": [3, 3],
+        "executions": 2
+      }
+    },
+    {
+      "args": [
+        {
+          "calls": [[-1, 1], [-1, 1], [2]]
+        }
+      ],
+      "expected": {
+        "values": [0, 0, 2],
+        "executions": 2
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const cache = new Map();\n  const values = [];\n  let executions = 0;\n  for (const args of d.calls) {\n    const key = JSON.stringify(args);\n    if (!cache.has(key)) {\n      executions++;\n      cache.set(\n        key,\n        args.reduce((a, b) => a + b, 0),\n      );\n    }\n    values.push(cache.get(key));\n  }\n  return { values, executions };\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const cache = new Map<string, number>();\n  const values: number[] = [];\n  let executions = 0;\n  for (const args of d.calls) {\n    const key = JSON.stringify(args);\n    if (!cache.has(key)) {\n      executions++;\n      cache.set(\n        key,\n        args.reduce((a: number, b: number) => a + b, 0),\n      );\n    }\n    values.push(cache.get(key)!);\n  }\n  return { values, executions };\n}\n"
+  },
+  "explanation": "Serialize the full tuple into a cache key and use presence rather than result truthiness. O(total argument count) time and space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

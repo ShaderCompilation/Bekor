@@ -1,0 +1,244 @@
+{
+  "public": {
+    "id": "js-mobx",
+    "slug": "js-mobx",
+    "version": "1.0.0",
+    "title": "MobX",
+    "description": "input {initial,operations}; initial maps safe string keys to integers. Operations: autorun {id,keys} subscribes a new ID to a nonempty distinct key list and immediately emits [id,sumOfKeys]; set {key,value} updates an existing key and reruns, in registration order, only active subscriptions reading that key when its value actually changes; dispose {id} removes it. Return all emissions. Each sum is recomputed from current state. This explicit dependency-list model omits dynamic dependency discovery and real proxies. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["reactivity", "events"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "initial": {
+                  "a": 1,
+                  "b": 2
+                },
+                "operations": [
+                  {
+                    "op": "autorun",
+                    "id": "s",
+                    "keys": ["a", "b"]
+                  },
+                  {
+                    "op": "set",
+                    "key": "a",
+                    "value": 3
+                  }
+                ]
+              }
+            ],
+            "expected": [["s", 3], ["s", 5]]
+          },
+          {
+            "args": [
+              {
+                "initial": {
+                  "a": 1
+                },
+                "operations": [
+                  {
+                    "op": "set",
+                    "key": "a",
+                    "value": 2
+                  }
+                ]
+              }
+            ],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "initial": {
+                  "a": 1,
+                  "b": 2
+                },
+                "operations": [
+                  {
+                    "op": "autorun",
+                    "id": "s",
+                    "keys": ["a", "b"]
+                  },
+                  {
+                    "op": "set",
+                    "key": "a",
+                    "value": 3
+                  }
+                ]
+              }
+            ],
+            "expected": [["s", 3], ["s", 5]]
+          },
+          {
+            "args": [
+              {
+                "initial": {
+                  "a": 1
+                },
+                "operations": [
+                  {
+                    "op": "set",
+                    "key": "a",
+                    "value": 2
+                  }
+                ]
+              }
+            ],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "initial": {
+            "a": 1
+          },
+          "operations": []
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "initial": {
+            "a": 1
+          },
+          "operations": [
+            {
+              "op": "autorun",
+              "id": "s",
+              "keys": ["a"]
+            },
+            {
+              "op": "set",
+              "key": "a",
+              "value": 1
+            }
+          ]
+        }
+      ],
+      "expected": [["s", 1]]
+    },
+    {
+      "args": [
+        {
+          "initial": {
+            "a": 1,
+            "b": 2
+          },
+          "operations": [
+            {
+              "op": "autorun",
+              "id": "s",
+              "keys": ["a"]
+            },
+            {
+              "op": "set",
+              "key": "b",
+              "value": 3
+            }
+          ]
+        }
+      ],
+      "expected": [["s", 1]]
+    },
+    {
+      "args": [
+        {
+          "initial": {
+            "a": 1
+          },
+          "operations": [
+            {
+              "op": "autorun",
+              "id": "s",
+              "keys": ["a"]
+            },
+            {
+              "op": "dispose",
+              "id": "s"
+            },
+            {
+              "op": "set",
+              "key": "a",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "expected": [["s", 1]]
+    },
+    {
+      "args": [
+        {
+          "initial": {
+            "a": 1
+          },
+          "operations": [
+            {
+              "op": "autorun",
+              "id": "x",
+              "keys": ["a"]
+            },
+            {
+              "op": "autorun",
+              "id": "y",
+              "keys": ["a"]
+            },
+            {
+              "op": "set",
+              "key": "a",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "expected": [["x", 1], ["y", 1], ["x", 0], ["y", 0]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const state = { ...d.initial },\n    subs = new Map(),\n    out = [];\n  const emit = (id, keys) => {\n    out.push([id, keys.reduce((a, k) => a + state[k], 0)]);\n  };\n  for (const op of d.operations) {\n    if (op.op === \"autorun\") {\n      subs.set(op.id, op.keys);\n      emit(op.id, op.keys);\n    } else if (op.op === \"dispose\") subs.delete(op.id);\n    else {\n      const changed = state[op.key] !== op.value;\n      state[op.key] = op.value;\n      if (changed) for (const [id, keys] of subs) if (keys.includes(op.key)) emit(id, keys);\n    }\n  }\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const state = { ...d.initial },\n    subs = new Map<string, string[]>(),\n    out: any[] = [];\n  const emit = (id: string, keys: string[]): void => {\n    out.push([id, keys.reduce((a: number, k: string) => a + state[k], 0)]);\n  };\n  for (const op of d.operations) {\n    if (op.op === \"autorun\") {\n      subs.set(op.id, op.keys);\n      emit(op.id, op.keys);\n    } else if (op.op === \"dispose\") subs.delete(op.id);\n    else {\n      const changed = state[op.key] !== op.value;\n      state[op.key] = op.value;\n      if (changed) for (const [id, keys] of subs) if (keys.includes(op.key)) emit(id, keys);\n    }\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Store subscriptions with explicit dependency sets and notify changed-key dependents in insertion order. O(operations times subscriptions times keys) time and O(state plus subscriptions plus log) space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

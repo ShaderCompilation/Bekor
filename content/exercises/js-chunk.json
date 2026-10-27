@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-chunk",
+    "slug": "js-chunk",
+    "version": "1.0.0",
+    "title": "Chunk",
+    "description": "Split an array into consecutive chunks of size. The final chunk may be smaller. Empty input returns []; size is an integer from 1 through 20, and the array has at most 50 scalar elements. Preserve element order. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["arrays"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Advance the chunk start by size, taking a bounded slice each time."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(values: any[], size: number): JSON-compatible result",
+        "starter": "export function solve(values, size) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, 4, 5], 2],
+            "expected": [[1, 2], [3, 4], [5]]
+          },
+          {
+            "args": [[1, 2], 4],
+            "expected": [[1, 2]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(values: any[], size: number): JSON-compatible result",
+        "starter": "export function solve(values: any[], size: number): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, 4, 5], 2],
+            "expected": [[1, 2], [3, 4], [5]]
+          },
+          {
+            "args": [[1, 2], 4],
+            "expected": [[1, 2]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 2],
+      "expected": []
+    },
+    {
+      "args": [[1], 1],
+      "expected": [[1]]
+    },
+    {
+      "args": [[1, 2, 3], 3],
+      "expected": [[1, 2, 3]]
+    },
+    {
+      "args": [[0, false, ""], 2],
+      "expected": [[0, false], [""]]
+    },
+    {
+      "args": [[1, 2, 3], 1],
+      "expected": [[1], [2], [3]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(values, size) {\n  const out = [];\n  for (let i = 0; i < values.length; i += size) out.push(values.slice(i, i + size));\n  return out;\n}\n",
+    "typescript": "export function solve(values: any[], size: number): any {\n  const out: any[][] = [];\n  for (let i = 0; i < values.length; i += size) out.push(values.slice(i, i + size));\n  return out;\n}\n"
+  },
+  "explanation": "Advance the chunk start by size, taking a bounded slice each time. O(n) time and output. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

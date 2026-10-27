@@ -1,0 +1,300 @@
+{
+  "public": {
+    "id": "js-mini-orm",
+    "slug": "js-mini-orm",
+    "version": "1.0.0",
+    "title": "Mini Object-relational Mapper",
+    "description": "input {initial,operations}; initial is an ordered user table of {id,name,age} records with distinct integer IDs. create {user} appends a new unique ID, update {id,changes} merges name/age on an existing record, delete {id} removes an existing record, and findMany {where} emits a snapshot of rows matching all exact field constraints. Mutation operations emit nothing. Return findMany results. At most 12 users and 20 operations. This is one model delegate with basic CRUD, not persistence. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["queries", "filtering"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "initial": [],
+                "operations": [
+                  {
+                    "op": "create",
+                    "user": {
+                      "id": 1,
+                      "name": "A",
+                      "age": 20
+                    }
+                  },
+                  {
+                    "op": "findMany",
+                    "where": {}
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              [
+                {
+                  "id": 1,
+                  "name": "A",
+                  "age": 20
+                }
+              ]
+            ]
+          },
+          {
+            "args": [
+              {
+                "initial": [
+                  {
+                    "id": 1,
+                    "name": "A",
+                    "age": 20
+                  }
+                ],
+                "operations": [
+                  {
+                    "op": "findMany",
+                    "where": {
+                      "age": 9
+                    }
+                  }
+                ]
+              }
+            ],
+            "expected": [[]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "initial": [],
+                "operations": [
+                  {
+                    "op": "create",
+                    "user": {
+                      "id": 1,
+                      "name": "A",
+                      "age": 20
+                    }
+                  },
+                  {
+                    "op": "findMany",
+                    "where": {}
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              [
+                {
+                  "id": 1,
+                  "name": "A",
+                  "age": 20
+                }
+              ]
+            ]
+          },
+          {
+            "args": [
+              {
+                "initial": [
+                  {
+                    "id": 1,
+                    "name": "A",
+                    "age": 20
+                  }
+                ],
+                "operations": [
+                  {
+                    "op": "findMany",
+                    "where": {
+                      "age": 9
+                    }
+                  }
+                ]
+              }
+            ],
+            "expected": [[]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "initial": [],
+          "operations": []
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "initial": [
+            {
+              "id": 1,
+              "name": "A",
+              "age": 20
+            }
+          ],
+          "operations": [
+            {
+              "op": "update",
+              "id": 1,
+              "changes": {
+                "age": 21
+              }
+            },
+            {
+              "op": "findMany",
+              "where": {}
+            }
+          ]
+        }
+      ],
+      "expected": [
+        [
+          {
+            "id": 1,
+            "name": "A",
+            "age": 21
+          }
+        ]
+      ]
+    },
+    {
+      "args": [
+        {
+          "initial": [
+            {
+              "id": 1,
+              "name": "A",
+              "age": 20
+            }
+          ],
+          "operations": [
+            {
+              "op": "delete",
+              "id": 1
+            },
+            {
+              "op": "findMany",
+              "where": {}
+            }
+          ]
+        }
+      ],
+      "expected": [[]]
+    },
+    {
+      "args": [
+        {
+          "initial": [
+            {
+              "id": 1,
+              "name": "A",
+              "age": 20
+            },
+            {
+              "id": 2,
+              "name": "B",
+              "age": 20
+            }
+          ],
+          "operations": [
+            {
+              "op": "findMany",
+              "where": {
+                "id": 2,
+                "age": 20
+              }
+            }
+          ]
+        }
+      ],
+      "expected": [
+        [
+          {
+            "id": 2,
+            "name": "B",
+            "age": 20
+          }
+        ]
+      ]
+    },
+    {
+      "args": [
+        {
+          "initial": [
+            {
+              "id": 1,
+              "name": "A",
+              "age": 20
+            }
+          ],
+          "operations": [
+            {
+              "op": "update",
+              "id": 1,
+              "changes": {
+                "name": ""
+              }
+            },
+            {
+              "op": "findMany",
+              "where": {
+                "name": ""
+              }
+            }
+          ]
+        }
+      ],
+      "expected": [
+        [
+          {
+            "id": 1,
+            "name": "",
+            "age": 20
+          }
+        ]
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const clone = (v) => JSON.parse(JSON.stringify(v));\n  let users = clone(d.initial);\n  const out = [];\n  for (const op of d.operations) {\n    if (op.op === \"create\") users.push(clone(op.user));\n    else if (op.op === \"update\")\n      Object.assign(\n        users.find((u) => u.id === op.id),\n        op.changes,\n      );\n    else if (op.op === \"delete\") users = users.filter((u) => u.id !== op.id);\n    else\n      out.push(\n        clone(users.filter((u) => Object.keys(op.where).every((k) => u[k] === op.where[k]))),\n      );\n  }\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const clone = (v: any): any => JSON.parse(JSON.stringify(v));\n  let users = clone(d.initial);\n  const out: any[] = [];\n  for (const op of d.operations) {\n    if (op.op === \"create\") users.push(clone(op.user));\n    else if (op.op === \"update\")\n      Object.assign(\n        users.find((u: any) => u.id === op.id),\n        op.changes,\n      );\n    else if (op.op === \"delete\") users = users.filter((u: any) => u.id !== op.id);\n    else\n      out.push(\n        clone(users.filter((u: any) => Object.keys(op.where).every((k) => u[k] === op.where[k]))),\n      );\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Apply CRUD to an ordered table and copy query results when emitted to avoid later mutation. O(operations times maximum table size plus output) time and space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

@@ -1,0 +1,159 @@
+{
+  "public": {
+    "id": "js-deep-omit",
+    "slug": "js-deep-omit",
+    "version": "1.0.0",
+    "title": "Deep Omit",
+    "description": "Recursively remove every object property whose key belongs to keys. Preserve array elements, order and scalar values; only object keys are omitted, including inside arrays. The keys array has at most 20 strings. Return a new JSON value. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["objects", "recursion"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Rebuild each array/object while excluding named object properties."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(value: any, keys: string[]): JSON-compatible result",
+        "starter": "export function solve(value, keys) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "a": 1,
+                "b": {
+                  "a": 2,
+                  "c": 3
+                }
+              },
+              ["a"]
+            ],
+            "expected": {
+              "b": {
+                "c": 3
+              }
+            }
+          },
+          {
+            "args": [
+              [
+                {
+                  "a": 1
+                },
+                2
+              ],
+              ["a"]
+            ],
+            "expected": [{}, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(value: any, keys: string[]): JSON-compatible result",
+        "starter": "export function solve(value: any, keys: string[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "a": 1,
+                "b": {
+                  "a": 2,
+                  "c": 3
+                }
+              },
+              ["a"]
+            ],
+            "expected": {
+              "b": {
+                "c": 3
+              }
+            }
+          },
+          {
+            "args": [
+              [
+                {
+                  "a": 1
+                },
+                2
+              ],
+              ["a"]
+            ],
+            "expected": [{}, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [null, ["a"]],
+      "expected": null
+    },
+    {
+      "args": [
+        {
+          "a": 1
+        },
+        []
+      ],
+      "expected": {
+        "a": 1
+      }
+    },
+    {
+      "args": [
+        {
+          "a": 1
+        },
+        ["z"]
+      ],
+      "expected": {
+        "a": 1
+      }
+    },
+    {
+      "args": [
+        {
+          "a": [
+            {
+              "b": 2
+            }
+          ],
+          "b": 0
+        },
+        ["b"]
+      ],
+      "expected": {
+        "a": [{}]
+      }
+    },
+    {
+      "args": [[0, false, ""], ["a"]],
+      "expected": [0, false, ""]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(value, keys) {\n  const omitted = new Set(keys);\n  const walk = (x) =>\n    Array.isArray(x)\n      ? x.map(walk)\n      : x !== null && typeof x === \"object\"\n        ? Object.fromEntries(\n            Object.entries(x)\n              .filter(([k]) => !omitted.has(k))\n              .map(([k, v]) => [k, walk(v)]),\n          )\n        : x;\n  return walk(value);\n}\n",
+    "typescript": "export function solve(value: any, keys: string[]): any {\n  const omitted = new Set(keys);\n  const walk = (x: any): any =>\n    Array.isArray(x)\n      ? x.map(walk)\n      : x !== null && typeof x === \"object\"\n        ? Object.fromEntries(\n            Object.entries(x)\n              .filter(([k]) => !omitted.has(k))\n              .map(([k, v]) => [k, walk(v)]),\n          )\n        : x;\n  return walk(value);\n}\n"
+  },
+  "explanation": "Rebuild each array/object while excluding named object properties. O(n + keys) time and O(n + keys) space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

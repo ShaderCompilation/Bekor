@@ -1,0 +1,256 @@
+{
+  "public": {
+    "id": "js-get-elements-by-style",
+    "slug": "js-get-elements-by-style",
+    "version": "1.0.0",
+    "title": "getElementsByStyle",
+    "description": "Use a JSON DOM adapter: each node is {id,tag,classes,style,children}, with unique ASCII id, lowercase tag, classes as an array of distinct strings, style as an object of already-computed string properties, and children as an array of nodes. At most 30 nodes, depth at most 6, each string length at most 12. Visit the root and descendants in preorder. No actual browser, inheritance, selector engine or CSS cascade is modeled. Return IDs of nodes whose style has an own property named property equal to value. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["trees", "dom"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Traverse the serialized tree and test the supplied computed-style map."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(root: any, property: string, value: string): JSON-compatible result",
+        "starter": "export function solve(root, property, value) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "id": "r",
+                "tag": "div",
+                "classes": [],
+                "style": {
+                  "color": "red"
+                },
+                "children": [
+                  {
+                    "id": "c",
+                    "tag": "span",
+                    "classes": [],
+                    "style": {
+                      "color": "red"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              "color",
+              "red"
+            ],
+            "expected": ["r", "c"]
+          },
+          {
+            "args": [
+              {
+                "id": "r",
+                "tag": "div",
+                "classes": [],
+                "style": {},
+                "children": []
+              },
+              "color",
+              "red"
+            ],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(root: any, property: string, value: string): JSON-compatible result",
+        "starter": "export function solve(root: any, property: string, value: string): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "id": "r",
+                "tag": "div",
+                "classes": [],
+                "style": {
+                  "color": "red"
+                },
+                "children": [
+                  {
+                    "id": "c",
+                    "tag": "span",
+                    "classes": [],
+                    "style": {
+                      "color": "red"
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              "color",
+              "red"
+            ],
+            "expected": ["r", "c"]
+          },
+          {
+            "args": [
+              {
+                "id": "r",
+                "tag": "div",
+                "classes": [],
+                "style": {},
+                "children": []
+              },
+              "color",
+              "red"
+            ],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "id": "r",
+          "tag": "div",
+          "classes": [],
+          "style": {
+            "color": ""
+          },
+          "children": []
+        },
+        "color",
+        ""
+      ],
+      "expected": ["r"]
+    },
+    {
+      "args": [
+        {
+          "id": "r",
+          "tag": "div",
+          "classes": [],
+          "style": {},
+          "children": [
+            {
+              "id": "a",
+              "tag": "div",
+              "classes": [],
+              "style": {},
+              "children": []
+            },
+            {
+              "id": "b",
+              "tag": "p",
+              "classes": [],
+              "style": {
+                "display": "none"
+              },
+              "children": []
+            }
+          ]
+        },
+        "display",
+        "none"
+      ],
+      "expected": ["b"]
+    },
+    {
+      "args": [
+        {
+          "id": "r",
+          "tag": "div",
+          "classes": [],
+          "style": {
+            "color": "blue"
+          },
+          "children": [
+            {
+              "id": "a",
+              "tag": "p",
+              "classes": [],
+              "style": {
+                "color": "red"
+              },
+              "children": []
+            }
+          ]
+        },
+        "color",
+        "red"
+      ],
+      "expected": ["a"]
+    },
+    {
+      "args": [
+        {
+          "id": "r",
+          "tag": "div",
+          "classes": [],
+          "style": {},
+          "children": [
+            {
+              "id": "a",
+              "tag": "p",
+              "classes": [],
+              "style": {
+                "color": "x"
+              },
+              "children": [
+                {
+                  "id": "b",
+                  "tag": "p",
+                  "classes": [],
+                  "style": {
+                    "color": "x"
+                  },
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        "color",
+        "x"
+      ],
+      "expected": ["a", "b"]
+    },
+    {
+      "args": [
+        {
+          "id": "r",
+          "tag": "div",
+          "classes": [],
+          "style": {},
+          "children": []
+        },
+        "missing",
+        ""
+      ],
+      "expected": []
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(root, property, value) {\n  const nodes = [];\n  const visit = (n) => {\n    nodes.push(n);\n    for (const c of n.children) visit(c);\n  };\n  visit(root);\n  return nodes\n    .filter((n) => Object.hasOwn(n.style, property) && n.style[property] === value)\n    .map((n) => n.id);\n}\n",
+    "typescript": "export function solve(root: any, property: string, value: string): any {\n  const nodes: any[] = [];\n  const visit = (n: any): void => {\n    nodes.push(n);\n    for (const c of n.children) visit(c);\n  };\n  visit(root);\n  return nodes\n    .filter((n) => Object.hasOwn(n.style, property) && n.style[property] === value)\n    .map((n) => n.id);\n}\n"
+  },
+  "explanation": "Traverse the serialized tree and test the supplied computed-style map. O(n) traversal time and O(n + depth) space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

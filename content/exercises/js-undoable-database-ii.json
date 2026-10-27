@@ -1,0 +1,440 @@
+{
+  "public": {
+    "id": "js-undoable-database-ii",
+    "slug": "js-undoable-database-ii",
+    "version": "1.0.0",
+    "title": "Undoable Database II",
+    "description": "input {initial,operations}; initial is an object mapping user IDs to name strings. Draft edits put {key,value} or delete {key} emit state but do not add checkpoints. Commit checkpoints only changed drafts (compare key/value maps regardless of key order); undo/redo discard draft edits before navigating committed snapshots. A no-op commit preserves redo. Return {draft,committed} after each operation. At most 12 users and 20 operations; this represents batched database history using a key-to-name table. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["history", "databases"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "initial": {},
+                "operations": [
+                  {
+                    "op": "put",
+                    "key": "a",
+                    "value": "A"
+                  },
+                  {
+                    "op": "commit"
+                  },
+                  {
+                    "op": "undo"
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              {
+                "draft": {
+                  "a": "A"
+                },
+                "committed": {}
+              },
+              {
+                "draft": {
+                  "a": "A"
+                },
+                "committed": {
+                  "a": "A"
+                }
+              },
+              {
+                "draft": {},
+                "committed": {}
+              }
+            ]
+          },
+          {
+            "args": [
+              {
+                "initial": {
+                  "a": "A"
+                },
+                "operations": [
+                  {
+                    "op": "delete",
+                    "key": "a"
+                  },
+                  {
+                    "op": "undo"
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              {
+                "draft": {},
+                "committed": {
+                  "a": "A"
+                }
+              },
+              {
+                "draft": {
+                  "a": "A"
+                },
+                "committed": {
+                  "a": "A"
+                }
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "initial": {},
+                "operations": [
+                  {
+                    "op": "put",
+                    "key": "a",
+                    "value": "A"
+                  },
+                  {
+                    "op": "commit"
+                  },
+                  {
+                    "op": "undo"
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              {
+                "draft": {
+                  "a": "A"
+                },
+                "committed": {}
+              },
+              {
+                "draft": {
+                  "a": "A"
+                },
+                "committed": {
+                  "a": "A"
+                }
+              },
+              {
+                "draft": {},
+                "committed": {}
+              }
+            ]
+          },
+          {
+            "args": [
+              {
+                "initial": {
+                  "a": "A"
+                },
+                "operations": [
+                  {
+                    "op": "delete",
+                    "key": "a"
+                  },
+                  {
+                    "op": "undo"
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              {
+                "draft": {},
+                "committed": {
+                  "a": "A"
+                }
+              },
+              {
+                "draft": {
+                  "a": "A"
+                },
+                "committed": {
+                  "a": "A"
+                }
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "initial": {},
+          "operations": []
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "initial": {},
+          "operations": [
+            {
+              "op": "put",
+              "key": "a",
+              "value": "A"
+            },
+            {
+              "op": "commit"
+            },
+            {
+              "op": "undo"
+            },
+            {
+              "op": "redo"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "draft": {
+            "a": "A"
+          },
+          "committed": {}
+        },
+        {
+          "draft": {
+            "a": "A"
+          },
+          "committed": {
+            "a": "A"
+          }
+        },
+        {
+          "draft": {},
+          "committed": {}
+        },
+        {
+          "draft": {
+            "a": "A"
+          },
+          "committed": {
+            "a": "A"
+          }
+        }
+      ]
+    },
+    {
+      "args": [
+        {
+          "initial": {
+            "a": "A"
+          },
+          "operations": [
+            {
+              "op": "put",
+              "key": "a",
+              "value": "B"
+            },
+            {
+              "op": "put",
+              "key": "b",
+              "value": "C"
+            },
+            {
+              "op": "commit"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "draft": {
+            "a": "B"
+          },
+          "committed": {
+            "a": "A"
+          }
+        },
+        {
+          "draft": {
+            "a": "B",
+            "b": "C"
+          },
+          "committed": {
+            "a": "A"
+          }
+        },
+        {
+          "draft": {
+            "a": "B",
+            "b": "C"
+          },
+          "committed": {
+            "a": "B",
+            "b": "C"
+          }
+        }
+      ]
+    },
+    {
+      "args": [
+        {
+          "initial": {},
+          "operations": [
+            {
+              "op": "undo"
+            },
+            {
+              "op": "redo"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "draft": {},
+          "committed": {}
+        },
+        {
+          "draft": {},
+          "committed": {}
+        }
+      ]
+    },
+    {
+      "args": [
+        {
+          "initial": {
+            "a": "A"
+          },
+          "operations": [
+            {
+              "op": "delete",
+              "key": "a"
+            },
+            {
+              "op": "commit"
+            },
+            {
+              "op": "undo"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "draft": {},
+          "committed": {
+            "a": "A"
+          }
+        },
+        {
+          "draft": {},
+          "committed": {}
+        },
+        {
+          "draft": {
+            "a": "A"
+          },
+          "committed": {
+            "a": "A"
+          }
+        }
+      ]
+    },
+    {
+      "args": [
+        {
+          "initial": {},
+          "operations": [
+            {
+              "op": "put",
+              "key": "a",
+              "value": "A"
+            },
+            {
+              "op": "commit"
+            },
+            {
+              "op": "undo"
+            },
+            {
+              "op": "commit"
+            },
+            {
+              "op": "redo"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "draft": {
+            "a": "A"
+          },
+          "committed": {}
+        },
+        {
+          "draft": {
+            "a": "A"
+          },
+          "committed": {
+            "a": "A"
+          }
+        },
+        {
+          "draft": {},
+          "committed": {}
+        },
+        {
+          "draft": {},
+          "committed": {}
+        },
+        {
+          "draft": {
+            "a": "A"
+          },
+          "committed": {
+            "a": "A"
+          }
+        }
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const clone = (v) => JSON.parse(JSON.stringify(v));\n  let committed = clone(d.initial),\n    draft = clone(d.initial);\n  let past = [],\n    future = [];\n  const out = [];\n  for (const op of d.operations) {\n    if (op.op === \"set\") draft = clone(op.value);\n    else if (op.op === \"put\") draft[op.key] = clone(op.value);\n    else if (op.op === \"delete\") delete draft[op.key];\n    else if (op.op === \"commit\") {\n      if (\n        Object.keys(draft).length !== Object.keys(committed).length ||\n        Object.keys(draft).some((k) => draft[k] !== committed[k])\n      ) {\n        past.push(clone(committed));\n        committed = clone(draft);\n        future = [];\n      }\n    } else if (op.op === \"undo\") {\n      draft = clone(committed);\n      if (past.length) {\n        future.push(clone(committed));\n        committed = past.pop();\n        draft = clone(committed);\n      }\n    } else if (op.op === \"redo\") {\n      draft = clone(committed);\n      if (future.length) {\n        past.push(clone(committed));\n        committed = future.pop();\n        draft = clone(committed);\n      }\n    }\n    out.push({ draft: clone(draft), committed: clone(committed) });\n  }\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const clone = (v: any): any => JSON.parse(JSON.stringify(v));\n  let committed = clone(d.initial),\n    draft = clone(d.initial);\n  let past: any[] = [],\n    future: any[] = [];\n  const out: any[] = [];\n  for (const op of d.operations) {\n    if (op.op === \"set\") draft = clone(op.value);\n    else if (op.op === \"put\") draft[op.key] = clone(op.value);\n    else if (op.op === \"delete\") delete draft[op.key];\n    else if (op.op === \"commit\") {\n      if (\n        Object.keys(draft).length !== Object.keys(committed).length ||\n        Object.keys(draft).some((k) => draft[k] !== committed[k])\n      ) {\n        past.push(clone(committed));\n        committed = clone(draft);\n        future = [];\n      }\n    } else if (op.op === \"undo\") {\n      draft = clone(committed);\n      if (past.length) {\n        future.push(clone(committed));\n        committed = past.pop();\n        draft = clone(committed);\n      }\n    } else if (op.op === \"redo\") {\n      draft = clone(committed);\n      if (future.length) {\n        past.push(clone(committed));\n        committed = future.pop();\n        draft = clone(committed);\n      }\n    }\n    out.push({ draft: clone(draft), committed: clone(committed) });\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Store committed table snapshots and a separate mutable draft. Compare maps structurally before checkpointing. O(operations times maximum table size) time and storage. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

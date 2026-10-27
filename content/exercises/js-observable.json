@@ -1,0 +1,241 @@
+{
+  "public": {
+    "id": "js-observable",
+    "slug": "js-observable",
+    "version": "1.0.0",
+    "title": "Observable",
+    "description": "input {source,subscriptions}; source is a finite event list next {value}, error {value}, or complete, and ends at its first terminal event. Each subscription {id,limit} starts a fresh cold execution from the first source event; limit caps delivered next events and automatically unsubscribes as soon as reached. A limit of 0 emits nothing. Emit [id,\"next\",value], [id,\"error\",value] or [id,\"complete\"] in subscription order then source order. Terminal events stop that subscription and are omitted after automatic unsubscribe. At most 8 subscriptions and 12 source events. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["events", "sets"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "source": [
+                  {
+                    "op": "next",
+                    "value": 1
+                  },
+                  {
+                    "op": "complete"
+                  }
+                ],
+                "subscriptions": [
+                  {
+                    "id": "a",
+                    "limit": 2
+                  }
+                ]
+              }
+            ],
+            "expected": [["a", "next", 1], ["a", "complete"]]
+          },
+          {
+            "args": [
+              {
+                "source": [
+                  {
+                    "op": "next",
+                    "value": 1
+                  },
+                  {
+                    "op": "next",
+                    "value": 2
+                  }
+                ],
+                "subscriptions": [
+                  {
+                    "id": "a",
+                    "limit": 1
+                  }
+                ]
+              }
+            ],
+            "expected": [["a", "next", 1]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "source": [
+                  {
+                    "op": "next",
+                    "value": 1
+                  },
+                  {
+                    "op": "complete"
+                  }
+                ],
+                "subscriptions": [
+                  {
+                    "id": "a",
+                    "limit": 2
+                  }
+                ]
+              }
+            ],
+            "expected": [["a", "next", 1], ["a", "complete"]]
+          },
+          {
+            "args": [
+              {
+                "source": [
+                  {
+                    "op": "next",
+                    "value": 1
+                  },
+                  {
+                    "op": "next",
+                    "value": 2
+                  }
+                ],
+                "subscriptions": [
+                  {
+                    "id": "a",
+                    "limit": 1
+                  }
+                ]
+              }
+            ],
+            "expected": [["a", "next", 1]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "source": [],
+          "subscriptions": []
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "source": [
+            {
+              "op": "next",
+              "value": 0
+            }
+          ],
+          "subscriptions": [
+            {
+              "id": "a",
+              "limit": 0
+            }
+          ]
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "source": [
+            {
+              "op": "error",
+              "value": "bad"
+            },
+            {
+              "op": "next",
+              "value": 1
+            }
+          ],
+          "subscriptions": [
+            {
+              "id": "a",
+              "limit": 4
+            }
+          ]
+        }
+      ],
+      "expected": [["a", "error", "bad"]]
+    },
+    {
+      "args": [
+        {
+          "source": [
+            {
+              "op": "next",
+              "value": 1
+            }
+          ],
+          "subscriptions": [
+            {
+              "id": "a",
+              "limit": 2
+            },
+            {
+              "id": "b",
+              "limit": 2
+            }
+          ]
+        }
+      ],
+      "expected": [["a", "next", 1], ["b", "next", 1]]
+    },
+    {
+      "args": [
+        {
+          "source": [
+            {
+              "op": "next",
+              "value": 1
+            },
+            {
+              "op": "complete"
+            }
+          ],
+          "subscriptions": [
+            {
+              "id": "a",
+              "limit": 1
+            }
+          ]
+        }
+      ],
+      "expected": [["a", "next", 1]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const out = [];\n  for (const sub of d.subscriptions) {\n    let count = 0;\n    for (const event of d.source) {\n      if (count >= sub.limit) break;\n      if (event.op === \"next\") {\n        out.push([sub.id, \"next\", event.value]);\n        count++;\n      } else {\n        out.push(event.op === \"error\" ? [sub.id, \"error\", event.value] : [sub.id, \"complete\"]);\n        break;\n      }\n    }\n  }\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const out: any[] = [];\n  for (const sub of d.subscriptions) {\n    let count = 0;\n    for (const event of d.source) {\n      if (count >= sub.limit) break;\n      if (event.op === \"next\") {\n        out.push([sub.id, \"next\", event.value]);\n        count++;\n      } else {\n        out.push(event.op === \"error\" ? [sub.id, \"error\", event.value] : [sub.id, \"complete\"]);\n        break;\n      }\n    }\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Replay the source independently for each subscriber, tracking its next-count and terminal state. O(subscriptions times source events) time and output space; this is a synchronous transcript adapter. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

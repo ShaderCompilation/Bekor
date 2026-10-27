@@ -1,0 +1,127 @@
+{
+  "public": {
+    "id": "js-template-engine",
+    "slug": "js-template-engine",
+    "version": "1.0.0",
+    "title": "Template Engine",
+    "description": "Replace every placeholder {{key}} with values[key] converted to a string, or an empty string when key is absent. Keys consist of lowercase letters; values are strings, integers, or booleans. Whitespace inside delimiters is not a placeholder. Leave malformed delimiters unchanged. No escaping or nested lookup in this version. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["strings", "templating"],
+    "hints": [
+      "Use own-key membership so false and zero are valid substitutions.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(template, values): JSON value",
+        "starter": "export function solve(template, values) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              "Hi {{name}}",
+              {
+                "name": "Ada"
+              }
+            ],
+            "expected": "Hi Ada"
+          },
+          {
+            "args": [
+              "{{x}}/{{x}}",
+              {
+                "x": 0
+              }
+            ],
+            "expected": "0/0"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(template, values): JSON value",
+        "starter": "type Value = any;\nexport function solve(template: Value, values: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              "Hi {{name}}",
+              {
+                "name": "Ada"
+              }
+            ],
+            "expected": "Hi Ada"
+          },
+          {
+            "args": [
+              "{{x}}/{{x}}",
+              {
+                "x": 0
+              }
+            ],
+            "expected": "0/0"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["{{missing}}", {}],
+      "expected": ""
+    },
+    {
+      "args": ["plain", {}],
+      "expected": "plain"
+    },
+    {
+      "args": [
+        "{{x}}",
+        {
+          "x": false
+        }
+      ],
+      "expected": "false"
+    },
+    {
+      "args": [
+        "{{ x }}",
+        {
+          "x": 2
+        }
+      ],
+      "expected": "{{ x }}"
+    },
+    {
+      "args": [
+        "{{a}}-{{b}}",
+        {
+          "a": "x",
+          "b": 3
+        }
+      ],
+      "expected": "x-3"
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(template, values) {\n  return template.replace(/\\{\\{([a-z]+)\\}\\}/g, (_, key) =>\n    Object.hasOwn(values, key) ? String(values[key]) : \"\",\n  );\n}\n",
+    "typescript": "type Value = any;\nexport function solve(template: Value, values: Value): Value {\n  return template.replace(/\\{\\{([a-z]+)\\}\\}/g, (_: Value, key: Value) =>\n    Object.hasOwn(values, key) ? String(values[key]) : \"\",\n  );\n}\n"
+  },
+  "explanation": "A global placeholder scan replaces recognized keys, preserving malformed text. O(template plus output length) time and output space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

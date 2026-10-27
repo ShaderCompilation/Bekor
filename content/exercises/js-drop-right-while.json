@@ -1,0 +1,138 @@
+{
+  "public": {
+    "id": "js-drop-right-while",
+    "slug": "js-drop-right-while",
+    "version": "1.0.0",
+    "title": "Drop Right While",
+    "description": "The predicate descriptor is {kind,value}, where kind is \"gt\", \"eq\", or \"even\". For gt compare numeric elements strictly to value, for eq compare scalar elements strictly, and for even accept even integers (value is ignored). The array contains at most 50 integers from -1000 through 1000; eq may also use scalar values. This descriptor stands for a callback; arbitrary source functions and sparse arrays are outside this adapter. Drop the longest matching suffix and return the remaining prefix; stop at the first nonmatching element when scanning from the right. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "callbacks"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Scan only the matching suffix, then copy the retained prefix."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(values: any[], predicate: {kind:string,value?:any}): JSON-compatible result",
+        "starter": "export function solve(values, predicate) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [1, 4, 6],
+              {
+                "kind": "even"
+              }
+            ],
+            "expected": [1]
+          },
+          {
+            "args": [
+              [2, 1, 4],
+              {
+                "kind": "even"
+              }
+            ],
+            "expected": [2, 1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(values: any[], predicate: {kind:string,value?:any}): JSON-compatible result",
+        "starter": "export function solve(values: any[], predicate: { kind: string; value?: any }): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [1, 4, 6],
+              {
+                "kind": "even"
+              }
+            ],
+            "expected": [1]
+          },
+          {
+            "args": [
+              [2, 1, 4],
+              {
+                "kind": "even"
+              }
+            ],
+            "expected": [2, 1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        [],
+        {
+          "kind": "even"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        [2, 4],
+        {
+          "kind": "even"
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        [1, 3],
+        {
+          "kind": "even"
+        }
+      ],
+      "expected": [1, 3]
+    },
+    {
+      "args": [
+        [0],
+        {
+          "kind": "eq",
+          "value": 0
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        [1, 3, 2],
+        {
+          "kind": "gt",
+          "value": 2
+        }
+      ],
+      "expected": [1, 3, 2]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(values, predicate) {\n  const p = (x) =>\n    predicate.kind === \"gt\"\n      ? x > predicate.value\n      : predicate.kind === \"even\"\n        ? typeof x === \"number\" && x % 2 === 0\n        : x === predicate.value;\n  let end = values.length;\n  while (end > 0 && p(values[end - 1])) end--;\n  return values.slice(0, end);\n}\n",
+    "typescript": "export function solve(values: any[], predicate: { kind: string; value?: any }): any {\n  const p = (x: any): boolean =>\n    predicate.kind === \"gt\"\n      ? x > predicate.value\n      : predicate.kind === \"even\"\n        ? typeof x === \"number\" && x % 2 === 0\n        : x === predicate.value;\n  let end = values.length;\n  while (end > 0 && p(values[end - 1])) end--;\n  return values.slice(0, end);\n}\n"
+  },
+  "explanation": "Scan only the matching suffix, then copy the retained prefix. O(n) time and output. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

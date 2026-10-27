@@ -1,0 +1,239 @@
+{
+  "public": {
+    "id": "js-type-utilities-ii",
+    "slug": "js-type-utilities-ii",
+    "version": "1.0.0",
+    "title": "JSON Type Classification",
+    "description": "For each JSON value in values, return an object of four predicate results. isArray is true only for arrays. isObject is true for any non-null object, including arrays (the typeof-style object check without the null pitfall). isPlainObject is true only for non-null objects that are not arrays. isEmptyContainer is true for an array with no elements or a plain object with no own keys, and false for every scalar, including null, 0 and the empty string. Return one result per value, in input order. All numbers are integers. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "easy",
+    "concepts": ["json", "type-predicates"],
+    "hints": [
+      "typeof reports \"object\" for null and for arrays, so each predicate needs an extra guard.",
+      "Decide isPlainObject from the other two checks, then test emptiness only for containers."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(values: JSON[]): {isArray, isObject, isPlainObject, isEmptyContainer}[]",
+        "starter": "export function solve(values) {\n  // Implement the documented JSON adapter.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, "x"]],
+            "expected": [
+              {
+                "isArray": false,
+                "isObject": false,
+                "isPlainObject": false,
+                "isEmptyContainer": false
+              },
+              {
+                "isArray": false,
+                "isObject": false,
+                "isPlainObject": false,
+                "isEmptyContainer": false
+              }
+            ]
+          },
+          {
+            "args": [
+              [
+                [],
+                {
+                  "a": 1
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "isArray": true,
+                "isObject": true,
+                "isPlainObject": false,
+                "isEmptyContainer": true
+              },
+              {
+                "isArray": false,
+                "isObject": true,
+                "isPlainObject": true,
+                "isEmptyContainer": false
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(values: JSON[]): {isArray, isObject, isPlainObject, isEmptyContainer}[]",
+        "starter": "type Value = any;\ntype Checks = {\n  isArray: boolean;\n  isObject: boolean;\n  isPlainObject: boolean;\n  isEmptyContainer: boolean;\n};\nexport function solve(values: Value[]): Checks[] {\n  // Implement the documented JSON adapter.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, "x"]],
+            "expected": [
+              {
+                "isArray": false,
+                "isObject": false,
+                "isPlainObject": false,
+                "isEmptyContainer": false
+              },
+              {
+                "isArray": false,
+                "isObject": false,
+                "isPlainObject": false,
+                "isEmptyContainer": false
+              }
+            ]
+          },
+          {
+            "args": [
+              [
+                [],
+                {
+                  "a": 1
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "isArray": true,
+                "isObject": true,
+                "isPlainObject": false,
+                "isEmptyContainer": true
+              },
+              {
+                "isArray": false,
+                "isObject": true,
+                "isPlainObject": true,
+                "isEmptyContainer": false
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[null]],
+      "expected": [
+        {
+          "isArray": false,
+          "isObject": false,
+          "isPlainObject": false,
+          "isEmptyContainer": false
+        }
+      ]
+    },
+    {
+      "args": [[{}]],
+      "expected": [
+        {
+          "isArray": false,
+          "isObject": true,
+          "isPlainObject": true,
+          "isEmptyContainer": true
+        }
+      ]
+    },
+    {
+      "args": [[[0], "", false]],
+      "expected": [
+        {
+          "isArray": true,
+          "isObject": true,
+          "isPlainObject": false,
+          "isEmptyContainer": false
+        },
+        {
+          "isArray": false,
+          "isObject": false,
+          "isPlainObject": false,
+          "isEmptyContainer": false
+        },
+        {
+          "isArray": false,
+          "isObject": false,
+          "isPlainObject": false,
+          "isEmptyContainer": false
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          [[]],
+          {
+            "a": {}
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "isArray": true,
+          "isObject": true,
+          "isPlainObject": false,
+          "isEmptyContainer": false
+        },
+        {
+          "isArray": false,
+          "isObject": true,
+          "isPlainObject": true,
+          "isEmptyContainer": false
+        }
+      ]
+    },
+    {
+      "args": [[0, true, null, []]],
+      "expected": [
+        {
+          "isArray": false,
+          "isObject": false,
+          "isPlainObject": false,
+          "isEmptyContainer": false
+        },
+        {
+          "isArray": false,
+          "isObject": false,
+          "isPlainObject": false,
+          "isEmptyContainer": false
+        },
+        {
+          "isArray": false,
+          "isObject": false,
+          "isPlainObject": false,
+          "isEmptyContainer": false
+        },
+        {
+          "isArray": true,
+          "isObject": true,
+          "isPlainObject": false,
+          "isEmptyContainer": true
+        }
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(values) {\n  return values.map((value) => {\n    const isArray = Array.isArray(value);\n    const isObject = value !== null && typeof value === \"object\";\n    const isPlainObject = isObject && !isArray;\n    const isEmptyContainer = isArray\n      ? value.length === 0\n      : isPlainObject && Object.keys(value).length === 0;\n    return { isArray, isObject, isPlainObject, isEmptyContainer };\n  });\n}\n",
+    "typescript": "type Value = any;\ntype Checks = {\n  isArray: boolean;\n  isObject: boolean;\n  isPlainObject: boolean;\n  isEmptyContainer: boolean;\n};\nexport function solve(values: Value[]): Checks[] {\n  return values.map((value: Value) => {\n    const isArray = Array.isArray(value);\n    const isObject = value !== null && typeof value === \"object\";\n    const isPlainObject = isObject && !isArray;\n    const isEmptyContainer = isArray\n      ? value.length === 0\n      : isPlainObject && Object.keys(value).length === 0;\n    return { isArray, isObject, isPlainObject, isEmptyContainer };\n  });\n}\n"
+  },
+  "explanation": "Check Array.isArray first, guard the object test against null, derive isPlainObject from the two, and only measure emptiness for containers. O(n + k) time for n values with k top-level keys in plain objects, O(n) output space. This JSON adapter verifies observable results; it does not cover functions, class instances or other non-JSON runtime values."
+}

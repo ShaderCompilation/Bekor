@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-cancellable-timeout",
+    "slug": "js-cancellable-timeout",
+    "version": "1.0.0",
+    "title": "Cancellable Timeout",
+    "description": "Simulate a cancellable timeout. Given start, delay, cancelTime and horizon, return [] if it never fires, otherwise [start plus delay]. All times are integers from 0 through 120, delay is from 0 through 20, and cancelTime is null or at least start. Cancellation wins a tie with the deadline. The horizon includes a tied deadline. No wall-clock timer runs. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["timers", "simulation"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Compute one deadline and compare cancellation and horizon boundaries."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(start: number, delay: number, cancelTime: number|null, horizon: number): JSON-compatible result",
+        "starter": "export function solve(start, delay, cancelTime, horizon) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [0, 3, null, 5],
+            "expected": [3]
+          },
+          {
+            "args": [0, 3, 2, 5],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(start: number, delay: number, cancelTime: number|null, horizon: number): JSON-compatible result",
+        "starter": "export function solve(\n  start: number,\n  delay: number,\n  cancelTime: number | null,\n  horizon: number,\n): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [0, 3, null, 5],
+            "expected": [3]
+          },
+          {
+            "args": [0, 3, 2, 5],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [0, 3, 3, 5],
+      "expected": []
+    },
+    {
+      "args": [0, 3, 4, 5],
+      "expected": [3]
+    },
+    {
+      "args": [4, 0, null, 4],
+      "expected": [4]
+    },
+    {
+      "args": [0, 5, null, 4],
+      "expected": []
+    },
+    {
+      "args": [2, 0, 2, 5],
+      "expected": []
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(start, delay, cancelTime, horizon) {\n  const due = start + delay;\n  return due <= horizon && (cancelTime === null || cancelTime > due) ? [due] : [];\n}\n",
+    "typescript": "export function solve(\n  start: number,\n  delay: number,\n  cancelTime: number | null,\n  horizon: number,\n): any {\n  const due = start + delay;\n  return due <= horizon && (cancelTime === null || cancelTime > due) ? [due] : [];\n}\n"
+  },
+  "explanation": "Compute one deadline and compare cancellation and horizon boundaries. O(1) time and space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

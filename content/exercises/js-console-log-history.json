@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-console-log-history",
+    "slug": "js-console-log-history",
+    "version": "1.0.0",
+    "title": "Console Log History",
+    "description": "Process [\"log\",args], [\"clear\"], and [\"history\"]. log appends its JSON argument array and returns null; clear empties history and returns null; history returns a snapshot of all logged arrays. Return results in operation order. Historical snapshots must stay unchanged. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["history", "snapshots"],
+    "hints": [
+      "A later log must not mutate an earlier history snapshot.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(operations): JSON value",
+        "starter": "export function solve(operations) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[["log", [1]], ["history"]]],
+            "expected": [null, [[1]]]
+          },
+          {
+            "args": [[["history"]]],
+            "expected": [[]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(operations): JSON value",
+        "starter": "type Value = any;\nexport function solve(operations: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[["log", [1]], ["history"]]],
+            "expected": [null, [[1]]]
+          },
+          {
+            "args": [[["history"]]],
+            "expected": [[]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[["log", []], ["clear"], ["history"]]],
+      "expected": [null, null, []]
+    },
+    {
+      "args": [[["log", [1]], ["history"], ["log", [2]], ["history"]]],
+      "expected": [null, [[1]], null, [[1], [2]]]
+    },
+    {
+      "args": [[["log", [null, false]], ["history"]]],
+      "expected": [null, [[null, false]]]
+    },
+    {
+      "args": [[["clear"], ["history"]]],
+      "expected": [null, []]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(operations) {\n  let history = [];\n  return operations.map(([op, args]) => {\n    if (op === \"log\") {\n      history.push(args);\n      return null;\n    }\n    if (op === \"clear\") {\n      history = [];\n      return null;\n    }\n    return history.slice();\n  });\n}\n",
+    "typescript": "type Value = any;\nexport function solve(operations: Value): Value {\n  let history: Value[] = [];\n  return operations.map(([op, args]: Value) => {\n    if (op === \"log\") {\n      history.push(args);\n      return null;\n    }\n    if (op === \"clear\") {\n      history = [];\n      return null;\n    }\n    return history.slice();\n  });\n}\n"
+  },
+  "explanation": "Keep logged argument arrays and copy the history array for every query. Clearing replaces the live history. O(n squared) worst-case time and output space over n operations. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

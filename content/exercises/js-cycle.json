@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-cycle",
+    "slug": "js-cycle",
+    "version": "1.0.0",
+    "title": "Cycle",
+    "description": "values contains JSON scalars only, with string elements at most 40 code units. Return count successive results from a cyclic value generator, starting at the first element. Empty values returns an empty array. count is 0 through 100. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["iterators", "modular-arithmetic"],
+    "hints": [
+      "Use the output index modulo the cycle length.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(values, count): JSON value",
+        "starter": "export function solve(values, count) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2], 5],
+            "expected": [1, 2, 1, 2, 1]
+          },
+          {
+            "args": [["a"], 3],
+            "expected": ["a", "a", "a"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(values, count): JSON value",
+        "starter": "type Value = any;\nexport function solve(values: Value, count: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2], 5],
+            "expected": [1, 2, 1, 2, 1]
+          },
+          {
+            "args": [["a"], 3],
+            "expected": ["a", "a", "a"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 4],
+      "expected": []
+    },
+    {
+      "args": [[1, 2], 0],
+      "expected": []
+    },
+    {
+      "args": [[1, 2, 3], 2],
+      "expected": [1, 2]
+    },
+    {
+      "args": [[null, false], 3],
+      "expected": [null, false, null]
+    },
+    {
+      "args": [[9, 8, 7], 4],
+      "expected": [9, 8, 7, 9]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(values, count) {\n  if (!values.length) return [];\n  return Array.from({ length: count }, (_, i) => values[i % values.length]);\n}\n",
+    "typescript": "type Value = any;\nexport function solve(values: Value, count: Value): Value {\n  if (!values.length) return [];\n  return Array.from({ length: count }, (_: Value, i: Value) => values[i % values.length]);\n}\n"
+  },
+  "explanation": "Handle an empty source before taking a remainder. Each result uses values[i modulo length]. O(c) time and output space for c requested values. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

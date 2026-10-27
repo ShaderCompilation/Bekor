@@ -1,0 +1,221 @@
+{
+  "public": {
+    "id": "js-promise-race",
+    "slug": "js-promise-race",
+    "version": "1.0.0",
+    "title": "Promise.race",
+    "description": "Use a deterministic promise-settlement adapter. Each item is {delay,status,value}; delay is an integer from 0 through 100, status is \"fulfilled\" or \"rejected\", and value is a scalar. All items start at time zero; settlements at equal delay use input order. At most 20 items. Return {status,value,time}; represent a permanently pending aggregate as {status:\"pending\",value:null,time:null}. This tests aggregation rules, not native microtask scheduling. Implement race: return the first settlement regardless of its status. Empty input stays pending. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "medium",
+    "concepts": ["promises", "sorting"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Find the first settlement with stable ordering on equal times."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(items: {delay:number,status:string,value:any}[]): JSON-compatible result",
+        "starter": "export function solve(items) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "delay": 3,
+                  "status": "fulfilled",
+                  "value": "a"
+                },
+                {
+                  "delay": 1,
+                  "status": "rejected",
+                  "value": "b"
+                }
+              ]
+            ],
+            "expected": {
+              "status": "rejected",
+              "value": "b",
+              "time": 1
+            }
+          },
+          {
+            "args": [
+              [
+                {
+                  "delay": 1,
+                  "status": "fulfilled",
+                  "value": 2
+                },
+                {
+                  "delay": 2,
+                  "status": "rejected",
+                  "value": 3
+                }
+              ]
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": 2,
+              "time": 1
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(items: {delay:number,status:string,value:any}[]): JSON-compatible result",
+        "starter": "export function solve(items: { delay: number; status: string; value: any }[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "delay": 3,
+                  "status": "fulfilled",
+                  "value": "a"
+                },
+                {
+                  "delay": 1,
+                  "status": "rejected",
+                  "value": "b"
+                }
+              ]
+            ],
+            "expected": {
+              "status": "rejected",
+              "value": "b",
+              "time": 1
+            }
+          },
+          {
+            "args": [
+              [
+                {
+                  "delay": 1,
+                  "status": "fulfilled",
+                  "value": 2
+                },
+                {
+                  "delay": 2,
+                  "status": "rejected",
+                  "value": 3
+                }
+              ]
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": 2,
+              "time": 1
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": {
+        "status": "pending",
+        "value": null,
+        "time": null
+      }
+    },
+    {
+      "args": [
+        [
+          {
+            "delay": 0,
+            "status": "fulfilled",
+            "value": false
+          }
+        ]
+      ],
+      "expected": {
+        "status": "fulfilled",
+        "value": false,
+        "time": 0
+      }
+    },
+    {
+      "args": [
+        [
+          {
+            "delay": 2,
+            "status": "rejected",
+            "value": "a"
+          },
+          {
+            "delay": 2,
+            "status": "fulfilled",
+            "value": "b"
+          }
+        ]
+      ],
+      "expected": {
+        "status": "rejected",
+        "value": "a",
+        "time": 2
+      }
+    },
+    {
+      "args": [
+        [
+          {
+            "delay": 0,
+            "status": "rejected",
+            "value": null
+          }
+        ]
+      ],
+      "expected": {
+        "status": "rejected",
+        "value": null,
+        "time": 0
+      }
+    },
+    {
+      "args": [
+        [
+          {
+            "delay": 9,
+            "status": "fulfilled",
+            "value": 0
+          },
+          {
+            "delay": 1,
+            "status": "fulfilled",
+            "value": 1
+          }
+        ]
+      ],
+      "expected": {
+        "status": "fulfilled",
+        "value": 1,
+        "time": 1
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(items) {\n  if (!items.length) return { status: \"pending\", value: null, time: null };\n  const first = items\n    .map((x, i) => ({ ...x, i }))\n    .sort((a, b) => a.delay - b.delay || a.i - b.i)[0];\n  return { status: first.status, value: first.value, time: first.delay };\n}\n",
+    "typescript": "export function solve(items: { delay: number; status: string; value: any }[]): any {\n  if (!items.length) return { status: \"pending\", value: null, time: null };\n  const first = items\n    .map((x, i) => ({ ...x, i }))\n    .sort((a, b) => a.delay - b.delay || a.i - b.i)[0];\n  return { status: first.status, value: first.value, time: first.delay };\n}\n"
+  },
+  "explanation": "Find the first settlement with stable ordering on equal times. Sorting uses O(n log n) time and O(n) auxiliary space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

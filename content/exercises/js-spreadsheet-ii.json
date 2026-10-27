@@ -1,0 +1,153 @@
+{
+  "public": {
+    "id": "js-spreadsheet-ii",
+    "slug": "js-spreadsheet-ii",
+    "version": "1.0.0",
+    "title": "Spreadsheet II",
+    "description": "input {cells,queries}; cells map names to integer constants or formula token arrays [operand,operator,operand,...]. An operand is an integer or cell-name string, operators are +, - and *. Evaluate every formula strictly left to right, ignoring usual multiplication precedence; resolve referenced formulas recursively, missing cells as 0. The graph is acyclic, depth at most 4, at most 3 operators/formula, at most 12 cells and 20 queries. Return one integer per queried name; every intermediate result is within 1000000 in absolute value. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["graphs", "dependency-tracking"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "cells": {
+                  "A": [2, "+", 3, "*", 4]
+                },
+                "queries": ["A"]
+              }
+            ],
+            "expected": [20]
+          },
+          {
+            "args": [
+              {
+                "cells": {
+                  "A": 2,
+                  "B": ["A", "-", 1]
+                },
+                "queries": ["B"]
+              }
+            ],
+            "expected": [1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "cells": {
+                  "A": [2, "+", 3, "*", 4]
+                },
+                "queries": ["A"]
+              }
+            ],
+            "expected": [20]
+          },
+          {
+            "args": [
+              {
+                "cells": {
+                  "A": 2,
+                  "B": ["A", "-", 1]
+                },
+                "queries": ["B"]
+              }
+            ],
+            "expected": [1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "cells": {},
+          "queries": []
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "cells": {},
+          "queries": ["X"]
+        }
+      ],
+      "expected": [0]
+    },
+    {
+      "args": [
+        {
+          "cells": {
+            "A": [10, "-", 3, "-", 2]
+          },
+          "queries": ["A"]
+        }
+      ],
+      "expected": [5]
+    },
+    {
+      "args": [
+        {
+          "cells": {
+            "A": 0,
+            "B": ["A", "*", 4]
+          },
+          "queries": ["B"]
+        }
+      ],
+      "expected": [0]
+    },
+    {
+      "args": [
+        {
+          "cells": {
+            "A": [2, "+", 3, "*", 4]
+          },
+          "queries": ["A", "A"]
+        }
+      ],
+      "expected": [20, 20]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const calc = (name) => {\n    const v = d.cells[name] ?? 0;\n    if (typeof v === \"number\") return v;\n    const val = (x) => (typeof x === \"number\" ? x : calc(x));\n    let out = val(v[0]);\n    for (let i = 1; i < v.length; i += 2) {\n      const x = val(v[i + 1]);\n      out = v[i] === \"+\" ? out + x : v[i] === \"-\" ? out - x : out * x;\n    }\n    return out;\n  };\n  return d.queries.map(calc);\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const calc = (name: string): number => {\n    const v = d.cells[name] ?? 0;\n    if (typeof v === \"number\") return v;\n    const val = (x: any): number => (typeof x === \"number\" ? x : calc(x));\n    let out = val(v[0]);\n    for (let i = 1; i < v.length; i += 2) {\n      const x = val(v[i + 1]);\n      out = v[i] === \"+\" ? out + x : v[i] === \"-\" ? out - x : out * x;\n    }\n    return out;\n  };\n  return d.queries.map(calc);\n}\n"
+  },
+  "explanation": "Recursively resolve operands then fold each formula from left to right. With b operands and dependency depth h, time per query is O(b to the h), stack O(h); the bounded grammar keeps work small. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

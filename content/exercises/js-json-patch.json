@@ -1,0 +1,221 @@
+{
+  "public": {
+    "id": "js-json-patch",
+    "slug": "js-json-patch",
+    "version": "1.0.0",
+    "title": "JSON Patch",
+    "description": "input {value,patches}; path in each patch is a nonempty array of object keys (no arrays along paths). Ancestors exist. Patches have op add, replace or remove; add writes a key, replace overwrites an existing key, remove deletes an existing key. Add/replace include value. Apply in order to a deep copy and return it. This JSON-path adapter omits pointer escaping and other JSON Patch operations. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["json", "objects"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "value": {},
+                "patches": [
+                  {
+                    "op": "add",
+                    "path": ["a"],
+                    "value": 1
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "a": 1
+            }
+          },
+          {
+            "args": [
+              {
+                "value": {
+                  "a": {
+                    "b": 1
+                  }
+                },
+                "patches": [
+                  {
+                    "op": "replace",
+                    "path": ["a", "b"],
+                    "value": 2
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "a": {
+                "b": 2
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "value": {},
+                "patches": [
+                  {
+                    "op": "add",
+                    "path": ["a"],
+                    "value": 1
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "a": 1
+            }
+          },
+          {
+            "args": [
+              {
+                "value": {
+                  "a": {
+                    "b": 1
+                  }
+                },
+                "patches": [
+                  {
+                    "op": "replace",
+                    "path": ["a", "b"],
+                    "value": 2
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "a": {
+                "b": 2
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "value": {
+            "a": 1
+          },
+          "patches": [
+            {
+              "op": "remove",
+              "path": ["a"]
+            }
+          ]
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "args": [
+        {
+          "value": {},
+          "patches": []
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "args": [
+        {
+          "value": {
+            "x": 1,
+            "y": 2
+          },
+          "patches": [
+            {
+              "op": "replace",
+              "path": ["x"],
+              "value": null
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "x": null,
+        "y": 2
+      }
+    },
+    {
+      "args": [
+        {
+          "value": {
+            "a": {}
+          },
+          "patches": [
+            {
+              "op": "add",
+              "path": ["a", "x"],
+              "value": [1]
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "a": {
+          "x": [1]
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "value": {},
+          "patches": [
+            {
+              "op": "add",
+              "path": ["x"],
+              "value": 1
+            },
+            {
+              "op": "remove",
+              "path": ["x"]
+            }
+          ]
+        }
+      ],
+      "expected": {}
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const clone = (v) => JSON.parse(JSON.stringify(v));\n  const out = clone(d.value);\n  for (const p of d.patches) {\n    let n = out;\n    for (const k of p.path.slice(0, -1)) n = n[k];\n    const k = p.path.at(-1);\n    if (p.op === \"remove\") delete n[k];\n    else n[k] = clone(p.value);\n  }\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const clone = (v: any): any => JSON.parse(JSON.stringify(v));\n  const out = clone(d.value);\n  for (const p of d.patches) {\n    let n = out;\n    for (const k of p.path.slice(0, -1)) n = n[k];\n    const k = p.path.at(-1);\n    if (p.op === \"remove\") delete n[k];\n    else n[k] = clone(p.value);\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Deep-copy the document, resolve each key path and perform its edit. O(n plus summed path lengths and inserted data) time and space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

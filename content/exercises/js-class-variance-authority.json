@@ -1,0 +1,233 @@
+{
+  "public": {
+    "id": "js-class-variance-authority",
+    "slug": "js-class-variance-authority",
+    "version": "1.0.0",
+    "title": "Class Variance Authority",
+    "description": "input has base (string), variants (object mapping names to option-to-class objects), defaults (option names), props (overrides) and compounds (array of {when,classes}). Resolve each variant in Object.keys order, use props when present otherwise defaults, omit null choices, append matching compounds in order. Join nonempty base/variant/compound strings with one space. Unknown choices add nothing. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["objects", "state-machines"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "base": "btn",
+                "variants": {
+                  "size": {
+                    "sm": "small"
+                  }
+                },
+                "defaults": {
+                  "size": "sm"
+                },
+                "props": {},
+                "compounds": []
+              }
+            ],
+            "expected": "btn small"
+          },
+          {
+            "args": [
+              {
+                "base": "b",
+                "variants": {
+                  "tone": {
+                    "red": "r"
+                  }
+                },
+                "defaults": {},
+                "props": {
+                  "tone": "red"
+                },
+                "compounds": [
+                  {
+                    "when": {
+                      "tone": "red"
+                    },
+                    "classes": "hot"
+                  }
+                ]
+              }
+            ],
+            "expected": "b r hot"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "base": "btn",
+                "variants": {
+                  "size": {
+                    "sm": "small"
+                  }
+                },
+                "defaults": {
+                  "size": "sm"
+                },
+                "props": {},
+                "compounds": []
+              }
+            ],
+            "expected": "btn small"
+          },
+          {
+            "args": [
+              {
+                "base": "b",
+                "variants": {
+                  "tone": {
+                    "red": "r"
+                  }
+                },
+                "defaults": {},
+                "props": {
+                  "tone": "red"
+                },
+                "compounds": [
+                  {
+                    "when": {
+                      "tone": "red"
+                    },
+                    "classes": "hot"
+                  }
+                ]
+              }
+            ],
+            "expected": "b r hot"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "base": "",
+          "variants": {},
+          "defaults": {},
+          "props": {},
+          "compounds": []
+        }
+      ],
+      "expected": ""
+    },
+    {
+      "args": [
+        {
+          "base": "b",
+          "variants": {
+            "s": {
+              "x": "x"
+            }
+          },
+          "defaults": {
+            "s": "x"
+          },
+          "props": {
+            "s": null
+          },
+          "compounds": []
+        }
+      ],
+      "expected": "b"
+    },
+    {
+      "args": [
+        {
+          "base": "b",
+          "variants": {
+            "s": {
+              "x": "x",
+              "y": "y"
+            }
+          },
+          "defaults": {
+            "s": "x"
+          },
+          "props": {
+            "s": "y"
+          },
+          "compounds": []
+        }
+      ],
+      "expected": "b y"
+    },
+    {
+      "args": [
+        {
+          "base": "",
+          "variants": {
+            "s": {
+              "x": "x"
+            }
+          },
+          "defaults": {},
+          "props": {
+            "s": "z"
+          },
+          "compounds": []
+        }
+      ],
+      "expected": ""
+    },
+    {
+      "args": [
+        {
+          "base": "b",
+          "variants": {},
+          "defaults": {},
+          "props": {
+            "x": 1
+          },
+          "compounds": [
+            {
+              "when": {
+                "x": 2
+              },
+              "classes": "no"
+            }
+          ]
+        }
+      ],
+      "expected": "b"
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const choice = { ...d.defaults, ...d.props };\n  const out = [d.base];\n  for (const k of Object.keys(d.variants)) {\n    const v = choice[k];\n    if (v !== null && Object.hasOwn(d.variants[k], String(v))) out.push(d.variants[k][String(v)]);\n  }\n  for (const c of d.compounds)\n    if (Object.keys(c.when).every((k) => choice[k] === c.when[k])) out.push(c.classes);\n  return out.filter(Boolean).join(\" \");\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const choice = { ...d.defaults, ...d.props };\n  const out: string[] = [d.base];\n  for (const k of Object.keys(d.variants)) {\n    const v = choice[k];\n    if (v !== null && Object.hasOwn(d.variants[k], String(v))) out.push(d.variants[k][String(v)]);\n  }\n  for (const c of d.compounds)\n    if (Object.keys(c.when).every((k) => choice[k] === c.when[k])) out.push(c.classes);\n  return out.filter(Boolean).join(\" \");\n}\n"
+  },
+  "explanation": "Resolve variant selections before evaluating compound conditions. Time is linear in variants and compound condition keys plus output length; auxiliary space stores selected choices and output. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

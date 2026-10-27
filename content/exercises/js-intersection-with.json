@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-intersection-with",
+    "slug": "js-intersection-with",
+    "version": "1.0.0",
+    "title": "Intersection With",
+    "description": "Return first integer representatives from left whose absolute value matches any integer in right, deduplicating by absolute value and preserving left order. The fixed comparator is equality of absolute values; this JSON adapter does not accept executable callbacks. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["sets", "equivalence-relations"],
+    "hints": [
+      "Normalize every number to its absolute value for both membership and deduplication.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(left, right): JSON value",
+        "starter": "export function solve(left, right) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[-2, 2, 3], [2]],
+            "expected": [-2]
+          },
+          {
+            "args": [[], []],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(left, right): JSON value",
+        "starter": "type Value = any;\nexport function solve(left: Value, right: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[-2, 2, 3], [2]],
+            "expected": [-2]
+          },
+          {
+            "args": [[], []],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[1], [-1]],
+      "expected": [1]
+    },
+    {
+      "args": [[0], [0]],
+      "expected": [0]
+    },
+    {
+      "args": [[2, 1], [1, 2]],
+      "expected": [2, 1]
+    },
+    {
+      "args": [[5], []],
+      "expected": []
+    },
+    {
+      "args": [[-1, 1, -2], [-1, 2]],
+      "expected": [-1, -2]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(left, right) {\n  const allowed = new Set(right.map((x) => Math.abs(x)));\n  const seen = new Set();\n  return left.filter((x) => {\n    const k = Math.abs(x);\n    if (!allowed.has(k) || seen.has(k)) return false;\n    seen.add(k);\n    return true;\n  });\n}\n",
+    "typescript": "type Value = any;\nexport function solve(left: Value, right: Value): Value {\n  const allowed = new Set(right.map((x: Value) => Math.abs(x)));\n  const seen = new Set();\n  return left.filter((x: Value) => {\n    const k = Math.abs(x);\n    if (!allowed.has(k) || seen.has(k)) return false;\n    seen.add(k);\n    return true;\n  });\n}\n"
+  },
+  "explanation": "Absolute values form equivalence classes. Emit the original first left value per matching class. O(n+m) expected time and space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

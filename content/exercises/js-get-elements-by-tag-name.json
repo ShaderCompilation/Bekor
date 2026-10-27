@@ -1,0 +1,183 @@
+{
+  "public": {
+    "id": "js-get-elements-by-tag-name",
+    "slug": "js-get-elements-by-tag-name",
+    "version": "1.0.0",
+    "title": "Elements By Tag",
+    "description": "tree is {id,tag,children} recursively. Return matching node IDs in depth-first preorder, including root. Match tags case-insensitively; tag \"*\" matches all. The tree has unique IDs and at most 60 nodes. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["trees", "depth-first-search"],
+    "hints": [
+      "Visit the current node before traversing its children.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(tree, tag): JSON value",
+        "starter": "export function solve(tree, tag) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "id": "a",
+                "tag": "DIV",
+                "children": []
+              },
+              "div"
+            ],
+            "expected": ["a"]
+          },
+          {
+            "args": [
+              {
+                "id": "a",
+                "tag": "p",
+                "children": []
+              },
+              "div"
+            ],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(tree, tag): JSON value",
+        "starter": "type Value = any;\nexport function solve(tree: Value, tag: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "id": "a",
+                "tag": "DIV",
+                "children": []
+              },
+              "div"
+            ],
+            "expected": ["a"]
+          },
+          {
+            "args": [
+              {
+                "id": "a",
+                "tag": "p",
+                "children": []
+              },
+              "div"
+            ],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "id": "a",
+          "tag": "div",
+          "children": [
+            {
+              "id": "b",
+              "tag": "p",
+              "children": []
+            }
+          ]
+        },
+        "*"
+      ],
+      "expected": ["a", "b"]
+    },
+    {
+      "args": [
+        {
+          "id": "a",
+          "tag": "div",
+          "children": [
+            {
+              "id": "b",
+              "tag": "p",
+              "children": []
+            }
+          ]
+        },
+        "p"
+      ],
+      "expected": ["b"]
+    },
+    {
+      "args": [
+        {
+          "id": "a",
+          "tag": "p",
+          "children": [
+            {
+              "id": "b",
+              "tag": "p",
+              "children": []
+            }
+          ]
+        },
+        "P"
+      ],
+      "expected": ["a", "b"]
+    },
+    {
+      "args": [
+        {
+          "id": "a",
+          "tag": "x",
+          "children": []
+        },
+        "*"
+      ],
+      "expected": ["a"]
+    },
+    {
+      "args": [
+        {
+          "id": "a",
+          "tag": "x",
+          "children": []
+        },
+        "y"
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "id": "upper",
+          "tag": "SPAN",
+          "children": []
+        },
+        "span"
+      ],
+      "expected": ["upper"]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(tree, tag) {\n  const out = [];\n  function visit(node) {\n    if (tag === \"*\" || node.tag.toLowerCase() === tag.toLowerCase()) out.push(node.id);\n    for (const child of node.children) visit(child);\n  }\n  visit(tree);\n  return out;\n}\n",
+    "typescript": "type Value = any;\nexport function solve(tree: Value, tag: Value): Value {\n  const out: Value[] = [];\n  function visit(node: Value): Value {\n    if (tag === \"*\" || node.tag.toLowerCase() === tag.toLowerCase()) out.push(node.id);\n    for (const child of node.children) visit(child);\n  }\n  visit(tree);\n  return out;\n}\n"
+  },
+  "explanation": "Compare normalized tags and recurse through children in order. O(total nodes and tag characters) time and O(height plus output) space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

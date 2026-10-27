@@ -1,0 +1,255 @@
+{
+  "public": {
+    "id": "js-data-selection",
+    "slug": "js-data-selection",
+    "version": "1.0.0",
+    "title": "Data Selection",
+    "description": "Select rows matching all requirements. Rows are flat scalar records, at most 30 rows with at most 10 keys each. Requirements are {key,op,value}, with op \"eq\", \"gt\" or \"in\"; eq is strict scalar equality, gt compares integers, and in checks membership in a scalar array. Missing keys never match, including null. Return matching rows in input order. Empty requirements match every row. At most 10 requirements. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["filtering", "objects"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Evaluate conjunctive predicates for each row."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(rows: Record<string,any>[], requirements: {key:string,op:string,value:any}[]): JSON-compatible result",
+        "starter": "export function solve(rows, requirements) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "x": 1
+                },
+                {
+                  "x": 3
+                },
+                {
+                  "x": 4
+                }
+              ],
+              [
+                {
+                  "key": "x",
+                  "op": "gt",
+                  "value": 2
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "x": 3
+              },
+              {
+                "x": 4
+              }
+            ]
+          },
+          {
+            "args": [
+              [
+                {
+                  "x": "a"
+                },
+                {
+                  "x": "b"
+                }
+              ],
+              [
+                {
+                  "key": "x",
+                  "op": "in",
+                  "value": ["b", "c"]
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "x": "b"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(rows: Record<string,any>[], requirements: {key:string,op:string,value:any}[]): JSON-compatible result",
+        "starter": "export function solve(\n  rows: Record<string, any>[],\n  requirements: { key: string; op: string; value: any }[],\n): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "x": 1
+                },
+                {
+                  "x": 3
+                },
+                {
+                  "x": 4
+                }
+              ],
+              [
+                {
+                  "key": "x",
+                  "op": "gt",
+                  "value": 2
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "x": 3
+              },
+              {
+                "x": 4
+              }
+            ]
+          },
+          {
+            "args": [
+              [
+                {
+                  "x": "a"
+                },
+                {
+                  "x": "b"
+                }
+              ],
+              [
+                {
+                  "key": "x",
+                  "op": "in",
+                  "value": ["b", "c"]
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "x": "b"
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], []],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "x": 0
+          },
+          {}
+        ],
+        []
+      ],
+      "expected": [
+        {
+          "x": 0
+        },
+        {}
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "x": null
+          },
+          {}
+        ],
+        [
+          {
+            "key": "x",
+            "op": "eq",
+            "value": null
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "x": null
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "x": 2
+          },
+          {
+            "x": 3
+          }
+        ],
+        [
+          {
+            "key": "x",
+            "op": "gt",
+            "value": 2
+          },
+          {
+            "key": "x",
+            "op": "in",
+            "value": [2, 4]
+          }
+        ]
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "x": false
+          },
+          {
+            "x": 0
+          }
+        ],
+        [
+          {
+            "key": "x",
+            "op": "eq",
+            "value": false
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "x": false
+        }
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(rows, requirements) {\n  return rows.filter((row) =>\n    requirements.every(\n      (r) =>\n        Object.hasOwn(row, r.key) &&\n        (r.op === \"eq\"\n          ? row[r.key] === r.value\n          : r.op === \"gt\"\n            ? row[r.key] > r.value\n            : r.value.includes(row[r.key])),\n    ),\n  );\n}\n",
+    "typescript": "export function solve(\n  rows: Record<string, any>[],\n  requirements: { key: string; op: string; value: any }[],\n): any {\n  return rows.filter((row) =>\n    requirements.every(\n      (r) =>\n        Object.hasOwn(row, r.key) &&\n        (r.op === \"eq\"\n          ? row[r.key] === r.value\n          : r.op === \"gt\"\n            ? row[r.key] > r.value\n            : r.value.includes(row[r.key])),\n    ),\n  );\n}\n"
+  },
+  "explanation": "Evaluate conjunctive predicates for each row. O(rows times requirements times membership-list length), O(matches) output. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

@@ -1,0 +1,251 @@
+{
+  "public": {
+    "id": "js-jquery-css",
+    "slug": "js-jquery-css",
+    "version": "1.0.0",
+    "title": "jQuery.css",
+    "description": "Replay a JSON adapter for a chainable style wrapper. Initial is a map of style property names to string values. Operations are {kind:\"set\",property,value}, {kind:\"setMany\",values:object}, or {kind:\"get\",property}. Empty-string assignments remove a property. Return {style,reads}; reads records requested values in operation order, using an empty string for absent properties. At most 20 operations, 20 distinct property names, strings of length at most 20. Computed styles and browser normalization are outside this adapter. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["dom", "objects"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Maintain a style map; reads observe previous writes."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(initial: Record<string,string>, operations: any[]): JSON-compatible result",
+        "starter": "export function solve(initial, operations) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "color": "red"
+              },
+              [
+                {
+                  "kind": "set",
+                  "property": "color",
+                  "value": "blue"
+                },
+                {
+                  "kind": "get",
+                  "property": "color"
+                }
+              ]
+            ],
+            "expected": {
+              "style": {
+                "color": "blue"
+              },
+              "reads": ["blue"]
+            }
+          },
+          {
+            "args": [
+              {
+                "color": "red"
+              },
+              [
+                {
+                  "kind": "set",
+                  "property": "color",
+                  "value": ""
+                },
+                {
+                  "kind": "get",
+                  "property": "color"
+                }
+              ]
+            ],
+            "expected": {
+              "style": {},
+              "reads": [""]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(initial: Record<string,string>, operations: any[]): JSON-compatible result",
+        "starter": "export function solve(initial: Record<string, string>, operations: any[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "color": "red"
+              },
+              [
+                {
+                  "kind": "set",
+                  "property": "color",
+                  "value": "blue"
+                },
+                {
+                  "kind": "get",
+                  "property": "color"
+                }
+              ]
+            ],
+            "expected": {
+              "style": {
+                "color": "blue"
+              },
+              "reads": ["blue"]
+            }
+          },
+          {
+            "args": [
+              {
+                "color": "red"
+              },
+              [
+                {
+                  "kind": "set",
+                  "property": "color",
+                  "value": ""
+                },
+                {
+                  "kind": "get",
+                  "property": "color"
+                }
+              ]
+            ],
+            "expected": {
+              "style": {},
+              "reads": [""]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [{}, []],
+      "expected": {
+        "style": {},
+        "reads": []
+      }
+    },
+    {
+      "args": [
+        {},
+        [
+          {
+            "kind": "get",
+            "property": "x"
+          }
+        ]
+      ],
+      "expected": {
+        "style": {},
+        "reads": [""]
+      }
+    },
+    {
+      "args": [
+        {},
+        [
+          {
+            "kind": "setMany",
+            "values": {
+              "a": "x",
+              "b": "y"
+            }
+          },
+          {
+            "kind": "get",
+            "property": "b"
+          }
+        ]
+      ],
+      "expected": {
+        "style": {
+          "a": "x",
+          "b": "y"
+        },
+        "reads": ["y"]
+      }
+    },
+    {
+      "args": [
+        {
+          "a": "1"
+        },
+        [
+          {
+            "kind": "setMany",
+            "values": {
+              "a": "",
+              "b": "0"
+            }
+          },
+          {
+            "kind": "get",
+            "property": "b"
+          }
+        ]
+      ],
+      "expected": {
+        "style": {
+          "b": "0"
+        },
+        "reads": ["0"]
+      }
+    },
+    {
+      "args": [
+        {},
+        [
+          {
+            "kind": "set",
+            "property": "x",
+            "value": "1"
+          },
+          {
+            "kind": "get",
+            "property": "x"
+          },
+          {
+            "kind": "set",
+            "property": "x",
+            "value": "2"
+          },
+          {
+            "kind": "get",
+            "property": "x"
+          }
+        ]
+      ],
+      "expected": {
+        "style": {
+          "x": "2"
+        },
+        "reads": ["1", "2"]
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(initial, operations) {\n  const style = { ...initial },\n    reads = [];\n  const set = (k, v) => {\n    if (v === \"\") delete style[k];\n    else style[k] = v;\n  };\n  for (const op of operations) {\n    if (op.kind === \"get\") reads.push(style[op.property] ?? \"\");\n    else if (op.kind === \"set\") set(op.property, op.value);\n    else for (const k of Object.keys(op.values)) set(k, op.values[k]);\n  }\n  return { style, reads };\n}\n",
+    "typescript": "export function solve(initial: Record<string, string>, operations: any[]): any {\n  const style = { ...initial },\n    reads: string[] = [];\n  const set = (k: string, v: string): void => {\n    if (v === \"\") delete style[k];\n    else style[k] = v;\n  };\n  for (const op of operations) {\n    if (op.kind === \"get\") reads.push(style[op.property] ?? \"\");\n    else if (op.kind === \"set\") set(op.property, op.value);\n    else for (const k of Object.keys(op.values)) set(k, op.values[k]);\n  }\n  return { style, reads };\n}\n"
+  },
+  "explanation": "Maintain a style map; reads observe previous writes. O(total written keys + operations), O(style keys + reads) space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

@@ -1,0 +1,122 @@
+{
+  "public": {
+    "id": "js-from-pairs",
+    "slug": "js-from-pairs",
+    "version": "1.0.0",
+    "title": "From Pairs",
+    "description": "Build an object from key-value pairs. Every pair has a nonempty ASCII-letter key and a JSON value. Later occurrences of the same key overwrite earlier ones. At most 50 pairs; object key order does not matter. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["objects", "maps"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Assign pairs in sequence so the final assignment wins."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(pairs: [string,any][]): JSON-compatible result",
+        "starter": "export function solve(pairs) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[["a", 1], ["b", 2]]],
+            "expected": {
+              "a": 1,
+              "b": 2
+            }
+          },
+          {
+            "args": [[["a", 1], ["a", 3]]],
+            "expected": {
+              "a": 3
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(pairs: [string,any][]): JSON-compatible result",
+        "starter": "export function solve(pairs: [string, any][]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[["a", 1], ["b", 2]]],
+            "expected": {
+              "a": 1,
+              "b": 2
+            }
+          },
+          {
+            "args": [[["a", 1], ["a", 3]]],
+            "expected": {
+              "a": 3
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": {}
+    },
+    {
+      "args": [[["a", null]]],
+      "expected": {
+        "a": null
+      }
+    },
+    {
+      "args": [[["a", false], ["b", 0]]],
+      "expected": {
+        "a": false,
+        "b": 0
+      }
+    },
+    {
+      "args": [
+        [
+          [
+            "a",
+            {
+              "b": 2
+            }
+          ]
+        ]
+      ],
+      "expected": {
+        "a": {
+          "b": 2
+        }
+      }
+    },
+    {
+      "args": [[["a", 1], ["b", 2], ["a", 0]]],
+      "expected": {
+        "a": 0,
+        "b": 2
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(pairs) {\n  const out = {};\n  for (const [k, v] of pairs) out[k] = v;\n  return out;\n}\n",
+    "typescript": "export function solve(pairs: [string, any][]): any {\n  const out: Record<string, any> = {};\n  for (const [k, v] of pairs) out[k] = v;\n  return out;\n}\n"
+  },
+  "explanation": "Assign pairs in sequence so the final assignment wins. O(pairs) expected time and O(keys + values) output space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

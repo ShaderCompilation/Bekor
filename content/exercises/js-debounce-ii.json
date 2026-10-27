@@ -1,0 +1,241 @@
+{
+  "public": {
+    "id": "js-debounce-ii",
+    "slug": "js-debounce-ii",
+    "version": "1.0.0",
+    "title": "Debounce II",
+    "description": "This is a virtual-clock adapter, not a live timer API. Events have nondecreasing integer time fields from 0 through 100; at most 20 events. A call has {time,kind:\"call\",value}, cancel/flush events omit value. The horizon is an integer from the last event time through 120. Process due callbacks before each event, including ties, and after all events through horizon inclusive. Return callback records {time,value} in firing order. Values are JSON scalars. Implement trailing debounce with wait from 1 through 20. Call replaces the pending invocation. Cancel discards it; flush fires it immediately at the event time if pending. Repeated cancel/flush on no pending invocation does nothing. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "medium",
+    "concepts": ["timers", "state-machines"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Maintain a latest value/deadline and explicitly clear it after firing, cancel or flush."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(events: {time:number,kind:string,value?:any}[], wait: number, horizon: number): JSON-compatible result",
+        "starter": "export function solve(events, wait, horizon) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "time": 0,
+                  "kind": "call",
+                  "value": "a"
+                },
+                {
+                  "time": 1,
+                  "kind": "flush"
+                }
+              ],
+              3,
+              6
+            ],
+            "expected": [
+              {
+                "time": 1,
+                "value": "a"
+              }
+            ]
+          },
+          {
+            "args": [
+              [
+                {
+                  "time": 0,
+                  "kind": "call",
+                  "value": 1
+                },
+                {
+                  "time": 1,
+                  "kind": "cancel"
+                }
+              ],
+              3,
+              6
+            ],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(events: {time:number,kind:string,value?:any}[], wait: number, horizon: number): JSON-compatible result",
+        "starter": "export function solve(\n  events: { time: number; kind: string; value?: any }[],\n  wait: number,\n  horizon: number,\n): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "time": 0,
+                  "kind": "call",
+                  "value": "a"
+                },
+                {
+                  "time": 1,
+                  "kind": "flush"
+                }
+              ],
+              3,
+              6
+            ],
+            "expected": [
+              {
+                "time": 1,
+                "value": "a"
+              }
+            ]
+          },
+          {
+            "args": [
+              [
+                {
+                  "time": 0,
+                  "kind": "call",
+                  "value": 1
+                },
+                {
+                  "time": 1,
+                  "kind": "cancel"
+                }
+              ],
+              3,
+              6
+            ],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 2, 5],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "time": 0,
+            "kind": "flush"
+          },
+          {
+            "time": 1,
+            "kind": "cancel"
+          }
+        ],
+        2,
+        6
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "time": 0,
+            "kind": "call",
+            "value": 0
+          },
+          {
+            "time": 2,
+            "kind": "flush"
+          }
+        ],
+        2,
+        5
+      ],
+      "expected": [
+        {
+          "time": 2,
+          "value": 0
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "time": 0,
+            "kind": "call",
+            "value": 1
+          },
+          {
+            "time": 1,
+            "kind": "call",
+            "value": 2
+          },
+          {
+            "time": 2,
+            "kind": "flush"
+          },
+          {
+            "time": 3,
+            "kind": "flush"
+          }
+        ],
+        4,
+        9
+      ],
+      "expected": [
+        {
+          "time": 2,
+          "value": 2
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "time": 0,
+            "kind": "call",
+            "value": 1
+          },
+          {
+            "time": 1,
+            "kind": "cancel"
+          },
+          {
+            "time": 2,
+            "kind": "call",
+            "value": 2
+          }
+        ],
+        2,
+        4
+      ],
+      "expected": [
+        {
+          "time": 4,
+          "value": 2
+        }
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(events, wait, horizon) {\n  let due = null,\n    value = null;\n  const out = [];\n  const advance = (t) => {\n    if (due !== null && due <= t) {\n      out.push({ time: due, value });\n      due = null;\n    }\n  };\n  for (const e of events) {\n    advance(e.time);\n    if (e.kind === \"call\") {\n      value = e.value;\n      due = e.time + wait;\n    } else if (e.kind === \"cancel\") due = null;\n    else if (e.kind === \"flush\" && due !== null) {\n      out.push({ time: e.time, value });\n      due = null;\n    }\n  }\n  advance(horizon);\n  return out;\n}\n",
+    "typescript": "export function solve(\n  events: { time: number; kind: string; value?: any }[],\n  wait: number,\n  horizon: number,\n): any {\n  let due: number | null = null,\n    value: any = null;\n  const out: any[] = [];\n  const advance = (t: number): void => {\n    if (due !== null && due <= t) {\n      out.push({ time: due, value });\n      due = null;\n    }\n  };\n  for (const e of events) {\n    advance(e.time);\n    if (e.kind === \"call\") {\n      value = e.value;\n      due = e.time + wait;\n    } else if (e.kind === \"cancel\") due = null;\n    else if (e.kind === \"flush\" && due !== null) {\n      out.push({ time: e.time, value });\n      due = null;\n    }\n  }\n  advance(horizon);\n  return out;\n}\n"
+  },
+  "explanation": "Maintain a latest value/deadline and explicitly clear it after firing, cancel or flush. O(e) time/output and O(1) state. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

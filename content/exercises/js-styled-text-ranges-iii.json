@@ -1,0 +1,190 @@
+{
+  "public": {
+    "id": "js-styled-text-ranges-iii",
+    "slug": "js-styled-text-ranges-iii",
+    "version": "1.0.0",
+    "title": "Styled Text Ranges III",
+    "description": "input {text,ranges,start,end,replacement}; ranges are sorted disjoint [start,end,style] triples, each style a nonempty string. Replace text span [start,end) by replacement. Keep surviving old-character styles, remove styles on deleted characters, and make inserted characters unstyled. Return {text,ranges}, coalescing adjacent equal surviving styles and omitting unstyled spans. Source/replacement are ASCII, resulting length at most 100. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["strings", "intervals"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "text": "abcd",
+                "ranges": [[0, 4, "b"]],
+                "start": 1,
+                "end": 3,
+                "replacement": "X"
+              }
+            ],
+            "expected": {
+              "text": "aXd",
+              "ranges": [[0, 1, "b"], [2, 3, "b"]]
+            }
+          },
+          {
+            "args": [
+              {
+                "text": "ab",
+                "ranges": [[0, 2, "x"]],
+                "start": 1,
+                "end": 1,
+                "replacement": "Q"
+              }
+            ],
+            "expected": {
+              "text": "aQb",
+              "ranges": [[0, 1, "x"], [2, 3, "x"]]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "text": "abcd",
+                "ranges": [[0, 4, "b"]],
+                "start": 1,
+                "end": 3,
+                "replacement": "X"
+              }
+            ],
+            "expected": {
+              "text": "aXd",
+              "ranges": [[0, 1, "b"], [2, 3, "b"]]
+            }
+          },
+          {
+            "args": [
+              {
+                "text": "ab",
+                "ranges": [[0, 2, "x"]],
+                "start": 1,
+                "end": 1,
+                "replacement": "Q"
+              }
+            ],
+            "expected": {
+              "text": "aQb",
+              "ranges": [[0, 1, "x"], [2, 3, "x"]]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "text": "",
+          "ranges": [],
+          "start": 0,
+          "end": 0,
+          "replacement": ""
+        }
+      ],
+      "expected": {
+        "text": "",
+        "ranges": []
+      }
+    },
+    {
+      "args": [
+        {
+          "text": "abc",
+          "ranges": [[0, 1, "x"], [2, 3, "x"]],
+          "start": 1,
+          "end": 2,
+          "replacement": ""
+        }
+      ],
+      "expected": {
+        "text": "ac",
+        "ranges": [[0, 2, "x"]]
+      }
+    },
+    {
+      "args": [
+        {
+          "text": "ab",
+          "ranges": [[0, 2, "x"]],
+          "start": 0,
+          "end": 2,
+          "replacement": "c"
+        }
+      ],
+      "expected": {
+        "text": "c",
+        "ranges": []
+      }
+    },
+    {
+      "args": [
+        {
+          "text": "ab",
+          "ranges": [],
+          "start": 0,
+          "end": 0,
+          "replacement": "q"
+        }
+      ],
+      "expected": {
+        "text": "qab",
+        "ranges": []
+      }
+    },
+    {
+      "args": [
+        {
+          "text": "abc",
+          "ranges": [[1, 3, "i"]],
+          "start": 0,
+          "end": 1,
+          "replacement": ""
+        }
+      ],
+      "expected": {
+        "text": "bc",
+        "ranges": [[0, 2, "i"]]
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  let cells = Array.from({ length: d.text.length }, () => null);\n  for (const r of d.ranges) for (let i = r[0]; i < r[1]; i++) cells[i] = r[2];\n  cells.splice(d.start, d.end - d.start, ...Array(d.replacement.length).fill(null));\n  const ranges = [];\n  for (let i = 0; i < cells.length; ) {\n    let j = i + 1;\n    while (j < cells.length && cells[j] === cells[i]) j++;\n    if (cells[i] !== null) ranges.push([i, j, cells[i]]);\n    i = j;\n  }\n  return { text: d.text.slice(0, d.start) + d.replacement + d.text.slice(d.end), ranges };\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  let cells: any[] = Array.from({ length: d.text.length }, () => null);\n  for (const r of d.ranges) for (let i = r[0]; i < r[1]; i++) cells[i] = r[2];\n  cells.splice(d.start, d.end - d.start, ...Array(d.replacement.length).fill(null));\n  const ranges: any[] = [];\n  for (let i = 0; i < cells.length; ) {\n    let j = i + 1;\n    while (j < cells.length && cells[j] === cells[i]) j++;\n    if (cells[i] !== null) ranges.push([i, j, cells[i]]);\n    i = j;\n  }\n  return { text: d.text.slice(0, d.start) + d.replacement + d.text.slice(d.end), ranges };\n}\n"
+  },
+  "explanation": "Expand styles, splice the style array in parallel with text replacement, then coalesce. O(text length times ranges plus output) time and O(result length) space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

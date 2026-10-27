@@ -1,0 +1,186 @@
+{
+  "public": {
+    "id": "js-singleton",
+    "slug": "js-singleton",
+    "version": "1.0.0",
+    "title": "Singleton",
+    "description": "Simulate a singleton constructor. Each call requests construction with one scalar value. The first call constructs one instance retaining that value; subsequent calls reuse it and ignore their arguments. Return {observations,constructions}; every observation is {id:1,value}, and constructions is zero for no calls or one otherwise. Null and false are valid stored values. At most 30 calls. This adapter checks initialization/reuse state rather than JavaScript object identity. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["patterns", "state"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Use a separate initialization flag and retain the first argument."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(calls: any[]): JSON-compatible result",
+        "starter": "export function solve(calls) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [["a", "b"]],
+            "expected": {
+              "observations": [
+                {
+                  "id": 1,
+                  "value": "a"
+                },
+                {
+                  "id": 1,
+                  "value": "a"
+                }
+              ],
+              "constructions": 1
+            }
+          },
+          {
+            "args": [[null, 2]],
+            "expected": {
+              "observations": [
+                {
+                  "id": 1,
+                  "value": null
+                },
+                {
+                  "id": 1,
+                  "value": null
+                }
+              ],
+              "constructions": 1
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(calls: any[]): JSON-compatible result",
+        "starter": "export function solve(calls: any[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [["a", "b"]],
+            "expected": {
+              "observations": [
+                {
+                  "id": 1,
+                  "value": "a"
+                },
+                {
+                  "id": 1,
+                  "value": "a"
+                }
+              ],
+              "constructions": 1
+            }
+          },
+          {
+            "args": [[null, 2]],
+            "expected": {
+              "observations": [
+                {
+                  "id": 1,
+                  "value": null
+                },
+                {
+                  "id": 1,
+                  "value": null
+                }
+              ],
+              "constructions": 1
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": {
+        "observations": [],
+        "constructions": 0
+      }
+    },
+    {
+      "args": [[false, true]],
+      "expected": {
+        "observations": [
+          {
+            "id": 1,
+            "value": false
+          },
+          {
+            "id": 1,
+            "value": false
+          }
+        ],
+        "constructions": 1
+      }
+    },
+    {
+      "args": [[0, 1]],
+      "expected": {
+        "observations": [
+          {
+            "id": 1,
+            "value": 0
+          },
+          {
+            "id": 1,
+            "value": 0
+          }
+        ],
+        "constructions": 1
+      }
+    },
+    {
+      "args": [[3]],
+      "expected": {
+        "observations": [
+          {
+            "id": 1,
+            "value": 3
+          }
+        ],
+        "constructions": 1
+      }
+    },
+    {
+      "args": [["", "x"]],
+      "expected": {
+        "observations": [
+          {
+            "id": 1,
+            "value": ""
+          },
+          {
+            "id": 1,
+            "value": ""
+          }
+        ],
+        "constructions": 1
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(calls) {\n  let initialized = false,\n    value = null,\n    constructions = 0;\n  const observations = calls.map((x) => {\n    if (!initialized) {\n      value = x;\n      initialized = true;\n      constructions++;\n    }\n    return { id: 1, value };\n  });\n  return { observations, constructions };\n}\n",
+    "typescript": "export function solve(calls: any[]): any {\n  let initialized = false,\n    value: any = null,\n    constructions = 0;\n  const observations = calls.map((x) => {\n    if (!initialized) {\n      value = x;\n      initialized = true;\n      constructions++;\n    }\n    return { id: 1, value };\n  });\n  return { observations, constructions };\n}\n"
+  },
+  "explanation": "Use a separate initialization flag and retain the first argument. O(calls) time/output and O(1) state. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

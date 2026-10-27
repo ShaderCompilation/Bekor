@@ -1,0 +1,301 @@
+{
+  "public": {
+    "id": "js-corresponding-node-across-pages",
+    "slug": "js-corresponding-node-across-pages",
+    "version": "1.0.0",
+    "title": "Corresponding Node Across Pages",
+    "description": "input has source and target trees and id, an ID in source. A node is {id,children}; IDs are unique per tree and tree child counts match at corresponding nodes. Return the target node ID at the same child-index path as the source ID. Return null if the source ID is absent. Node values/IDs need not match between trees. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["trees", "depth-first-search"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "source": {
+                  "id": "a",
+                  "children": []
+                },
+                "target": {
+                  "id": "b",
+                  "children": []
+                },
+                "id": "a"
+              }
+            ],
+            "expected": "b"
+          },
+          {
+            "args": [
+              {
+                "source": {
+                  "id": "a",
+                  "children": [
+                    {
+                      "id": "x",
+                      "children": []
+                    }
+                  ]
+                },
+                "target": {
+                  "id": "b",
+                  "children": [
+                    {
+                      "id": "y",
+                      "children": []
+                    }
+                  ]
+                },
+                "id": "x"
+              }
+            ],
+            "expected": "y"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "source": {
+                  "id": "a",
+                  "children": []
+                },
+                "target": {
+                  "id": "b",
+                  "children": []
+                },
+                "id": "a"
+              }
+            ],
+            "expected": "b"
+          },
+          {
+            "args": [
+              {
+                "source": {
+                  "id": "a",
+                  "children": [
+                    {
+                      "id": "x",
+                      "children": []
+                    }
+                  ]
+                },
+                "target": {
+                  "id": "b",
+                  "children": [
+                    {
+                      "id": "y",
+                      "children": []
+                    }
+                  ]
+                },
+                "id": "x"
+              }
+            ],
+            "expected": "y"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "source": {
+            "id": "a",
+            "children": []
+          },
+          "target": {
+            "id": "b",
+            "children": []
+          },
+          "id": "z"
+        }
+      ],
+      "expected": null
+    },
+    {
+      "args": [
+        {
+          "source": {
+            "id": "a",
+            "children": [
+              {
+                "id": "x",
+                "children": []
+              },
+              {
+                "id": "y",
+                "children": []
+              }
+            ]
+          },
+          "target": {
+            "id": "b",
+            "children": [
+              {
+                "id": "q",
+                "children": []
+              },
+              {
+                "id": "r",
+                "children": []
+              }
+            ]
+          },
+          "id": "y"
+        }
+      ],
+      "expected": "r"
+    },
+    {
+      "args": [
+        {
+          "source": {
+            "id": "a",
+            "children": [
+              {
+                "id": "x",
+                "children": [
+                  {
+                    "id": "z",
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          "target": {
+            "id": "b",
+            "children": [
+              {
+                "id": "q",
+                "children": [
+                  {
+                    "id": "r",
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          "id": "z"
+        }
+      ],
+      "expected": "r"
+    },
+    {
+      "args": [
+        {
+          "source": {
+            "id": "a",
+            "children": []
+          },
+          "target": {
+            "id": "a",
+            "children": []
+          },
+          "id": "a"
+        }
+      ],
+      "expected": "a"
+    },
+    {
+      "args": [
+        {
+          "source": {
+            "id": "a",
+            "children": [
+              {
+                "id": "z",
+                "children": []
+              }
+            ]
+          },
+          "target": {
+            "id": "z",
+            "children": [
+              {
+                "id": "a",
+                "children": []
+              }
+            ]
+          },
+          "id": "a"
+        }
+      ],
+      "expected": "z"
+    },
+    {
+      "args": [
+        {
+          "source": {
+            "id": "a",
+            "children": [
+              {
+                "id": "b",
+                "children": []
+              },
+              {
+                "id": "c",
+                "children": []
+              }
+            ]
+          },
+          "target": {
+            "id": "x",
+            "children": [
+              {
+                "id": "y",
+                "children": []
+              },
+              {
+                "id": "z",
+                "children": []
+              }
+            ]
+          },
+          "id": "c"
+        }
+      ],
+      "expected": "z"
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const find = (n, p) => {\n    if (n.id === d.id) return p;\n    for (let i = 0; i < n.children.length; i++) {\n      const q = find(n.children[i], p.concat(i));\n      if (q) return q;\n    }\n    return null;\n  };\n  const p = find(d.source, []);\n  if (p === null) return null;\n  let n = d.target;\n  for (const i of p) n = n.children[i];\n  return n.id;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const find = (n: any, p: number[]): number[] | null => {\n    if (n.id === d.id) return p;\n    for (let i = 0; i < n.children.length; i++) {\n      const q = find(n.children[i], p.concat(i));\n      if (q) return q;\n    }\n    return null;\n  };\n  const p = find(d.source, []);\n  if (p === null) return null;\n  let n = d.target;\n  for (const i of p) n = n.children[i];\n  return n.id;\n}\n"
+  },
+  "explanation": "Find the source child-index path with DFS, then walk the target along that path. Time O(n) and traversal space O(h squared) for copied paths in the worst case, bounded by the small tree domain. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

@@ -1,0 +1,263 @@
+{
+  "public": {
+    "id": "js-get-elements-by-class-name",
+    "slug": "js-get-elements-by-class-name",
+    "version": "1.0.0",
+    "title": "getElementsByClassName",
+    "description": "Use a JSON DOM adapter: each node is {id,tag,classes,style,children}, with unique ASCII id, lowercase tag, classes as an array of distinct strings, style as an object of already-computed string properties, and children as an array of nodes. At most 30 nodes, depth at most 6, each string length at most 12. Visit the root and descendants in preorder. No actual browser, inheritance, selector engine or CSS cascade is modeled. The requested classes array has at most 5 nonempty strings. Return IDs of nodes containing every requested class, using exact case-sensitive token equality. An empty requested array matches all nodes. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["dom", "trees"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Preorder traversal preserves document order; test all requested tokens at each node."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(root: any, requested: string[]): JSON-compatible result",
+        "starter": "export function solve(root, requested) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "id": "r",
+                "tag": "div",
+                "classes": ["y"],
+                "style": {},
+                "children": [
+                  {
+                    "id": "a",
+                    "tag": "p",
+                    "classes": ["x", "y"],
+                    "style": {},
+                    "children": []
+                  },
+                  {
+                    "id": "b",
+                    "tag": "p",
+                    "classes": ["x"],
+                    "style": {},
+                    "children": []
+                  }
+                ]
+              },
+              ["x", "y"]
+            ],
+            "expected": ["a"]
+          },
+          {
+            "args": [
+              {
+                "id": "r",
+                "tag": "div",
+                "classes": [],
+                "style": {},
+                "children": [
+                  {
+                    "id": "a",
+                    "tag": "div",
+                    "classes": [],
+                    "style": {},
+                    "children": []
+                  }
+                ]
+              },
+              []
+            ],
+            "expected": ["r", "a"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(root: any, requested: string[]): JSON-compatible result",
+        "starter": "export function solve(root: any, requested: string[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "id": "r",
+                "tag": "div",
+                "classes": ["y"],
+                "style": {},
+                "children": [
+                  {
+                    "id": "a",
+                    "tag": "p",
+                    "classes": ["x", "y"],
+                    "style": {},
+                    "children": []
+                  },
+                  {
+                    "id": "b",
+                    "tag": "p",
+                    "classes": ["x"],
+                    "style": {},
+                    "children": []
+                  }
+                ]
+              },
+              ["x", "y"]
+            ],
+            "expected": ["a"]
+          },
+          {
+            "args": [
+              {
+                "id": "r",
+                "tag": "div",
+                "classes": [],
+                "style": {},
+                "children": [
+                  {
+                    "id": "a",
+                    "tag": "div",
+                    "classes": [],
+                    "style": {},
+                    "children": []
+                  }
+                ]
+              },
+              []
+            ],
+            "expected": ["r", "a"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "id": "r",
+          "tag": "div",
+          "classes": [],
+          "style": {},
+          "children": []
+        },
+        ["x"]
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "id": "r",
+          "tag": "div",
+          "classes": ["x"],
+          "style": {},
+          "children": []
+        },
+        ["x"]
+      ],
+      "expected": ["r"]
+    },
+    {
+      "args": [
+        {
+          "id": "r",
+          "tag": "div",
+          "classes": [],
+          "style": {},
+          "children": [
+            {
+              "id": "a",
+              "tag": "p",
+              "classes": ["X"],
+              "style": {},
+              "children": []
+            }
+          ]
+        },
+        ["x"]
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "id": "r",
+          "tag": "div",
+          "classes": [],
+          "style": {},
+          "children": [
+            {
+              "id": "a",
+              "tag": "p",
+              "classes": ["x"],
+              "style": {},
+              "children": [
+                {
+                  "id": "b",
+                  "tag": "span",
+                  "classes": ["x"],
+                  "style": {},
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        ["x"]
+      ],
+      "expected": ["a", "b"]
+    },
+    {
+      "args": [
+        {
+          "id": "r",
+          "tag": "div",
+          "classes": ["xx"],
+          "style": {},
+          "children": []
+        },
+        ["x"]
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "id": "r",
+          "tag": "div",
+          "classes": [],
+          "style": {},
+          "children": [
+            {
+              "id": "a",
+              "tag": "p",
+              "classes": ["x"],
+              "style": {},
+              "children": []
+            }
+          ]
+        },
+        ["x", "y"]
+      ],
+      "expected": []
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(root, requested) {\n  const nodes = [];\n  const visit = (n) => {\n    nodes.push(n);\n    for (const c of n.children) visit(c);\n  };\n  visit(root);\n  return nodes.filter((n) => requested.every((c) => n.classes.includes(c))).map((n) => n.id);\n}\n",
+    "typescript": "export function solve(root: any, requested: string[]): any {\n  const nodes: any[] = [];\n  const visit = (n: any): void => {\n    nodes.push(n);\n    for (const c of n.children) visit(c);\n  };\n  visit(root);\n  return nodes.filter((n) => requested.every((c) => n.classes.includes(c))).map((n) => n.id);\n}\n"
+  },
+  "explanation": "Preorder traversal preserves document order; test all requested tokens at each node. O(nodes times requested classes times class-list length), O(nodes + depth) space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

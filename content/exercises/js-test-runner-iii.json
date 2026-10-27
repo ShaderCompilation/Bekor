@@ -1,0 +1,320 @@
+{
+  "public": {
+    "id": "js-test-runner-iii",
+    "slug": "js-test-runner-iii",
+    "version": "1.0.0",
+    "title": "Test Runner III",
+    "description": "input is a forest of suite/test descriptors as in Test Runner II. Suites optionally have before and after arrays of hook labels. For every test log inherited before hooks outermost first, then {name,pass}, then after hooks innermost first. Hook array order within a suite is preserved. Hooks are deterministic labels rather than executable functions; assertions use JSON serialization equality. Return the mixed string/object log. Depth at most 6. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["testing", "state-machines"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "kind": "suite",
+                  "name": "s",
+                  "before": ["outer"],
+                  "after": ["outer-end"],
+                  "children": [
+                    {
+                      "kind": "suite",
+                      "name": "i",
+                      "before": ["inner"],
+                      "after": ["inner-end"],
+                      "children": [
+                        {
+                          "kind": "test",
+                          "name": "t",
+                          "actual": 1,
+                          "expected": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            ],
+            "expected": [
+              "hook:outer",
+              "hook:inner",
+              {
+                "name": "s / i / t",
+                "pass": true
+              },
+              "hook:inner-end",
+              "hook:outer-end"
+            ]
+          },
+          {
+            "args": [
+              [
+                {
+                  "kind": "test",
+                  "name": "a",
+                  "actual": 1,
+                  "expected": 1
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "name": "a",
+                "pass": true
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "kind": "suite",
+                  "name": "s",
+                  "before": ["outer"],
+                  "after": ["outer-end"],
+                  "children": [
+                    {
+                      "kind": "suite",
+                      "name": "i",
+                      "before": ["inner"],
+                      "after": ["inner-end"],
+                      "children": [
+                        {
+                          "kind": "test",
+                          "name": "t",
+                          "actual": 1,
+                          "expected": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            ],
+            "expected": [
+              "hook:outer",
+              "hook:inner",
+              {
+                "name": "s / i / t",
+                "pass": true
+              },
+              "hook:inner-end",
+              "hook:outer-end"
+            ]
+          },
+          {
+            "args": [
+              [
+                {
+                  "kind": "test",
+                  "name": "a",
+                  "actual": 1,
+                  "expected": 1
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "name": "a",
+                "pass": true
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "kind": "suite",
+            "name": "s",
+            "before": ["a"],
+            "children": []
+          }
+        ]
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "kind": "suite",
+            "name": "s",
+            "before": ["a", "b"],
+            "after": ["c"],
+            "children": [
+              {
+                "kind": "test",
+                "name": "x",
+                "actual": 0,
+                "expected": 1
+              }
+            ]
+          }
+        ]
+      ],
+      "expected": [
+        "hook:a",
+        "hook:b",
+        {
+          "name": "s / x",
+          "pass": false
+        },
+        "hook:c"
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "kind": "suite",
+            "name": "s",
+            "after": ["a"],
+            "children": [
+              {
+                "kind": "test",
+                "name": "x",
+                "actual": 1,
+                "expected": 1
+              },
+              {
+                "kind": "test",
+                "name": "y",
+                "actual": 1,
+                "expected": 1
+              }
+            ]
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "name": "s / x",
+          "pass": true
+        },
+        "hook:a",
+        {
+          "name": "s / y",
+          "pass": true
+        },
+        "hook:a"
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "kind": "suite",
+            "name": "s",
+            "before": ["a"],
+            "children": [
+              {
+                "kind": "suite",
+                "name": "i",
+                "children": [
+                  {
+                    "kind": "test",
+                    "name": "t",
+                    "actual": null,
+                    "expected": null
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      ],
+      "expected": [
+        "hook:a",
+        {
+          "name": "s / i / t",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "kind": "suite",
+            "name": "s",
+            "before": ["outer"],
+            "after": ["outer-end"],
+            "children": [
+              {
+                "kind": "suite",
+                "name": "i",
+                "before": ["inner"],
+                "after": ["inner-end"],
+                "children": [
+                  {
+                    "kind": "test",
+                    "name": "t",
+                    "actual": 1,
+                    "expected": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      ],
+      "expected": [
+        "hook:outer",
+        "hook:inner",
+        {
+          "name": "s / i / t",
+          "pass": true
+        },
+        "hook:inner-end",
+        "hook:outer-end"
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const out = [];\n  const walk = (n, names, before, after) => {\n    if (n.kind === \"suite\") {\n      const b = before.concat(n.before ?? []),\n        a = (n.after ?? []).concat(after);\n      for (const child of n.children) walk(child, names.concat(n.name), b, a);\n    } else {\n      for (const x of before) out.push(\"hook:\" + x);\n      if (n.delay !== undefined) out.push(\"wait:\" + n.delay);\n      out.push({\n        name: names.concat(n.name).join(\" / \"),\n        pass: JSON.stringify(n.actual) === JSON.stringify(n.expected),\n      });\n      for (const x of after) out.push(\"hook:\" + x);\n    }\n  };\n  for (const n of d) walk(n, [], [], []);\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const out: any[] = [];\n  const walk = (n: any, names: string[], before: string[], after: string[]): void => {\n    if (n.kind === \"suite\") {\n      const b = before.concat(n.before ?? []),\n        a = (n.after ?? []).concat(after);\n      for (const child of n.children) walk(child, names.concat(n.name), b, a);\n    } else {\n      for (const x of before) out.push(\"hook:\" + x);\n      if (n.delay !== undefined) out.push(\"wait:\" + n.delay);\n      out.push({\n        name: names.concat(n.name).join(\" / \"),\n        pass: JSON.stringify(n.actual) === JSON.stringify(n.expected),\n      });\n      for (const x of after) out.push(\"hook:\" + x);\n    }\n  };\n  for (const n of d) walk(n, [], [], []);\n  return out;\n}\n"
+  },
+  "explanation": "Carry inherited hook lists down the suite tree; reverse suite nesting for cleanup, not the order within one hook list. O(nodes times depth plus assertion data and log size) time and space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

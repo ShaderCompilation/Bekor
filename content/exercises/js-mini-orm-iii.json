@@ -1,0 +1,275 @@
+{
+  "public": {
+    "id": "js-mini-orm-iii",
+    "slug": "js-mini-orm-iii",
+    "version": "1.0.0",
+    "title": "Mini Object-relational Mapper III",
+    "description": "input {users,posts,select,includePosts}; users are {id,name}, posts are {id,userId,title}. For each user in source order, return only fields listed in select (id and/or name), and if includePosts add posts containing full matching post rows in source order. Empty select emits empty objects unless relations are included. At most 12 users and 12 posts; posts may reference absent users. This is a fixed one-to-many ORM projection/include adapter. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["queries", "relations"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "users": [
+                  {
+                    "id": 1,
+                    "name": "A"
+                  }
+                ],
+                "posts": [
+                  {
+                    "id": 2,
+                    "userId": 1,
+                    "title": "X"
+                  }
+                ],
+                "select": ["name"],
+                "includePosts": true
+              }
+            ],
+            "expected": [
+              {
+                "name": "A",
+                "posts": [
+                  {
+                    "id": 2,
+                    "userId": 1,
+                    "title": "X"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "args": [
+              {
+                "users": [
+                  {
+                    "id": 1,
+                    "name": "A"
+                  }
+                ],
+                "posts": [],
+                "select": ["id"],
+                "includePosts": false
+              }
+            ],
+            "expected": [
+              {
+                "id": 1
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "users": [
+                  {
+                    "id": 1,
+                    "name": "A"
+                  }
+                ],
+                "posts": [
+                  {
+                    "id": 2,
+                    "userId": 1,
+                    "title": "X"
+                  }
+                ],
+                "select": ["name"],
+                "includePosts": true
+              }
+            ],
+            "expected": [
+              {
+                "name": "A",
+                "posts": [
+                  {
+                    "id": 2,
+                    "userId": 1,
+                    "title": "X"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "args": [
+              {
+                "users": [
+                  {
+                    "id": 1,
+                    "name": "A"
+                  }
+                ],
+                "posts": [],
+                "select": ["id"],
+                "includePosts": false
+              }
+            ],
+            "expected": [
+              {
+                "id": 1
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "users": [],
+          "posts": [],
+          "select": [],
+          "includePosts": true
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "users": [
+            {
+              "id": 1,
+              "name": "A"
+            }
+          ],
+          "posts": [],
+          "select": [],
+          "includePosts": true
+        }
+      ],
+      "expected": [
+        {
+          "posts": []
+        }
+      ]
+    },
+    {
+      "args": [
+        {
+          "users": [
+            {
+              "id": 1,
+              "name": "A"
+            },
+            {
+              "id": 2,
+              "name": "B"
+            }
+          ],
+          "posts": [
+            {
+              "id": 3,
+              "userId": 2,
+              "title": "Y"
+            }
+          ],
+          "select": ["id"],
+          "includePosts": true
+        }
+      ],
+      "expected": [
+        {
+          "id": 1,
+          "posts": []
+        },
+        {
+          "id": 2,
+          "posts": [
+            {
+              "id": 3,
+              "userId": 2,
+              "title": "Y"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "args": [
+        {
+          "users": [
+            {
+              "id": 1,
+              "name": "A"
+            }
+          ],
+          "posts": [
+            {
+              "id": 2,
+              "userId": 9,
+              "title": "X"
+            }
+          ],
+          "select": [],
+          "includePosts": true
+        }
+      ],
+      "expected": [
+        {
+          "posts": []
+        }
+      ]
+    },
+    {
+      "args": [
+        {
+          "users": [
+            {
+              "id": 1,
+              "name": "A"
+            }
+          ],
+          "posts": [],
+          "select": [],
+          "includePosts": false
+        }
+      ],
+      "expected": [{}]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const clone = (v) => JSON.parse(JSON.stringify(v));\n  return d.users.map((u) => {\n    const row = {};\n    for (const key of d.select) row[key] = u[key];\n    if (d.includePosts) row.posts = d.posts.filter((p) => p.userId === u.id).map((p) => clone(p));\n    return row;\n  });\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const clone = (v: any): any => JSON.parse(JSON.stringify(v));\n  return d.users.map((u: any) => {\n    const row: any = {};\n    for (const key of d.select) row[key] = u[key];\n    if (d.includePosts)\n      row.posts = d.posts.filter((p: any) => p.userId === u.id).map((p: any) => clone(p));\n    return row;\n  });\n}\n"
+  },
+  "explanation": "Project each user and scan posts for its foreign key. O(users times posts plus projection/output) time and output-sized space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

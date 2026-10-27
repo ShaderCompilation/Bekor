@@ -1,0 +1,118 @@
+{
+  "public": {
+    "id": "js-turtle",
+    "slug": "js-turtle",
+    "version": "1.0.0",
+    "title": "Turtle Commands",
+    "description": "A turtle starts at [0,0] facing east. Commands are [\"forward\",distance], [\"left\",quarterTurns], or [\"right\",quarterTurns]. Distances are 0 through 100; turns are 0 through 4. Return {position:[x,y],direction} with direction east, north, west, or south. Positive y points north. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["geometry", "state-machines"],
+    "hints": [
+      "Represent headings as four indices and normalize right turns modulo four.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(commands): JSON value",
+        "starter": "export function solve(commands) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[["forward", 2], ["left", 1], ["forward", 3]]],
+            "expected": {
+              "position": [2, 3],
+              "direction": "north"
+            }
+          },
+          {
+            "args": [[]],
+            "expected": {
+              "position": [0, 0],
+              "direction": "east"
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(commands): JSON value",
+        "starter": "type Value = any;\nexport function solve(commands: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[["forward", 2], ["left", 1], ["forward", 3]]],
+            "expected": {
+              "position": [2, 3],
+              "direction": "north"
+            }
+          },
+          {
+            "args": [[]],
+            "expected": {
+              "position": [0, 0],
+              "direction": "east"
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[["right", 1], ["forward", 2]]],
+      "expected": {
+        "position": [0, -2],
+        "direction": "south"
+      }
+    },
+    {
+      "args": [[["left", 2], ["forward", 1]]],
+      "expected": {
+        "position": [-1, 0],
+        "direction": "west"
+      }
+    },
+    {
+      "args": [[["left", 4]]],
+      "expected": {
+        "position": [0, 0],
+        "direction": "east"
+      }
+    },
+    {
+      "args": [[["right", 3]]],
+      "expected": {
+        "position": [0, 0],
+        "direction": "north"
+      }
+    },
+    {
+      "args": [[["forward", 0]]],
+      "expected": {
+        "position": [0, 0],
+        "direction": "east"
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(commands) {\n  let x = 0,\n    y = 0,\n    d = 0;\n  const vectors = [\n    [1, 0],\n    [0, 1],\n    [-1, 0],\n    [0, -1],\n  ];\n  for (const [op, n] of commands) {\n    if (op === \"forward\") {\n      x += vectors[d][0] * n;\n      y += vectors[d][1] * n;\n    } else d = (d + (op === \"left\" ? n : -n) + 4) % 4;\n  }\n  return { position: [x, y], direction: [\"east\", \"north\", \"west\", \"south\"][d] };\n}\n",
+    "typescript": "type Value = any;\nexport function solve(commands: Value): Value {\n  let x = 0,\n    y = 0,\n    d = 0;\n  const vectors = [\n    [1, 0],\n    [0, 1],\n    [-1, 0],\n    [0, -1],\n  ];\n  for (const [op, n] of commands) {\n    if (op === \"forward\") {\n      x += vectors[d][0] * n;\n      y += vectors[d][1] * n;\n    } else d = (d + (op === \"left\" ? n : -n) + 4) % 4;\n  }\n  return { position: [x, y], direction: [\"east\", \"north\", \"west\", \"south\"][d] };\n}\n"
+  },
+  "explanation": "Move along the current unit vector, and rotate the index for turns. O(n) time and O(1) auxiliary space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

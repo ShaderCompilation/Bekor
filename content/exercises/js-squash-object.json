@@ -1,0 +1,183 @@
+{
+  "public": {
+    "id": "js-squash-object",
+    "slug": "js-squash-object",
+    "version": "1.0.0",
+    "title": "Squash Object",
+    "description": "Flatten nested object properties to dot-delimited paths. Input is an object with object-valued branches; arrays are leaves and are not flattened. Preserve scalar/array leaves and empty nested objects. The empty root produces {}. Keys contain only ASCII letters, so paths are unambiguous. Return the flat map. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["objects", "recursion"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Descend nonempty plain objects while carrying the joined path; retain empty-object and array leaves."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(value: Record<string,any>): JSON-compatible result",
+        "starter": "export function solve(value) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "a": {
+                  "b": 2
+                },
+                "c": 3
+              }
+            ],
+            "expected": {
+              "a.b": 2,
+              "c": 3
+            }
+          },
+          {
+            "args": [
+              {
+                "a": [
+                  1,
+                  {
+                    "b": 2
+                  }
+                ],
+                "d": {}
+              }
+            ],
+            "expected": {
+              "a": [
+                1,
+                {
+                  "b": 2
+                }
+              ],
+              "d": {}
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(value: Record<string,any>): JSON-compatible result",
+        "starter": "export function solve(value: Record<string, any>): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "a": {
+                  "b": 2
+                },
+                "c": 3
+              }
+            ],
+            "expected": {
+              "a.b": 2,
+              "c": 3
+            }
+          },
+          {
+            "args": [
+              {
+                "a": [
+                  1,
+                  {
+                    "b": 2
+                  }
+                ],
+                "d": {}
+              }
+            ],
+            "expected": {
+              "a": [
+                1,
+                {
+                  "b": 2
+                }
+              ],
+              "d": {}
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [{}],
+      "expected": {}
+    },
+    {
+      "args": [
+        {
+          "a": null
+        }
+      ],
+      "expected": {
+        "a": null
+      }
+    },
+    {
+      "args": [
+        {
+          "a": {
+            "b": {
+              "c": false
+            }
+          }
+        }
+      ],
+      "expected": {
+        "a.b.c": false
+      }
+    },
+    {
+      "args": [
+        {
+          "a": {
+            "b": 0,
+            "c": ""
+          }
+        }
+      ],
+      "expected": {
+        "a.b": 0,
+        "a.c": ""
+      }
+    },
+    {
+      "args": [
+        {
+          "a": {},
+          "b": {
+            "c": 1
+          }
+        }
+      ],
+      "expected": {
+        "a": {},
+        "b.c": 1
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(value) {\n  const out = {};\n  const walk = (x, path) => {\n    if (x !== null && typeof x === \"object\" && !Array.isArray(x) && Object.keys(x).length) {\n      for (const k of Object.keys(x)) walk(x[k], path ? path + \".\" + k : k);\n    } else if (path) out[path] = x;\n  };\n  walk(value, \"\");\n  return out;\n}\n",
+    "typescript": "export function solve(value: Record<string, any>): any {\n  const out: Record<string, any> = {};\n  const walk = (x: any, path: string): void => {\n    if (x !== null && typeof x === \"object\" && !Array.isArray(x) && Object.keys(x).length) {\n      for (const k of Object.keys(x)) walk(x[k], path ? path + \".\" + k : k);\n    } else if (path) out[path] = x;\n  };\n  walk(value, \"\");\n  return out;\n}\n"
+  },
+  "explanation": "Descend nonempty plain objects while carrying the joined path; retain empty-object and array leaves. O(n times depth) path-building time and O(output) space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

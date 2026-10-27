@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-node-registry",
+    "slug": "js-node-registry",
+    "version": "1.0.0",
+    "title": "Node Registry",
+    "description": "Process [\"set\",nodeId,value], [\"get\",nodeId], or [\"delete\",nodeId]. Node IDs are strings representing stable object identities. set stores/replaces and returns null; get returns value or null; delete returns whether a registration existed. Return all results. This adapter cannot verify WeakMap garbage collection. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["hash-maps", "identity"],
+    "hints": [
+      "Store by node ID rather than comparing associated values.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(operations): JSON value",
+        "starter": "export function solve(operations) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[["set", "a", 1], ["get", "a"]]],
+            "expected": [null, 1]
+          },
+          {
+            "args": [[["get", "x"]]],
+            "expected": [null]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(operations): JSON value",
+        "starter": "type Value = any;\nexport function solve(operations: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[["set", "a", 1], ["get", "a"]]],
+            "expected": [null, 1]
+          },
+          {
+            "args": [[["get", "x"]]],
+            "expected": [null]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[["set", "a", 1], ["set", "a", 2], ["get", "a"]]],
+      "expected": [null, null, 2]
+    },
+    {
+      "args": [[["delete", "x"]]],
+      "expected": [false]
+    },
+    {
+      "args": [[["set", "a", 0], ["delete", "a"], ["get", "a"]]],
+      "expected": [null, true, null]
+    },
+    {
+      "args": [[["set", "a", false], ["get", "a"]]],
+      "expected": [null, false]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(operations) {\n  const registry = new Map();\n  return operations.map(([op, id, value]) => {\n    if (op === \"set\") {\n      registry.set(id, value);\n      return null;\n    }\n    if (op === \"delete\") return registry.delete(id);\n    return registry.has(id) ? registry.get(id) : null;\n  });\n}\n",
+    "typescript": "type Value = any;\nexport function solve(operations: Value): Value {\n  const registry = new Map();\n  return operations.map(([op, id, value]: Value) => {\n    if (op === \"set\") {\n      registry.set(id, value);\n      return null;\n    }\n    if (op === \"delete\") return registry.delete(id);\n    return registry.has(id) ? registry.get(id) : null;\n  });\n}\n"
+  },
+  "explanation": "A map implements replacement, lookup and deletion of registrations. O(n) expected time and O(n) space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

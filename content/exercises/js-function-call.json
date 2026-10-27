@@ -1,0 +1,146 @@
+{
+  "public": {
+    "id": "js-function-call",
+    "slug": "js-function-call",
+    "version": "1.0.0",
+    "title": "Function.prototype.call",
+    "description": "Use a function-call adapter. The represented function returns context.base plus the sum of weight[i] times argument[i] for every supplied argument. weights is an array of at most 6 integers from -3 through 3; arguments are integers from -10 through 10, with no more arguments than weights. context is {base}, with base from -10 through 10. The adapter must preserve the explicit receiver, argument order and empty-call behavior; it does not evaluate function source. Unlike apply, a call-like invocation passes arguments individually: every parameter after context is one positional argument (a rest parameter), and a call with no arguments after context is valid. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["functions", "this"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Model the call receiver and ordered positional arguments explicitly."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(weights: number[], context: {base:number}, ...args: number[]): JSON-compatible result",
+        "starter": "export function solve(weights, context, ...args) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [2, 3],
+              {
+                "base": 4
+              },
+              5,
+              6
+            ],
+            "expected": 32
+          },
+          {
+            "args": [
+              [1],
+              {
+                "base": -2
+              }
+            ],
+            "expected": -2
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(weights: number[], context: {base:number}, ...args: number[]): JSON-compatible result",
+        "starter": "export function solve(weights: number[], context: { base: number }, ...args: number[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [2, 3],
+              {
+                "base": 4
+              },
+              5,
+              6
+            ],
+            "expected": 32
+          },
+          {
+            "args": [
+              [1],
+              {
+                "base": -2
+              }
+            ],
+            "expected": -2
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        [],
+        {
+          "base": 0
+        }
+      ],
+      "expected": 0
+    },
+    {
+      "args": [
+        [-1, 2],
+        {
+          "base": 1
+        },
+        3,
+        4
+      ],
+      "expected": 6
+    },
+    {
+      "args": [
+        [0],
+        {
+          "base": 5
+        },
+        9
+      ],
+      "expected": 5
+    },
+    {
+      "args": [
+        [3],
+        {
+          "base": 0
+        },
+        -2
+      ],
+      "expected": -6
+    },
+    {
+      "args": [
+        [1, 2, 3],
+        {
+          "base": 2
+        },
+        1,
+        2
+      ],
+      "expected": 7
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(weights, context, ...args) {\n  return context.base + args.reduce((sum, x, i) => sum + x * weights[i], 0);\n}\n",
+    "typescript": "export function solve(weights: number[], context: { base: number }, ...args: number[]): any {\n  return context.base + args.reduce((sum, x, i) => sum + x * weights[i], 0);\n}\n"
+  },
+  "explanation": "Model the call receiver and ordered positional arguments explicitly. O(arguments) time and O(1) auxiliary space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

@@ -1,0 +1,198 @@
+{
+  "public": {
+    "id": "js-deep-merge",
+    "slug": "js-deep-merge",
+    "version": "1.0.0",
+    "title": "Deep Merge",
+    "description": "input {left,right}; recursively merge object pairs, retaining left-only keys and taking right values otherwise. Arrays are replaced whole, never concatenated; null is a value. Return the merged JSON value. Neither input is modified. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["recursion", "objects"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "left": {
+                  "a": 1
+                },
+                "right": {
+                  "b": 2
+                }
+              }
+            ],
+            "expected": {
+              "a": 1,
+              "b": 2
+            }
+          },
+          {
+            "args": [
+              {
+                "left": {
+                  "a": {
+                    "x": 1
+                  }
+                },
+                "right": {
+                  "a": {
+                    "y": 2
+                  }
+                }
+              }
+            ],
+            "expected": {
+              "a": {
+                "x": 1,
+                "y": 2
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "left": {
+                  "a": 1
+                },
+                "right": {
+                  "b": 2
+                }
+              }
+            ],
+            "expected": {
+              "a": 1,
+              "b": 2
+            }
+          },
+          {
+            "args": [
+              {
+                "left": {
+                  "a": {
+                    "x": 1
+                  }
+                },
+                "right": {
+                  "a": {
+                    "y": 2
+                  }
+                }
+              }
+            ],
+            "expected": {
+              "a": {
+                "x": 1,
+                "y": 2
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "left": [1],
+          "right": [2]
+        }
+      ],
+      "expected": [2]
+    },
+    {
+      "args": [
+        {
+          "left": {
+            "a": 1
+          },
+          "right": null
+        }
+      ],
+      "expected": null
+    },
+    {
+      "args": [
+        {
+          "left": {
+            "a": [1]
+          },
+          "right": {
+            "a": []
+          }
+        }
+      ],
+      "expected": {
+        "a": []
+      }
+    },
+    {
+      "args": [
+        {
+          "left": {
+            "a": 0
+          },
+          "right": {
+            "a": false
+          }
+        }
+      ],
+      "expected": {
+        "a": false
+      }
+    },
+    {
+      "args": [
+        {
+          "left": {
+            "a": {
+              "x": 1
+            }
+          },
+          "right": {
+            "a": 3
+          }
+        }
+      ],
+      "expected": {
+        "a": 3
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const object = (v) => v !== null && typeof v === \"object\" && !Array.isArray(v);\n  const clone = (v) => JSON.parse(JSON.stringify(v));\n  const merge = (a, b) => {\n    if (!object(a) || !object(b)) return clone(b);\n    const out = clone(a);\n    for (const k of Object.keys(b)) out[k] = Object.hasOwn(a, k) ? merge(a[k], b[k]) : clone(b[k]);\n    return out;\n  };\n  return merge(d.left, d.right);\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const object = (v: any): boolean => v !== null && typeof v === \"object\" && !Array.isArray(v);\n  const clone = (v: any): any => JSON.parse(JSON.stringify(v));\n  const merge = (a: any, b: any): any => {\n    if (!object(a) || !object(b)) return clone(b);\n    const out = clone(a);\n    for (const k of Object.keys(b)) out[k] = Object.hasOwn(a, k) ? merge(a[k], b[k]) : clone(b[k]);\n    return out;\n  };\n  return merge(d.left, d.right);\n}\n"
+  },
+  "explanation": "Recurse only when both values are ordinary objects; all other conflicts choose a deep copy of right. Worst-case O(n times h) time from repeated copying, O(n plus h) space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

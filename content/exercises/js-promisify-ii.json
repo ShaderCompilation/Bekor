@@ -1,0 +1,175 @@
+{
+  "public": {
+    "id": "js-promisify-ii",
+    "slug": "js-promisify-ii",
+    "version": "1.0.0",
+    "title": "Promisify II",
+    "description": "Use an error-first callback adapter. A descriptor is {error,values}; error is null or a scalar reason, and values is an array of up to 5 scalar success arguments. Return {status,value}. Any non-null error rejects; otherwise resolve with the first success argument, or null when absent. This adapter checks error-first settlement and excludes native callback scheduling. A descriptor may also have override:{status,value}. If present, this custom promisification result takes precedence over error and values; return it unchanged. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["callbacks", "promises"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Honor custom promisification first; otherwise apply error-first rules."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(descriptor: {error:any,values:any[],override?:{status:string,value:any}}): JSON-compatible result",
+        "starter": "export function solve(descriptor) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "error": "bad",
+                "values": [1],
+                "override": {
+                  "status": "fulfilled",
+                  "value": 9
+                }
+              }
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": 9
+            }
+          },
+          {
+            "args": [
+              {
+                "error": null,
+                "values": [2]
+              }
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": 2
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(descriptor: {error:any,values:any[],override?:{status:string,value:any}}): JSON-compatible result",
+        "starter": "export function solve(descriptor: {\n  error: any;\n  values: any[];\n  override?: { status: string; value: any };\n}): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "error": "bad",
+                "values": [1],
+                "override": {
+                  "status": "fulfilled",
+                  "value": 9
+                }
+              }
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": 9
+            }
+          },
+          {
+            "args": [
+              {
+                "error": null,
+                "values": [2]
+              }
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": 2
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "error": null,
+          "values": []
+        }
+      ],
+      "expected": {
+        "status": "fulfilled",
+        "value": null
+      }
+    },
+    {
+      "args": [
+        {
+          "error": 0,
+          "values": []
+        }
+      ],
+      "expected": {
+        "status": "rejected",
+        "value": 0
+      }
+    },
+    {
+      "args": [
+        {
+          "error": null,
+          "values": [false]
+        }
+      ],
+      "expected": {
+        "status": "fulfilled",
+        "value": false
+      }
+    },
+    {
+      "args": [
+        {
+          "error": null,
+          "values": [3],
+          "override": {
+            "status": "rejected",
+            "value": "custom"
+          }
+        }
+      ],
+      "expected": {
+        "status": "rejected",
+        "value": "custom"
+      }
+    },
+    {
+      "args": [
+        {
+          "error": "x",
+          "values": []
+        }
+      ],
+      "expected": {
+        "status": "rejected",
+        "value": "x"
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(descriptor) {\n  if (descriptor.override) return { ...descriptor.override };\n  return descriptor.error !== null\n    ? { status: \"rejected\", value: descriptor.error }\n    : { status: \"fulfilled\", value: descriptor.values.length ? descriptor.values[0] : null };\n}\n",
+    "typescript": "export function solve(descriptor: {\n  error: any;\n  values: any[];\n  override?: { status: string; value: any };\n}): any {\n  if (descriptor.override) return { ...descriptor.override };\n  return descriptor.error !== null\n    ? { status: \"rejected\", value: descriptor.error }\n    : { status: \"fulfilled\", value: descriptor.values.length ? descriptor.values[0] : null };\n}\n"
+  },
+  "explanation": "Honor custom promisification first; otherwise apply error-first rules. O(1) time and space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

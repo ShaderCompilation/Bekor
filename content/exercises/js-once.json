@@ -1,0 +1,172 @@
+{
+  "public": {
+    "id": "js-once",
+    "slug": "js-once",
+    "version": "1.0.0",
+    "title": "Once",
+    "description": "Simulate once around an affine function. Calls is an array of at most 30 integers from -20 through 20; mapper is {factor,offset}, each from -20 through 20. The first call computes factor times argument plus offset; every later call returns that same stored result without recomputing. Return {values,evaluations}; evaluations is 0 for no calls, otherwise 1. A zero result must still be cached. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["closures", "memoization"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Track an independent completed flag so falsy results are cached correctly."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(calls: number[], mapper: {factor:number,offset:number}): JSON-compatible result",
+        "starter": "export function solve(calls, mapper) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [2, 5],
+              {
+                "factor": 3,
+                "offset": 1
+              }
+            ],
+            "expected": {
+              "values": [7, 7],
+              "evaluations": 1
+            }
+          },
+          {
+            "args": [
+              [0, 4],
+              {
+                "factor": 1,
+                "offset": 0
+              }
+            ],
+            "expected": {
+              "values": [0, 0],
+              "evaluations": 1
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(calls: number[], mapper: {factor:number,offset:number}): JSON-compatible result",
+        "starter": "export function solve(calls: number[], mapper: { factor: number; offset: number }): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [2, 5],
+              {
+                "factor": 3,
+                "offset": 1
+              }
+            ],
+            "expected": {
+              "values": [7, 7],
+              "evaluations": 1
+            }
+          },
+          {
+            "args": [
+              [0, 4],
+              {
+                "factor": 1,
+                "offset": 0
+              }
+            ],
+            "expected": {
+              "values": [0, 0],
+              "evaluations": 1
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        [],
+        {
+          "factor": 1,
+          "offset": 0
+        }
+      ],
+      "expected": {
+        "values": [],
+        "evaluations": 0
+      }
+    },
+    {
+      "args": [
+        [-2],
+        {
+          "factor": 2,
+          "offset": 1
+        }
+      ],
+      "expected": {
+        "values": [-3],
+        "evaluations": 1
+      }
+    },
+    {
+      "args": [
+        [1, 2, 3],
+        {
+          "factor": 0,
+          "offset": 4
+        }
+      ],
+      "expected": {
+        "values": [4, 4, 4],
+        "evaluations": 1
+      }
+    },
+    {
+      "args": [
+        [1, 1],
+        {
+          "factor": 1,
+          "offset": -1
+        }
+      ],
+      "expected": {
+        "values": [0, 0],
+        "evaluations": 1
+      }
+    },
+    {
+      "args": [
+        [3, 2],
+        {
+          "factor": -1,
+          "offset": 0
+        }
+      ],
+      "expected": {
+        "values": [-3, -3],
+        "evaluations": 1
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(calls, mapper) {\n  let done = false,\n    result = 0,\n    evaluations = 0;\n  const values = calls.map((x) => {\n    if (!done) {\n      result = x * mapper.factor + mapper.offset;\n      done = true;\n      evaluations++;\n    }\n    return result;\n  });\n  return { values, evaluations };\n}\n",
+    "typescript": "export function solve(calls: number[], mapper: { factor: number; offset: number }): any {\n  let done = false,\n    result = 0,\n    evaluations = 0;\n  const values = calls.map((x) => {\n    if (!done) {\n      result = x * mapper.factor + mapper.offset;\n      done = true;\n      evaluations++;\n    }\n    return result;\n  });\n  return { values, evaluations };\n}\n"
+  },
+  "explanation": "Track an independent completed flag so falsy results are cached correctly. O(calls) time/output and O(1) state. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

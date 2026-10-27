@@ -1,0 +1,175 @@
+{
+  "public": {
+    "id": "js-compose",
+    "slug": "js-compose",
+    "version": "1.0.0",
+    "title": "Compose",
+    "description": "Function descriptors are {factor,offset}; applying one maps x to factor times x plus offset. Each integer lies from -3 through 3, the starting integer from -10 through 10, and there are at most 6 descriptors. This is a JSON adapter for a family of unary callbacks, not arbitrary JavaScript function serialization. Compose the functions from right to left and return the final integer. An empty list is identity. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["functions", "composition"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Apply descriptors in reverse order using a running value."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(functions: {factor:number,offset:number}[], value: number): JSON-compatible result",
+        "starter": "export function solve(functions, value) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "factor": 2,
+                  "offset": 1
+                },
+                {
+                  "factor": 1,
+                  "offset": 3
+                }
+              ],
+              4
+            ],
+            "expected": 15
+          },
+          {
+            "args": [
+              [
+                {
+                  "factor": 0,
+                  "offset": 2
+                }
+              ],
+              9
+            ],
+            "expected": 2
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(functions: {factor:number,offset:number}[], value: number): JSON-compatible result",
+        "starter": "export function solve(functions: { factor: number; offset: number }[], value: number): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "factor": 2,
+                  "offset": 1
+                },
+                {
+                  "factor": 1,
+                  "offset": 3
+                }
+              ],
+              4
+            ],
+            "expected": 15
+          },
+          {
+            "args": [
+              [
+                {
+                  "factor": 0,
+                  "offset": 2
+                }
+              ],
+              9
+            ],
+            "expected": 2
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 5],
+      "expected": 5
+    },
+    {
+      "args": [
+        [
+          {
+            "factor": 1,
+            "offset": 0
+          }
+        ],
+        0
+      ],
+      "expected": 0
+    },
+    {
+      "args": [
+        [
+          {
+            "factor": -1,
+            "offset": 0
+          },
+          {
+            "factor": 1,
+            "offset": 2
+          }
+        ],
+        3
+      ],
+      "expected": -5
+    },
+    {
+      "args": [
+        [
+          {
+            "factor": 2,
+            "offset": 0
+          },
+          {
+            "factor": 1,
+            "offset": 1
+          }
+        ],
+        0
+      ],
+      "expected": 2
+    },
+    {
+      "args": [
+        [
+          {
+            "factor": 1,
+            "offset": -3
+          },
+          {
+            "factor": 0,
+            "offset": 2
+          }
+        ],
+        10
+      ],
+      "expected": -1
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(functions, value) {\n  let result = value;\n  for (let i = functions.length - 1; i >= 0; i--)\n    result = functions[i].factor * result + functions[i].offset;\n  return result;\n}\n",
+    "typescript": "export function solve(functions: { factor: number; offset: number }[], value: number): any {\n  let result = value;\n  for (let i = functions.length - 1; i >= 0; i--)\n    result = functions[i].factor * result + functions[i].offset;\n  return result;\n}\n"
+  },
+  "explanation": "Apply descriptors in reverse order using a running value. O(f) time and O(1) auxiliary space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

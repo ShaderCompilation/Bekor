@@ -1,0 +1,169 @@
+{
+  "public": {
+    "id": "js-html-sanitizer",
+    "slug": "js-html-sanitizer",
+    "version": "1.0.0",
+    "title": "HTML Sanitizer",
+    "description": "input is a parsed HTML-like tree, either a text string or {tag,attrs,children}. Only p, b, i, a and div elements are retained; any other tag and its entire subtree are removed. Retained elements discard all attributes except href on a, retained only when starting with https:// or /. Text and retained href are HTML-escaped (ampersand, less/greater signs, double/single quotes). Emit lowercase paired tags and no whitespace beyond source text. This is a restricted tree serializer, not a security sanitizer for arbitrary HTML source. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["trees", "serialization"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "tag": "p",
+                "attrs": {},
+                "children": ["hello"]
+              }
+            ],
+            "expected": "<p>hello</p>"
+          },
+          {
+            "args": [
+              {
+                "tag": "script",
+                "attrs": {},
+                "children": ["bad"]
+              }
+            ],
+            "expected": ""
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "tag": "p",
+                "attrs": {},
+                "children": ["hello"]
+              }
+            ],
+            "expected": "<p>hello</p>"
+          },
+          {
+            "args": [
+              {
+                "tag": "script",
+                "attrs": {},
+                "children": ["bad"]
+              }
+            ],
+            "expected": ""
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["&<>\"'"],
+      "expected": "&amp;&lt;&gt;&quot;&#39;"
+    },
+    {
+      "args": [
+        {
+          "tag": "a",
+          "attrs": {
+            "href": "https://x?a&b",
+            "onclick": "x"
+          },
+          "children": ["x"]
+        }
+      ],
+      "expected": "<a href=\"https://x?a&amp;b\">x</a>"
+    },
+    {
+      "args": [
+        {
+          "tag": "a",
+          "attrs": {
+            "href": "javascript:x"
+          },
+          "children": ["x"]
+        }
+      ],
+      "expected": "<a>x</a>"
+    },
+    {
+      "args": [
+        {
+          "tag": "div",
+          "attrs": {
+            "id": "x"
+          },
+          "children": [
+            {
+              "tag": "b",
+              "attrs": {},
+              "children": ["yes"]
+            },
+            {
+              "tag": "img",
+              "attrs": {},
+              "children": []
+            }
+          ]
+        }
+      ],
+      "expected": "<div><b>yes</b></div>"
+    },
+    {
+      "args": [
+        {
+          "tag": "a",
+          "attrs": {
+            "href": "/x"
+          },
+          "children": []
+        }
+      ],
+      "expected": "<a href=\"/x\"></a>"
+    },
+    {
+      "args": [
+        {
+          "tag": "script",
+          "attrs": {},
+          "children": ["x"]
+        }
+      ],
+      "expected": ""
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const escape = (s) =>\n    s\n      .replaceAll(\"&\", \"&amp;\")\n      .replaceAll(\"<\", \"&lt;\")\n      .replaceAll(\">\", \"&gt;\")\n      .replaceAll('\"', \"&quot;\")\n      .replaceAll(\"'\", \"&#39;\");\n  const walk = (n) => {\n    if (typeof n === \"string\") return escape(n);\n    if (![\"p\", \"b\", \"i\", \"a\", \"div\"].includes(n.tag)) return \"\";\n    const href = n.attrs.href;\n    const attr =\n      n.tag === \"a\" &&\n      typeof href === \"string\" &&\n      (href.startsWith(\"https://\") || href.startsWith(\"/\"))\n        ? ' href=\"' + escape(href) + '\"'\n        : \"\";\n    return \"<\" + n.tag + attr + \">\" + n.children.map(walk).join(\"\") + \"</\" + n.tag + \">\";\n  };\n  return walk(d);\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const escape = (s: string): string =>\n    s\n      .replaceAll(\"&\", \"&amp;\")\n      .replaceAll(\"<\", \"&lt;\")\n      .replaceAll(\">\", \"&gt;\")\n      .replaceAll('\"', \"&quot;\")\n      .replaceAll(\"'\", \"&#39;\");\n  const walk = (n: any): string => {\n    if (typeof n === \"string\") return escape(n);\n    if (![\"p\", \"b\", \"i\", \"a\", \"div\"].includes(n.tag)) return \"\";\n    const href = n.attrs.href;\n    const attr =\n      n.tag === \"a\" &&\n      typeof href === \"string\" &&\n      (href.startsWith(\"https://\") || href.startsWith(\"/\"))\n        ? ' href=\"' + escape(href) + '\"'\n        : \"\";\n    return \"<\" + n.tag + attr + \">\" + n.children.map(walk).join(\"\") + \"</\" + n.tag + \">\";\n  };\n  return walk(d);\n}\n"
+  },
+  "explanation": "Recursively allowlist tags and attributes, discard forbidden subtrees, and escape output values. O(n plus output length) time and space; parsing and browser security are outside this limited adapter. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

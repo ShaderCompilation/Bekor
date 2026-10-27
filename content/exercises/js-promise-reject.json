@@ -1,0 +1,130 @@
+{
+  "public": {
+    "id": "js-promise-reject",
+    "slug": "js-promise-reject",
+    "version": "1.0.0",
+    "title": "Promise.reject",
+    "description": "Construct the observed settlement record of Promise.reject(reason): return {status:\"rejected\",reason}. Reason is any bounded JSON value and must be preserved structurally, even when null or falsy. This adapter represents a settled promise without returning a thrown error or native Promise object. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["promises"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Store the reason unchanged in the rejection record."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(reason: any): JSON-compatible result",
+        "starter": "export function solve(reason) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": ["bad"],
+            "expected": {
+              "status": "rejected",
+              "reason": "bad"
+            }
+          },
+          {
+            "args": [
+              {
+                "code": 2
+              }
+            ],
+            "expected": {
+              "status": "rejected",
+              "reason": {
+                "code": 2
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(reason: any): JSON-compatible result",
+        "starter": "export function solve(reason: any): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": ["bad"],
+            "expected": {
+              "status": "rejected",
+              "reason": "bad"
+            }
+          },
+          {
+            "args": [
+              {
+                "code": 2
+              }
+            ],
+            "expected": {
+              "status": "rejected",
+              "reason": {
+                "code": 2
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [null],
+      "expected": {
+        "status": "rejected",
+        "reason": null
+      }
+    },
+    {
+      "args": [false],
+      "expected": {
+        "status": "rejected",
+        "reason": false
+      }
+    },
+    {
+      "args": [0],
+      "expected": {
+        "status": "rejected",
+        "reason": 0
+      }
+    },
+    {
+      "args": [""],
+      "expected": {
+        "status": "rejected",
+        "reason": ""
+      }
+    },
+    {
+      "args": [[1, 2]],
+      "expected": {
+        "status": "rejected",
+        "reason": [1, 2]
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(reason) {\n  return { status: \"rejected\", reason };\n}\n",
+    "typescript": "export function solve(reason: any): any {\n  return { status: \"rejected\", reason };\n}\n"
+  },
+  "explanation": "Store the reason unchanged in the rejection record. O(1) construction time and auxiliary space, excluding result serialization. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

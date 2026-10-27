@@ -1,0 +1,95 @@
+{
+  "public": {
+    "id": "js-extract-anchor-elements",
+    "slug": "js-extract-anchor-elements",
+    "version": "1.0.0",
+    "title": "Extract Anchor Elements",
+    "description": "input is a simplified HTML string of at most 300 ASCII characters. Tags are lowercase, anchor start tags are exactly a with optional space-separated attributes using double-quoted values, and end tags are exactly /a. No anchor nests another anchor; no tag/attribute contains an unescaped greater-than sign or a literal anchor-like substring in a quoted value. Return complete anchor substrings, including start/end tags and contents, in source order. Missing closing anchors are outside the domain. This restricted grammar intentionally omits general HTML parsing. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["trees", "traversal"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": ["<p>hi</p><a href=\"/x\">X</a>"],
+            "expected": ["<a href=\"/x\">X</a>"]
+          },
+          {
+            "args": ["<a>A</a><span>x</span><a href=\"b\">B</a>"],
+            "expected": ["<a>A</a>", "<a href=\"b\">B</a>"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": ["<p>hi</p><a href=\"/x\">X</a>"],
+            "expected": ["<a href=\"/x\">X</a>"]
+          },
+          {
+            "args": ["<a>A</a><span>x</span><a href=\"b\">B</a>"],
+            "expected": ["<a>A</a>", "<a href=\"b\">B</a>"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [""],
+      "expected": []
+    },
+    {
+      "args": ["<p>a</p>"],
+      "expected": []
+    },
+    {
+      "args": ["<a><b>x</b></a>"],
+      "expected": ["<a><b>x</b></a>"]
+    },
+    {
+      "args": ["<abbr>x</abbr><a></a>"],
+      "expected": ["<a></a>"]
+    },
+    {
+      "args": ["<a>A\nB</a>"],
+      "expected": ["<a>A\nB</a>"]
+    },
+    {
+      "args": ["<a>x</a><a>y</a>"],
+      "expected": ["<a>x</a>", "<a>y</a>"]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  return d.match(/<a(?:\\s[^>]*)?>[\\s\\S]*?<\\/a>/g) ?? [];\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  return d.match(/<a(?:\\s[^>]*)?>[\\s\\S]*?<\\/a>/g) ?? [];\n}\n"
+  },
+  "explanation": "Match complete anchors using the explicitly restricted nonnested grammar. O(n squared) worst-case regular-expression scanning for malformed prefixes, with n capped at 300; output is a disjoint subset of input. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

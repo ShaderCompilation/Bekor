@@ -1,0 +1,207 @@
+{
+  "public": {
+    "id": "js-data-merging",
+    "slug": "js-data-merging",
+    "version": "1.0.0",
+    "title": "Merge Records By ID",
+    "description": "Rows are objects with a string id. IDs are unique within each array. Return one row per ID sorted lexicographically by id. Merge duplicate IDs shallowly, with right fields overriding left; retain other fields. All fields are JSON scalars. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["hash-maps", "sorting"],
+    "hints": [
+      "Merge left rows before right rows so right fields override.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(left, right): JSON value",
+        "starter": "export function solve(left, right) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "id": "a",
+                  "x": 1
+                }
+              ],
+              [
+                {
+                  "id": "a",
+                  "y": 2
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "id": "a",
+                "x": 1,
+                "y": 2
+              }
+            ]
+          },
+          {
+            "args": [[], []],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(left, right): JSON value",
+        "starter": "type Value = any;\nexport function solve(left: Value, right: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "id": "a",
+                  "x": 1
+                }
+              ],
+              [
+                {
+                  "id": "a",
+                  "y": 2
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "id": "a",
+                "x": 1,
+                "y": 2
+              }
+            ]
+          },
+          {
+            "args": [[], []],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        [
+          {
+            "id": "b"
+          }
+        ],
+        [
+          {
+            "id": "a"
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "id": "a"
+        },
+        {
+          "id": "b"
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": "a",
+            "x": 1
+          }
+        ],
+        [
+          {
+            "id": "a",
+            "x": 2
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "id": "a",
+          "x": 2
+        }
+      ]
+    },
+    {
+      "args": [
+        [],
+        [
+          {
+            "id": "x",
+            "v": 0
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "id": "x",
+          "v": 0
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": "a"
+          }
+        ],
+        []
+      ],
+      "expected": [
+        {
+          "id": "a"
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "id": "a",
+            "x": false
+          }
+        ],
+        [
+          {
+            "id": "a",
+            "x": null
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "id": "a",
+          "x": null
+        }
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(left, right) {\n  const rows = new Map();\n  for (const row of [...left, ...right]) rows.set(row.id, { ...(rows.get(row.id) ?? {}), ...row });\n  return [...rows.values()].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));\n}\n",
+    "typescript": "type Value = any;\nexport function solve(left: Value, right: Value): Value {\n  const rows = new Map();\n  for (const row of [...left, ...right]) rows.set(row.id, { ...(rows.get(row.id) ?? {}), ...row });\n  return [...rows.values()].sort((a: Value, b: Value) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));\n}\n"
+  },
+  "explanation": "Index records by ID, shallowly merge, then sort IDs with deterministic lexical comparison. O(n log n plus total fields) time and O(total fields) space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

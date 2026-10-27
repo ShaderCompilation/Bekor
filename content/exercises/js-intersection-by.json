@@ -1,0 +1,218 @@
+{
+  "public": {
+    "id": "js-intersection-by",
+    "slug": "js-intersection-by",
+    "version": "1.0.0",
+    "title": "Intersection By",
+    "description": "Return first representatives from left whose selected scalar key occurs in right. Deduplicate by key and preserve left order. Rows contain key with an integer or string value; types remain distinct. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["sets", "deduplication"],
+    "hints": [
+      "Track both allowed keys and keys already emitted.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(left, right, key): JSON value",
+        "starter": "export function solve(left, right, key) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "k": 1
+                },
+                {
+                  "k": 2
+                },
+                {
+                  "k": 1
+                }
+              ],
+              [
+                {
+                  "k": 1
+                }
+              ],
+              "k"
+            ],
+            "expected": [
+              {
+                "k": 1
+              }
+            ]
+          },
+          {
+            "args": [[], [], "k"],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(left, right, key): JSON value",
+        "starter": "type Value = any;\nexport function solve(left: Value, right: Value, key: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "k": 1
+                },
+                {
+                  "k": 2
+                },
+                {
+                  "k": 1
+                }
+              ],
+              [
+                {
+                  "k": 1
+                }
+              ],
+              "k"
+            ],
+            "expected": [
+              {
+                "k": 1
+              }
+            ]
+          },
+          {
+            "args": [[], [], "k"],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        [
+          {
+            "k": 1
+          }
+        ],
+        [],
+        "k"
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "k": 1
+          }
+        ],
+        [
+          {
+            "k": "1"
+          }
+        ],
+        "k"
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "k": 2
+          },
+          {
+            "k": 1
+          }
+        ],
+        [
+          {
+            "k": 1
+          },
+          {
+            "k": 2
+          }
+        ],
+        "k"
+      ],
+      "expected": [
+        {
+          "k": 2
+        },
+        {
+          "k": 1
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "k": "a",
+            "v": 1
+          },
+          {
+            "k": "a",
+            "v": 2
+          }
+        ],
+        [
+          {
+            "k": "a"
+          }
+        ],
+        "k"
+      ],
+      "expected": [
+        {
+          "k": "a",
+          "v": 1
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "k": 0
+          }
+        ],
+        [
+          {
+            "k": 0
+          }
+        ],
+        "k"
+      ],
+      "expected": [
+        {
+          "k": 0
+        }
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(left, right, key) {\n  const allowed = new Set(right.map((x) => x[key]));\n  const seen = new Set();\n  return left.filter((x) => {\n    const k = x[key];\n    if (!allowed.has(k) || seen.has(k)) return false;\n    seen.add(k);\n    return true;\n  });\n}\n",
+    "typescript": "type Value = any;\nexport function solve(left: Value, right: Value, key: Value): Value {\n  const allowed = new Set(right.map((x: Value) => x[key]));\n  const seen = new Set();\n  return left.filter((x: Value) => {\n    const k = x[key];\n    if (!allowed.has(k) || seen.has(k)) return false;\n    seen.add(k);\n    return true;\n  });\n}\n"
+  },
+  "explanation": "Build a membership set from right. Filter left by membership and first occurrence. O(n+m) expected time and O(n+m) space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

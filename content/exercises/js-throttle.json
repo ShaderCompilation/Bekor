@@ -1,0 +1,276 @@
+{
+  "public": {
+    "id": "js-throttle",
+    "slug": "js-throttle",
+    "version": "1.0.0",
+    "title": "Throttle",
+    "description": "This is a virtual-clock adapter, not a live timer API. Events have nondecreasing integer time fields from 0 through 100; at most 20 events. A call has {time,kind:\"call\",value}, cancel/flush events omit value. The horizon is an integer from the last event time through 120. Process due callbacks before each event, including ties, and after all events through horizon inclusive. Return callback records {time,value} in firing order. Values are JSON scalars. Implement leading-only throttle with wait from 1 through 20. Only call events occur. Invoke the first call immediately; suppress calls until at least wait time units after the last invocation. Do not schedule a trailing invocation. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "medium",
+    "concepts": ["timers", "state-machines"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Track the last actual invocation, never suppressed calls."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(events: {time:number,kind:string,value?:any}[], wait: number, horizon: number): JSON-compatible result",
+        "starter": "export function solve(events, wait, horizon) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "time": 0,
+                  "kind": "call",
+                  "value": 1
+                },
+                {
+                  "time": 1,
+                  "kind": "call",
+                  "value": 2
+                },
+                {
+                  "time": 3,
+                  "kind": "call",
+                  "value": 3
+                }
+              ],
+              3,
+              8
+            ],
+            "expected": [
+              {
+                "time": 0,
+                "value": 1
+              },
+              {
+                "time": 3,
+                "value": 3
+              }
+            ]
+          },
+          {
+            "args": [
+              [
+                {
+                  "time": 4,
+                  "kind": "call",
+                  "value": 0
+                }
+              ],
+              3,
+              4
+            ],
+            "expected": [
+              {
+                "time": 4,
+                "value": 0
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(events: {time:number,kind:string,value?:any}[], wait: number, horizon: number): JSON-compatible result",
+        "starter": "export function solve(\n  events: { time: number; kind: string; value?: any }[],\n  wait: number,\n  horizon: number,\n): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "time": 0,
+                  "kind": "call",
+                  "value": 1
+                },
+                {
+                  "time": 1,
+                  "kind": "call",
+                  "value": 2
+                },
+                {
+                  "time": 3,
+                  "kind": "call",
+                  "value": 3
+                }
+              ],
+              3,
+              8
+            ],
+            "expected": [
+              {
+                "time": 0,
+                "value": 1
+              },
+              {
+                "time": 3,
+                "value": 3
+              }
+            ]
+          },
+          {
+            "args": [
+              [
+                {
+                  "time": 4,
+                  "kind": "call",
+                  "value": 0
+                }
+              ],
+              3,
+              4
+            ],
+            "expected": [
+              {
+                "time": 4,
+                "value": 0
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 2, 5],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "time": 0,
+            "kind": "call",
+            "value": 1
+          },
+          {
+            "time": 0,
+            "kind": "call",
+            "value": 2
+          }
+        ],
+        1,
+        1
+      ],
+      "expected": [
+        {
+          "time": 0,
+          "value": 1
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "time": 0,
+            "kind": "call",
+            "value": 1
+          },
+          {
+            "time": 2,
+            "kind": "call",
+            "value": 2
+          },
+          {
+            "time": 3,
+            "kind": "call",
+            "value": 3
+          }
+        ],
+        3,
+        8
+      ],
+      "expected": [
+        {
+          "time": 0,
+          "value": 1
+        },
+        {
+          "time": 3,
+          "value": 3
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "time": 1,
+            "kind": "call",
+            "value": false
+          },
+          {
+            "time": 2,
+            "kind": "call",
+            "value": true
+          }
+        ],
+        1,
+        5
+      ],
+      "expected": [
+        {
+          "time": 1,
+          "value": false
+        },
+        {
+          "time": 2,
+          "value": true
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "time": 0,
+            "kind": "call",
+            "value": null
+          },
+          {
+            "time": 10,
+            "kind": "call",
+            "value": "x"
+          }
+        ],
+        5,
+        10
+      ],
+      "expected": [
+        {
+          "time": 0,
+          "value": null
+        },
+        {
+          "time": 10,
+          "value": "x"
+        }
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(events, wait, horizon) {\n  const out = [];\n  let last = -Infinity;\n  for (const e of events) {\n    if (e.time - last >= wait) {\n      out.push({ time: e.time, value: e.value });\n      last = e.time;\n    }\n  }\n  return out;\n}\n",
+    "typescript": "export function solve(\n  events: { time: number; kind: string; value?: any }[],\n  wait: number,\n  horizon: number,\n): any {\n  const out: any[] = [];\n  let last = -Infinity;\n  for (const e of events) {\n    if (e.time - last >= wait) {\n      out.push({ time: e.time, value: e.value });\n      last = e.time;\n    }\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Track the last actual invocation, never suppressed calls. O(e) time and output, O(1) state. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

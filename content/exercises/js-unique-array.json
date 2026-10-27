@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-unique-array",
+    "slug": "js-unique-array",
+    "version": "1.0.0",
+    "title": "Unique Array",
+    "description": "Remove duplicate JSON scalars from an array, retaining first-occurrence order. Strict equality applies; false, zero and null are distinct. At most 50 elements. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "sets"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "An insertion-ordered set retains exactly the first occurrence of each scalar."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(values: any[]): JSON-compatible result",
+        "starter": "export function solve(values) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 1, 2, 3, 1]],
+            "expected": [2, 1, 3]
+          },
+          {
+            "args": [[false, 0, false, null]],
+            "expected": [false, 0, null]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(values: any[]): JSON-compatible result",
+        "starter": "export function solve(values: any[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 1, 2, 3, 1]],
+            "expected": [2, 1, 3]
+          },
+          {
+            "args": [[false, 0, false, null]],
+            "expected": [false, 0, null]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[1, 1]],
+      "expected": [1]
+    },
+    {
+      "args": [["b", "a", "b"]],
+      "expected": ["b", "a"]
+    },
+    {
+      "args": [[null, null]],
+      "expected": [null]
+    },
+    {
+      "args": [["", 0, ""]],
+      "expected": ["", 0]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(values) {\n  return [...new Set(values)];\n}\n",
+    "typescript": "export function solve(values: any[]): any {\n  return [...new Set(values)];\n}\n"
+  },
+  "explanation": "An insertion-ordered set retains exactly the first occurrence of each scalar. O(n) expected time and O(distinct values) space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

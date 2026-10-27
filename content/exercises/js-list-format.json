@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-list-format",
+    "slug": "js-list-format",
+    "version": "1.0.0",
+    "title": "List Format",
+    "description": "Format an array of at most 20 strings using English conjunctions: empty becomes an empty string, one item is unchanged, two become \"A and B\", and three or more become \"A, B, and C\" with an Oxford comma. Do not trim or deduplicate items. Each item has at most 40 code units. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["strings", "formatting"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Handle zero through two separately, then join the prefix and final conjunction."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(items: string[]): JSON-compatible result",
+        "starter": "export function solve(items) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [["fern", "moss", "ivy"]],
+            "expected": "fern, moss, and ivy"
+          },
+          {
+            "args": [["one", "two"]],
+            "expected": "one and two"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(items: string[]): JSON-compatible result",
+        "starter": "export function solve(items: string[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [["fern", "moss", "ivy"]],
+            "expected": "fern, moss, and ivy"
+          },
+          {
+            "args": [["one", "two"]],
+            "expected": "one and two"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": ""
+    },
+    {
+      "args": [["solo"]],
+      "expected": "solo"
+    },
+    {
+      "args": [["a", "a"]],
+      "expected": "a and a"
+    },
+    {
+      "args": [["", "b", "c"]],
+      "expected": ", b, and c"
+    },
+    {
+      "args": [["a", "b", "c", "d"]],
+      "expected": "a, b, c, and d"
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(items) {\n  if (items.length < 2) return items[0] ?? \"\";\n  if (items.length === 2) return items.join(\" and \");\n  return items.slice(0, -1).join(\", \") + \", and \" + items[items.length - 1];\n}\n",
+    "typescript": "export function solve(items: string[]): any {\n  if (items.length < 2) return items[0] ?? \"\";\n  if (items.length === 2) return items.join(\" and \");\n  return items.slice(0, -1).join(\", \") + \", and \" + items[items.length - 1];\n}\n"
+  },
+  "explanation": "Handle zero through two separately, then join the prefix and final conjunction. O(total text) time and output space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

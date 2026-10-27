@@ -1,0 +1,149 @@
+{
+  "public": {
+    "id": "js-promise-resolve",
+    "slug": "js-promise-resolve",
+    "version": "1.0.0",
+    "title": "Promise Resolution",
+    "description": "Resolve a JSON thenable descriptor. A descriptor is {kind:\"resolve\",value:next} or {kind:\"reject\",value:reason}. Recursively unwrap resolve descriptors; a reject descriptor returns {status:\"rejected\",value:reason} without unwrapping reason. Other JSON values return {status:\"fulfilled\",value:value}. Maximum descriptor depth is 8. This adapter represents thenables, not arbitrary executable callbacks. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["promises", "thenables"],
+    "hints": [
+      "Repeatedly unwrap resolve descriptors; do not unwrap rejection reasons.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(value): JSON value",
+        "starter": "export function solve(value) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [3],
+            "expected": {
+              "status": "fulfilled",
+              "value": 3
+            }
+          },
+          {
+            "args": [
+              {
+                "kind": "resolve",
+                "value": 5
+              }
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": 5
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(value): JSON value",
+        "starter": "type Value = any;\nexport function solve(value: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [3],
+            "expected": {
+              "status": "fulfilled",
+              "value": 3
+            }
+          },
+          {
+            "args": [
+              {
+                "kind": "resolve",
+                "value": 5
+              }
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": 5
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "kind": "resolve",
+          "value": {
+            "kind": "resolve",
+            "value": 9
+          }
+        }
+      ],
+      "expected": {
+        "status": "fulfilled",
+        "value": 9
+      }
+    },
+    {
+      "args": [
+        {
+          "kind": "reject",
+          "value": "x"
+        }
+      ],
+      "expected": {
+        "status": "rejected",
+        "value": "x"
+      }
+    },
+    {
+      "args": [null],
+      "expected": {
+        "status": "fulfilled",
+        "value": null
+      }
+    },
+    {
+      "args": [[]],
+      "expected": {
+        "status": "fulfilled",
+        "value": []
+      }
+    },
+    {
+      "args": [
+        {
+          "kind": "resolve",
+          "value": {
+            "kind": "reject",
+            "value": 0
+          }
+        }
+      ],
+      "expected": {
+        "status": "rejected",
+        "value": 0
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(value) {\n  let current = value;\n  while (\n    current !== null &&\n    typeof current === \"object\" &&\n    !Array.isArray(current) &&\n    current.kind === \"resolve\"\n  )\n    current = current.value;\n  if (\n    current !== null &&\n    typeof current === \"object\" &&\n    !Array.isArray(current) &&\n    current.kind === \"reject\"\n  )\n    return { status: \"rejected\", value: current.value };\n  return { status: \"fulfilled\", value: current };\n}\n",
+    "typescript": "type Value = any;\nexport function solve(value: Value): Value {\n  let current = value;\n  while (\n    current !== null &&\n    typeof current === \"object\" &&\n    !Array.isArray(current) &&\n    current.kind === \"resolve\"\n  )\n    current = current.value;\n  if (\n    current !== null &&\n    typeof current === \"object\" &&\n    !Array.isArray(current) &&\n    current.kind === \"reject\"\n  )\n    return { status: \"rejected\", value: current.value };\n  return { status: \"fulfilled\", value: current };\n}\n"
+  },
+  "explanation": "Follow the resolve chain until an ordinary value or rejection descriptor is reached. O(depth) time and O(1) auxiliary space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

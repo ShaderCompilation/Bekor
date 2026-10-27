@@ -1,0 +1,95 @@
+{
+  "public": {
+    "id": "js-text-search",
+    "slug": "js-text-search",
+    "version": "1.0.0",
+    "title": "Text Search Ranges",
+    "description": "Return all case-sensitive literal query matches as half-open UTF-16 index ranges [start,end], in increasing start order. Include overlapping matches. Empty query returns an empty array. text and query are ASCII strings of at most 100 code units. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["strings", "search"],
+    "hints": [
+      "Advance candidate starts by one to retain overlaps.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(text, query): JSON value",
+        "starter": "export function solve(text, query) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": ["ababa", "aba"],
+            "expected": [[0, 3], [2, 5]]
+          },
+          {
+            "args": ["abc", "x"],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(text, query): JSON value",
+        "starter": "type Value = any;\nexport function solve(text: Value, query: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": ["ababa", "aba"],
+            "expected": [[0, 3], [2, 5]]
+          },
+          {
+            "args": ["abc", "x"],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["", "x"],
+      "expected": []
+    },
+    {
+      "args": ["abc", ""],
+      "expected": []
+    },
+    {
+      "args": ["aaa", "a"],
+      "expected": [[0, 1], [1, 2], [2, 3]]
+    },
+    {
+      "args": ["Aa", "a"],
+      "expected": [[1, 2]]
+    },
+    {
+      "args": ["abc", "abc"],
+      "expected": [[0, 3]]
+    },
+    {
+      "args": ["aaaa", "aa"],
+      "expected": [[0, 2], [1, 3], [2, 4]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(text, query) {\n  const ranges = [];\n  if (!query.length) return ranges;\n  for (let i = 0; i + query.length <= text.length; i++)\n    if (text.slice(i, i + query.length) === query) ranges.push([i, i + query.length]);\n  return ranges;\n}\n",
+    "typescript": "type Value = any;\nexport function solve(text: Value, query: Value): Value {\n  const ranges: Value[] = [];\n  if (!query.length) return ranges;\n  for (let i = 0; i + query.length <= text.length; i++)\n    if (text.slice(i, i + query.length) === query) ranges.push([i, i + query.length]);\n  return ranges;\n}\n"
+  },
+  "explanation": "Compare each candidate substring to the literal query. O(n times m) time and O(n) output space for text length n and query length m. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

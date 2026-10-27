@@ -1,0 +1,239 @@
+{
+  "public": {
+    "id": "js-focus-trap",
+    "slug": "js-focus-trap",
+    "version": "1.0.0",
+    "title": "Focus Trap",
+    "description": "input {elements,start,moves}; elements is an ordered array {id,disabled,hidden}, start is an eligible ID, and moves contains forward or backward. Eligible means neither disabled nor hidden. There is at least one eligible element. Return focused ID after each move, wrapping at either end. This models tab navigation over an explicit focus order, not actual browser focusability. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["state-machines", "arrays"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "elements": [
+                  {
+                    "id": "a",
+                    "disabled": false,
+                    "hidden": false
+                  },
+                  {
+                    "id": "b",
+                    "disabled": false,
+                    "hidden": false
+                  }
+                ],
+                "start": "a",
+                "moves": ["forward", "forward"]
+              }
+            ],
+            "expected": ["b", "a"]
+          },
+          {
+            "args": [
+              {
+                "elements": [
+                  {
+                    "id": "a",
+                    "disabled": false,
+                    "hidden": false
+                  }
+                ],
+                "start": "a",
+                "moves": ["backward"]
+              }
+            ],
+            "expected": ["a"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "elements": [
+                  {
+                    "id": "a",
+                    "disabled": false,
+                    "hidden": false
+                  },
+                  {
+                    "id": "b",
+                    "disabled": false,
+                    "hidden": false
+                  }
+                ],
+                "start": "a",
+                "moves": ["forward", "forward"]
+              }
+            ],
+            "expected": ["b", "a"]
+          },
+          {
+            "args": [
+              {
+                "elements": [
+                  {
+                    "id": "a",
+                    "disabled": false,
+                    "hidden": false
+                  }
+                ],
+                "start": "a",
+                "moves": ["backward"]
+              }
+            ],
+            "expected": ["a"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "elements": [
+            {
+              "id": "a",
+              "disabled": false,
+              "hidden": false
+            },
+            {
+              "id": "b",
+              "disabled": true,
+              "hidden": false
+            },
+            {
+              "id": "c",
+              "disabled": false,
+              "hidden": false
+            }
+          ],
+          "start": "a",
+          "moves": ["forward"]
+        }
+      ],
+      "expected": ["c"]
+    },
+    {
+      "args": [
+        {
+          "elements": [
+            {
+              "id": "a",
+              "disabled": false,
+              "hidden": false
+            },
+            {
+              "id": "b",
+              "disabled": false,
+              "hidden": true
+            }
+          ],
+          "start": "a",
+          "moves": ["forward"]
+        }
+      ],
+      "expected": ["a"]
+    },
+    {
+      "args": [
+        {
+          "elements": [
+            {
+              "id": "a",
+              "disabled": false,
+              "hidden": false
+            }
+          ],
+          "start": "a",
+          "moves": []
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "elements": [
+            {
+              "id": "a",
+              "disabled": false,
+              "hidden": false
+            },
+            {
+              "id": "b",
+              "disabled": false,
+              "hidden": false
+            }
+          ],
+          "start": "a",
+          "moves": ["backward"]
+        }
+      ],
+      "expected": ["b"]
+    },
+    {
+      "args": [
+        {
+          "elements": [
+            {
+              "id": "a",
+              "disabled": false,
+              "hidden": false
+            },
+            {
+              "id": "b",
+              "disabled": false,
+              "hidden": false
+            },
+            {
+              "id": "c",
+              "disabled": false,
+              "hidden": false
+            }
+          ],
+          "start": "c",
+          "moves": ["forward", "backward"]
+        }
+      ],
+      "expected": ["a", "c"]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const ids = d.elements.filter((e) => !e.disabled && !e.hidden).map((e) => e.id);\n  let i = ids.indexOf(d.start);\n  return d.moves.map((m) => {\n    i = (i + (m === \"forward\" ? 1 : ids.length - 1)) % ids.length;\n    return ids[i];\n  });\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const ids = d.elements.filter((e: any) => !e.disabled && !e.hidden).map((e: any) => e.id);\n  let i = ids.indexOf(d.start);\n  return d.moves.map((m: string) => {\n    i = (i + (m === \"forward\" ? 1 : ids.length - 1)) % ids.length;\n    return ids[i];\n  });\n}\n"
+  },
+  "explanation": "Filter the focus order, then update a modular index for each direction. O(n plus moves) time and O(n plus output) space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

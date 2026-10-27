@@ -1,0 +1,271 @@
+{
+  "public": {
+    "id": "js-deep-clone",
+    "slug": "js-deep-clone",
+    "version": "1.0.0",
+    "title": "Deep Clone",
+    "description": "Deep-copy a JSON value, then apply one clone-only edit. Return {original,clone}. The edit is {path,value}; path is an array of at most 6 existing object keys or array indices addressing a property of an object/array. The path is nonempty. Replace that clone property with value, without changing the original. There are no cycles or special objects. The observable edit makes nested aliasing detectable. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "medium",
+    "concepts": ["objects", "recursion"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Recursively allocate arrays/objects before editing the clone path."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(value: any, edit: {path:(string|number)[],value:any}): JSON-compatible result",
+        "starter": "export function solve(value, edit) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "a": {
+                  "b": 1
+                }
+              },
+              {
+                "path": ["a", "b"],
+                "value": 2
+              }
+            ],
+            "expected": {
+              "original": {
+                "a": {
+                  "b": 1
+                }
+              },
+              "clone": {
+                "a": {
+                  "b": 2
+                }
+              }
+            }
+          },
+          {
+            "args": [
+              [
+                1,
+                {
+                  "x": 2
+                }
+              ],
+              {
+                "path": [1, "x"],
+                "value": 3
+              }
+            ],
+            "expected": {
+              "original": [
+                1,
+                {
+                  "x": 2
+                }
+              ],
+              "clone": [
+                1,
+                {
+                  "x": 3
+                }
+              ]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(value: any, edit: {path:(string|number)[],value:any}): JSON-compatible result",
+        "starter": "export function solve(value: any, edit: { path: (string | number)[]; value: any }): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "a": {
+                  "b": 1
+                }
+              },
+              {
+                "path": ["a", "b"],
+                "value": 2
+              }
+            ],
+            "expected": {
+              "original": {
+                "a": {
+                  "b": 1
+                }
+              },
+              "clone": {
+                "a": {
+                  "b": 2
+                }
+              }
+            }
+          },
+          {
+            "args": [
+              [
+                1,
+                {
+                  "x": 2
+                }
+              ],
+              {
+                "path": [1, "x"],
+                "value": 3
+              }
+            ],
+            "expected": {
+              "original": [
+                1,
+                {
+                  "x": 2
+                }
+              ],
+              "clone": [
+                1,
+                {
+                  "x": 3
+                }
+              ]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "a": 0
+        },
+        {
+          "path": ["a"],
+          "value": false
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": 0
+        },
+        "clone": {
+          "a": false
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "a": [0]
+        },
+        {
+          "path": ["a", 0],
+          "value": null
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": [0]
+        },
+        "clone": {
+          "a": [null]
+        }
+      }
+    },
+    {
+      "args": [
+        [1],
+        {
+          "path": [0],
+          "value": {
+            "b": 2
+          }
+        }
+      ],
+      "expected": {
+        "original": [1],
+        "clone": [
+          {
+            "b": 2
+          }
+        ]
+      }
+    },
+    {
+      "args": [
+        {
+          "a": {
+            "b": {
+              "c": 1
+            }
+          }
+        },
+        {
+          "path": ["a", "b", "c"],
+          "value": 9
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": {
+            "b": {
+              "c": 1
+            }
+          }
+        },
+        "clone": {
+          "a": {
+            "b": {
+              "c": 9
+            }
+          }
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "a": [1, 2],
+          "b": 3
+        },
+        {
+          "path": ["a", 1],
+          "value": 4
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": [1, 2],
+          "b": 3
+        },
+        "clone": {
+          "a": [1, 4],
+          "b": 3
+        }
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(value, edit) {\n  const copy = (x) =>\n    Array.isArray(x)\n      ? x.map(copy)\n      : x !== null && typeof x === \"object\"\n        ? Object.fromEntries(Object.entries(x).map(([k, v]) => [k, copy(v)]))\n        : x;\n  const clone = copy(value);\n  let parent = clone;\n  for (const k of edit.path.slice(0, -1)) parent = parent[k];\n  parent[edit.path[edit.path.length - 1]] = copy(edit.value);\n  return { original: value, clone };\n}\n",
+    "typescript": "export function solve(value: any, edit: { path: (string | number)[]; value: any }): any {\n  const copy = (x: any): any =>\n    Array.isArray(x)\n      ? x.map(copy)\n      : x !== null && typeof x === \"object\"\n        ? Object.fromEntries(Object.entries(x).map(([k, v]) => [k, copy(v)]))\n        : x;\n  const clone = copy(value);\n  let parent = clone;\n  for (const k of edit.path.slice(0, -1)) parent = parent[k];\n  parent[edit.path[edit.path.length - 1]] = copy(edit.value);\n  return { original: value, clone };\n}\n"
+  },
+  "explanation": "Recursively allocate arrays/objects before editing the clone path. O(n + edit size + depth) time and O(n + edit size) allocation. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

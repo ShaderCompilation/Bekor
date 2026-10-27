@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-number-of-arguments",
+    "slug": "js-number-of-arguments",
+    "version": "1.0.0",
+    "title": "Number of Arguments",
+    "description": "Return how many positional arguments a function call received. The JSON adapter supplies the argument list as one array; nested arrays and null each count as one argument. At most 50 arguments. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["functions", "arrays"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Count top-level argument slots, preserving nested values as single arguments."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(args: any[]): JSON-compatible result",
+        "starter": "export function solve(args) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, "a", null]],
+            "expected": 3
+          },
+          {
+            "args": [[[1, 2], 3]],
+            "expected": 2
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(args: any[]): JSON-compatible result",
+        "starter": "export function solve(args: any[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, "a", null]],
+            "expected": 3
+          },
+          {
+            "args": [[[1, 2], 3]],
+            "expected": 2
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": 0
+    },
+    {
+      "args": [[null]],
+      "expected": 1
+    },
+    {
+      "args": [[false, 0, ""]],
+      "expected": 3
+    },
+    {
+      "args": [[[]]],
+      "expected": 1
+    },
+    {
+      "args": [[{}, [], null, true]],
+      "expected": 4
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(args) {\n  return args.length;\n}\n",
+    "typescript": "export function solve(args: any[]): any {\n  return args.length;\n}\n"
+  },
+  "explanation": "Count top-level argument slots, preserving nested values as single arguments. O(1) time and space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

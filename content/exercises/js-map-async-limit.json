@@ -1,0 +1,199 @@
+{
+  "public": {
+    "id": "js-map-async-limit",
+    "slug": "js-map-async-limit",
+    "version": "1.0.0",
+    "title": "Map Async Limit",
+    "description": "Map integer values using an asynchronous affine mapper descriptor {factor,offset,delay}. The mapped result is value times factor plus offset; each task takes delay virtual time units. Values, factor and offset are integers from -20 through 20; delay from 0 through 10, at most 20 values. Return {values,starts,ends}, all arrays in input order. The adapter tests dispatch and completion scheduling, without wall-clock timers or arbitrary callbacks. All tasks succeed. Limit is from 1 through 10. Start tasks greedily in input order on available workers, beginning at time 0. When workers free simultaneously, start waiting items in input order. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "medium",
+    "concepts": ["promises", "scheduling"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Equal task durations form waves of at most limit tasks."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(values: number[], mapper: {factor:number,offset:number,delay:number}, limit: number): JSON-compatible result",
+        "starter": "export function solve(values, mapper, limit) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [1, 2, 3],
+              {
+                "factor": 2,
+                "offset": 1,
+                "delay": 3
+              },
+              2
+            ],
+            "expected": {
+              "values": [3, 5, 7],
+              "starts": [0, 0, 3],
+              "ends": [3, 3, 6]
+            }
+          },
+          {
+            "args": [
+              [1, 2],
+              {
+                "factor": 1,
+                "offset": 0,
+                "delay": 2
+              },
+              1
+            ],
+            "expected": {
+              "values": [1, 2],
+              "starts": [0, 2],
+              "ends": [2, 4]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(values: number[], mapper: {factor:number,offset:number,delay:number}, limit: number): JSON-compatible result",
+        "starter": "export function solve(\n  values: number[],\n  mapper: { factor: number; offset: number; delay: number },\n  limit: number,\n): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [1, 2, 3],
+              {
+                "factor": 2,
+                "offset": 1,
+                "delay": 3
+              },
+              2
+            ],
+            "expected": {
+              "values": [3, 5, 7],
+              "starts": [0, 0, 3],
+              "ends": [3, 3, 6]
+            }
+          },
+          {
+            "args": [
+              [1, 2],
+              {
+                "factor": 1,
+                "offset": 0,
+                "delay": 2
+              },
+              1
+            ],
+            "expected": {
+              "values": [1, 2],
+              "starts": [0, 2],
+              "ends": [2, 4]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        [],
+        {
+          "factor": 1,
+          "offset": 0,
+          "delay": 2
+        },
+        3
+      ],
+      "expected": {
+        "values": [],
+        "starts": [],
+        "ends": []
+      }
+    },
+    {
+      "args": [
+        [0],
+        {
+          "factor": 0,
+          "offset": 4,
+          "delay": 3
+        },
+        5
+      ],
+      "expected": {
+        "values": [4],
+        "starts": [0],
+        "ends": [3]
+      }
+    },
+    {
+      "args": [
+        [1, 2, 3],
+        {
+          "factor": 1,
+          "offset": 0,
+          "delay": 0
+        },
+        1
+      ],
+      "expected": {
+        "values": [1, 2, 3],
+        "starts": [0, 0, 0],
+        "ends": [0, 0, 0]
+      }
+    },
+    {
+      "args": [
+        [-1, -2],
+        {
+          "factor": -2,
+          "offset": 0,
+          "delay": 1
+        },
+        2
+      ],
+      "expected": {
+        "values": [2, 4],
+        "starts": [0, 0],
+        "ends": [1, 1]
+      }
+    },
+    {
+      "args": [
+        [1, 2, 3, 4, 5],
+        {
+          "factor": 1,
+          "offset": 2,
+          "delay": 2
+        },
+        2
+      ],
+      "expected": {
+        "values": [3, 4, 5, 6, 7],
+        "starts": [0, 0, 2, 2, 4],
+        "ends": [2, 2, 4, 4, 6]
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(values, mapper, limit) {\n  const starts = values.map((_, i) => Math.floor(i / limit) * mapper.delay);\n  return {\n    values: values.map((x) => x * mapper.factor + mapper.offset),\n    starts,\n    ends: starts.map((t) => t + mapper.delay),\n  };\n}\n",
+    "typescript": "export function solve(\n  values: number[],\n  mapper: { factor: number; offset: number; delay: number },\n  limit: number,\n): any {\n  const starts = values.map((_, i) => Math.floor(i / limit) * mapper.delay);\n  return {\n    values: values.map((x) => x * mapper.factor + mapper.offset),\n    starts,\n    ends: starts.map((t) => t + mapper.delay),\n  };\n}\n"
+  },
+  "explanation": "Equal task durations form waves of at most limit tasks. Compute each wave start and retain result order. O(n) time and output. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

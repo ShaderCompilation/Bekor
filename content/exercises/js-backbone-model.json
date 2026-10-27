@@ -1,0 +1,282 @@
+{
+  "public": {
+    "id": "js-backbone-model",
+    "slug": "js-backbone-model",
+    "version": "1.0.0",
+    "title": "Backbone Model",
+    "description": "Replay a simplified attribute model. Initial is a flat map of scalar values. Operations are {kind:\"set\",values:object} or {kind:\"unset\",key}. Return {attributes,changes}; changes is an ordered array of {key,previous,value}, using null for missing values. A set merges keys in Object.keys order and logs only strict value changes; missing versus present null counts as a change. Unset logs only if the key exists. At most 20 operations and 20 total distinct keys; no callbacks or prototype fields. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "medium",
+    "concepts": ["objects", "events"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Track own-key existence separately from stored values."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(initial: Record<string,any>, operations: any[]): JSON-compatible result",
+        "starter": "export function solve(initial, operations) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "a": 1
+              },
+              [
+                {
+                  "kind": "set",
+                  "values": {
+                    "a": 2,
+                    "b": 3
+                  }
+                }
+              ]
+            ],
+            "expected": {
+              "attributes": {
+                "a": 2,
+                "b": 3
+              },
+              "changes": [
+                {
+                  "key": "a",
+                  "previous": 1,
+                  "value": 2
+                },
+                {
+                  "key": "b",
+                  "previous": null,
+                  "value": 3
+                }
+              ]
+            }
+          },
+          {
+            "args": [
+              {
+                "a": false
+              },
+              [
+                {
+                  "kind": "unset",
+                  "key": "a"
+                }
+              ]
+            ],
+            "expected": {
+              "attributes": {},
+              "changes": [
+                {
+                  "key": "a",
+                  "previous": false,
+                  "value": null
+                }
+              ]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(initial: Record<string,any>, operations: any[]): JSON-compatible result",
+        "starter": "export function solve(initial: Record<string, any>, operations: any[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "a": 1
+              },
+              [
+                {
+                  "kind": "set",
+                  "values": {
+                    "a": 2,
+                    "b": 3
+                  }
+                }
+              ]
+            ],
+            "expected": {
+              "attributes": {
+                "a": 2,
+                "b": 3
+              },
+              "changes": [
+                {
+                  "key": "a",
+                  "previous": 1,
+                  "value": 2
+                },
+                {
+                  "key": "b",
+                  "previous": null,
+                  "value": 3
+                }
+              ]
+            }
+          },
+          {
+            "args": [
+              {
+                "a": false
+              },
+              [
+                {
+                  "kind": "unset",
+                  "key": "a"
+                }
+              ]
+            ],
+            "expected": {
+              "attributes": {},
+              "changes": [
+                {
+                  "key": "a",
+                  "previous": false,
+                  "value": null
+                }
+              ]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [{}, []],
+      "expected": {
+        "attributes": {},
+        "changes": []
+      }
+    },
+    {
+      "args": [
+        {
+          "a": 1
+        },
+        [
+          {
+            "kind": "set",
+            "values": {
+              "a": 1
+            }
+          }
+        ]
+      ],
+      "expected": {
+        "attributes": {
+          "a": 1
+        },
+        "changes": []
+      }
+    },
+    {
+      "args": [
+        {},
+        [
+          {
+            "kind": "unset",
+            "key": "a"
+          }
+        ]
+      ],
+      "expected": {
+        "attributes": {},
+        "changes": []
+      }
+    },
+    {
+      "args": [
+        {},
+        [
+          {
+            "kind": "set",
+            "values": {
+              "a": null
+            }
+          },
+          {
+            "kind": "unset",
+            "key": "a"
+          }
+        ]
+      ],
+      "expected": {
+        "attributes": {},
+        "changes": [
+          {
+            "key": "a",
+            "previous": null,
+            "value": null
+          },
+          {
+            "key": "a",
+            "previous": null,
+            "value": null
+          }
+        ]
+      }
+    },
+    {
+      "args": [
+        {
+          "a": 0
+        },
+        [
+          {
+            "kind": "set",
+            "values": {
+              "a": false
+            }
+          },
+          {
+            "kind": "set",
+            "values": {
+              "a": 0
+            }
+          }
+        ]
+      ],
+      "expected": {
+        "attributes": {
+          "a": 0
+        },
+        "changes": [
+          {
+            "key": "a",
+            "previous": 0,
+            "value": false
+          },
+          {
+            "key": "a",
+            "previous": false,
+            "value": 0
+          }
+        ]
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(initial, operations) {\n  const attributes = { ...initial },\n    changes = [];\n  for (const op of operations) {\n    if (op.kind === \"set\") {\n      for (const k of Object.keys(op.values)) {\n        if (!Object.hasOwn(attributes, k) || attributes[k] !== op.values[k]) {\n          changes.push({\n            key: k,\n            previous: Object.hasOwn(attributes, k) ? attributes[k] : null,\n            value: op.values[k],\n          });\n          attributes[k] = op.values[k];\n        }\n      }\n    } else if (Object.hasOwn(attributes, op.key)) {\n      changes.push({ key: op.key, previous: attributes[op.key], value: null });\n      delete attributes[op.key];\n    }\n  }\n  return { attributes, changes };\n}\n",
+    "typescript": "export function solve(initial: Record<string, any>, operations: any[]): any {\n  const attributes = { ...initial },\n    changes: any[] = [];\n  for (const op of operations) {\n    if (op.kind === \"set\") {\n      for (const k of Object.keys(op.values)) {\n        if (!Object.hasOwn(attributes, k) || attributes[k] !== op.values[k]) {\n          changes.push({\n            key: k,\n            previous: Object.hasOwn(attributes, k) ? attributes[k] : null,\n            value: op.values[k],\n          });\n          attributes[k] = op.values[k];\n        }\n      }\n    } else if (Object.hasOwn(attributes, op.key)) {\n      changes.push({ key: op.key, previous: attributes[op.key], value: null });\n      delete attributes[op.key];\n    }\n  }\n  return { attributes, changes };\n}\n"
+  },
+  "explanation": "Track own-key existence separately from stored values. Log changes while replaying commands. O(total assigned keys + operations), O(attributes + changes) space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

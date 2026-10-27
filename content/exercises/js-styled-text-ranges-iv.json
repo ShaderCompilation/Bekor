@@ -1,0 +1,347 @@
+{
+  "public": {
+    "id": "js-styled-text-ranges-iv",
+    "slug": "js-styled-text-ranges-iv",
+    "version": "1.0.0",
+    "title": "Styled Text Ranges IV",
+    "description": "input {length,ranges,patches}; ranges are sorted disjoint [start,end,styleObject] triples. Each style object has string keys and primitive values. Patches {start,end,style} shallow-merge properties over each covered position; a null property deletes that key. Empty style objects mean unstyled. Return sorted maximal [start,end,styleObject] triples, omit empty styles and merge adjacent structurally equal styles regardless of key insertion order. Length at most 100, at most 8 style keys. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["intervals", "objects"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "length": 3,
+                "ranges": [
+                  [
+                    0,
+                    3,
+                    {
+                      "b": true
+                    }
+                  ]
+                ],
+                "patches": [
+                  {
+                    "start": 1,
+                    "end": 2,
+                    "style": {
+                      "i": true
+                    }
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              [
+                0,
+                1,
+                {
+                  "b": true
+                }
+              ],
+              [
+                1,
+                2,
+                {
+                  "b": true,
+                  "i": true
+                }
+              ],
+              [
+                2,
+                3,
+                {
+                  "b": true
+                }
+              ]
+            ]
+          },
+          {
+            "args": [
+              {
+                "length": 2,
+                "ranges": [
+                  [
+                    0,
+                    2,
+                    {
+                      "b": true
+                    }
+                  ]
+                ],
+                "patches": [
+                  {
+                    "start": 0,
+                    "end": 1,
+                    "style": {
+                      "b": null
+                    }
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              [
+                1,
+                2,
+                {
+                  "b": true
+                }
+              ]
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "length": 3,
+                "ranges": [
+                  [
+                    0,
+                    3,
+                    {
+                      "b": true
+                    }
+                  ]
+                ],
+                "patches": [
+                  {
+                    "start": 1,
+                    "end": 2,
+                    "style": {
+                      "i": true
+                    }
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              [
+                0,
+                1,
+                {
+                  "b": true
+                }
+              ],
+              [
+                1,
+                2,
+                {
+                  "b": true,
+                  "i": true
+                }
+              ],
+              [
+                2,
+                3,
+                {
+                  "b": true
+                }
+              ]
+            ]
+          },
+          {
+            "args": [
+              {
+                "length": 2,
+                "ranges": [
+                  [
+                    0,
+                    2,
+                    {
+                      "b": true
+                    }
+                  ]
+                ],
+                "patches": [
+                  {
+                    "start": 0,
+                    "end": 1,
+                    "style": {
+                      "b": null
+                    }
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              [
+                1,
+                2,
+                {
+                  "b": true
+                }
+              ]
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "length": 0,
+          "ranges": [],
+          "patches": []
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "length": 2,
+          "ranges": [],
+          "patches": [
+            {
+              "start": 0,
+              "end": 2,
+              "style": {
+                "b": false
+              }
+            }
+          ]
+        }
+      ],
+      "expected": [
+        [
+          0,
+          2,
+          {
+            "b": false
+          }
+        ]
+      ]
+    },
+    {
+      "args": [
+        {
+          "length": 2,
+          "ranges": [
+            [
+              0,
+              1,
+              {
+                "a": 1,
+                "b": 2
+              }
+            ],
+            [
+              1,
+              2,
+              {
+                "b": 2,
+                "a": 1
+              }
+            ]
+          ],
+          "patches": []
+        }
+      ],
+      "expected": [
+        [
+          0,
+          2,
+          {
+            "a": 1,
+            "b": 2
+          }
+        ]
+      ]
+    },
+    {
+      "args": [
+        {
+          "length": 2,
+          "ranges": [],
+          "patches": [
+            {
+              "start": 0,
+              "end": 2,
+              "style": {
+                "x": null
+              }
+            }
+          ]
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "length": 2,
+          "ranges": [
+            [
+              0,
+              2,
+              {
+                "a": 1,
+                "b": 2
+              }
+            ]
+          ],
+          "patches": [
+            {
+              "start": 0,
+              "end": 2,
+              "style": {
+                "a": 3
+              }
+            }
+          ]
+        }
+      ],
+      "expected": [
+        [
+          0,
+          2,
+          {
+            "a": 3,
+            "b": 2
+          }
+        ]
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const clone = (v) => JSON.parse(JSON.stringify(v));\n  const cells = Array.from({ length: d.length }, () => ({}));\n  for (const r of d.ranges) for (let i = r[0]; i < r[1]; i++) cells[i] = clone(r[2]);\n  for (const p of d.patches)\n    for (let i = p.start; i < p.end; i++)\n      for (const k of Object.keys(p.style)) {\n        if (p.style[k] === null) delete cells[i][k];\n        else cells[i][k] = p.style[k];\n      }\n  const key = (v) =>\n    JSON.stringify(\n      Object.keys(v)\n        .sort()\n        .map((k) => [k, v[k]]),\n    );\n  const out = [];\n  for (let i = 0; i < cells.length; ) {\n    let j = i + 1;\n    while (j < cells.length && key(cells[j]) === key(cells[i])) j++;\n    if (Object.keys(cells[i]).length) out.push([i, j, cells[i]]);\n    i = j;\n  }\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const clone = (v: any): any => JSON.parse(JSON.stringify(v));\n  const cells: any[] = Array.from({ length: d.length }, () => ({}));\n  for (const r of d.ranges) for (let i = r[0]; i < r[1]; i++) cells[i] = clone(r[2]);\n  for (const p of d.patches)\n    for (let i = p.start; i < p.end; i++)\n      for (const k of Object.keys(p.style)) {\n        if (p.style[k] === null) delete cells[i][k];\n        else cells[i][k] = p.style[k];\n      }\n  const key = (v: any): string =>\n    JSON.stringify(\n      Object.keys(v)\n        .sort()\n        .map((k) => [k, v[k]]),\n    );\n  const out: any[] = [];\n  for (let i = 0; i < cells.length; ) {\n    let j = i + 1;\n    while (j < cells.length && key(cells[j]) === key(cells[i])) j++;\n    if (Object.keys(cells[i]).length) out.push([i, j, cells[i]]);\n    i = j;\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Maintain shallow property maps per character, delete null-patched properties and coalesce canonical key/value encodings. O(length times (ranges plus patches times keys plus keys log keys)) time and O(length times keys) space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

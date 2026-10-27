@@ -1,0 +1,236 @@
+{
+  "public": {
+    "id": "js-drizzle-query-builder-ii",
+    "slug": "js-drizzle-query-builder-ii",
+    "version": "1.0.0",
+    "title": "Drizzle Query Builder II",
+    "description": "input {rows,where?,orderBy?,offset?,limit?,select}; filter/order/page as an in-memory query plan, where fields are exact primitive equality constraints, orderBy one {key,direction}. Select maps output aliases to source field names, which must exist. Return objects containing only selected aliases, preserving filtered/sorted row order; empty select emits {} per row. At most 40 rows and 8 selected fields. Aliases are distinct safe keys. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["queries", "projection"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "rows": [
+                  {
+                    "id": 1,
+                    "name": "A"
+                  }
+                ],
+                "select": {
+                  "label": "name"
+                }
+              }
+            ],
+            "expected": [
+              {
+                "label": "A"
+              }
+            ]
+          },
+          {
+            "args": [
+              {
+                "rows": [
+                  {
+                    "id": 1
+                  },
+                  {
+                    "id": 2
+                  }
+                ],
+                "where": {
+                  "id": 2
+                },
+                "select": {
+                  "x": "id"
+                }
+              }
+            ],
+            "expected": [
+              {
+                "x": 2
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "rows": [
+                  {
+                    "id": 1,
+                    "name": "A"
+                  }
+                ],
+                "select": {
+                  "label": "name"
+                }
+              }
+            ],
+            "expected": [
+              {
+                "label": "A"
+              }
+            ]
+          },
+          {
+            "args": [
+              {
+                "rows": [
+                  {
+                    "id": 1
+                  },
+                  {
+                    "id": 2
+                  }
+                ],
+                "where": {
+                  "id": 2
+                },
+                "select": {
+                  "x": "id"
+                }
+              }
+            ],
+            "expected": [
+              {
+                "x": 2
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "rows": [],
+          "select": {}
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "rows": [
+            {
+              "id": 1
+            }
+          ],
+          "select": {}
+        }
+      ],
+      "expected": [{}]
+    },
+    {
+      "args": [
+        {
+          "rows": [
+            {
+              "id": 1,
+              "x": 0
+            }
+          ],
+          "select": {
+            "a": "x",
+            "b": "x"
+          }
+        }
+      ],
+      "expected": [
+        {
+          "a": 0,
+          "b": 0
+        }
+      ]
+    },
+    {
+      "args": [
+        {
+          "rows": [
+            {
+              "id": 1
+            },
+            {
+              "id": 2
+            }
+          ],
+          "orderBy": {
+            "key": "id",
+            "direction": "desc"
+          },
+          "limit": 1,
+          "select": {
+            "x": "id"
+          }
+        }
+      ],
+      "expected": [
+        {
+          "x": 2
+        }
+      ]
+    },
+    {
+      "args": [
+        {
+          "rows": [
+            {
+              "id": 1,
+              "x": false
+            }
+          ],
+          "select": {
+            "flag": "x"
+          }
+        }
+      ],
+      "expected": [
+        {
+          "flag": false
+        }
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const clone = (v) => JSON.parse(JSON.stringify(v));\n  let rows = clone(d.rows);\n  if (d.where)\n    rows = rows.filter((r) =>\n      Object.keys(d.where).every((k) => {\n        const c = d.where[k];\n        return c && typeof c === \"object\"\n          ? Object.keys(c).every((op) =>\n              op === \"gt\"\n                ? r[k] > c[op]\n                : op === \"lt\"\n                  ? r[k] < c[op]\n                  : op === \"in\"\n                    ? c[op].includes(r[k])\n                    : r[k] === c[op],\n            )\n          : r[k] === c;\n      }),\n    );\n  if (d.orderBy) {\n    const orders = Array.isArray(d.orderBy) ? d.orderBy : [d.orderBy];\n    rows.sort((a, b) => {\n      for (const o of orders) {\n        const x = a[o.key],\n          y = b[o.key];\n        if (x !== y) return (x < y ? -1 : 1) * (o.direction === \"desc\" ? -1 : 1);\n      }\n      return 0;\n    });\n  }\n  if (d.offset) rows = rows.slice(d.offset);\n  if (d.limit !== undefined) rows = rows.slice(0, d.limit);\n  if (d.select)\n    rows = rows.map((r) =>\n      Object.fromEntries(Object.entries(d.select).map(([alias, key]) => [alias, r[key]])),\n    );\n  return rows;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const clone = (v: any): any => JSON.parse(JSON.stringify(v));\n  let rows = clone(d.rows);\n  if (d.where)\n    rows = rows.filter((r: any) =>\n      Object.keys(d.where).every((k) => {\n        const c = d.where[k];\n        return c && typeof c === \"object\"\n          ? Object.keys(c).every((op) =>\n              op === \"gt\"\n                ? r[k] > c[op]\n                : op === \"lt\"\n                  ? r[k] < c[op]\n                  : op === \"in\"\n                    ? c[op].includes(r[k])\n                    : r[k] === c[op],\n            )\n          : r[k] === c;\n      }),\n    );\n  if (d.orderBy) {\n    const orders = Array.isArray(d.orderBy) ? d.orderBy : [d.orderBy];\n    rows.sort((a: any, b: any) => {\n      for (const o of orders) {\n        const x = a[o.key],\n          y = b[o.key];\n        if (x !== y) return (x < y ? -1 : 1) * (o.direction === \"desc\" ? -1 : 1);\n      }\n      return 0;\n    });\n  }\n  if (d.offset) rows = rows.slice(d.offset);\n  if (d.limit !== undefined) rows = rows.slice(0, d.limit);\n  if (d.select)\n    rows = rows.map((r: any) =>\n      Object.fromEntries(Object.entries(d.select).map(([alias, key]) => [alias, r[key as string]])),\n    );\n  return rows;\n}\n"
+  },
+  "explanation": "Execute the row pipeline then construct each projection from alias/source pairs. O(filter/sort work plus rows times selected fields) time and output space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

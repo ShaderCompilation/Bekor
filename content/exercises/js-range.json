@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-range",
+    "slug": "js-range",
+    "version": "1.0.0",
+    "title": "Range",
+    "description": "Return an arithmetic range beginning at start with nonzero step, excluding end. For positive step continue while the current value is less than end; for negative step continue while it is greater than end. If the direction cannot reach end, return []. start/end are integers from -20 through 20; step is an integer from -10 through 10 excluding zero. There are at most 40 results. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "numbers"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Advance by the signed step using an exclusive endpoint test."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(start: number, end: number, step: number): JSON-compatible result",
+        "starter": "export function solve(start, end, step) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [0, 5, 2],
+            "expected": [0, 2, 4]
+          },
+          {
+            "args": [5, 0, -2],
+            "expected": [5, 3, 1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(start: number, end: number, step: number): JSON-compatible result",
+        "starter": "export function solve(start: number, end: number, step: number): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [0, 5, 2],
+            "expected": [0, 2, 4]
+          },
+          {
+            "args": [5, 0, -2],
+            "expected": [5, 3, 1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [2, 2, 1],
+      "expected": []
+    },
+    {
+      "args": [0, 5, -1],
+      "expected": []
+    },
+    {
+      "args": [5, 0, 1],
+      "expected": []
+    },
+    {
+      "args": [-3, 2, 1],
+      "expected": [-3, -2, -1, 0, 1]
+    },
+    {
+      "args": [3, -2, -2],
+      "expected": [3, 1, -1]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(start, end, step) {\n  const out = [];\n  for (let x = start; step > 0 ? x < end : x > end; x += step) out.push(x);\n  return out;\n}\n",
+    "typescript": "export function solve(start: number, end: number, step: number): any {\n  const out: number[] = [];\n  for (let x = start; step > 0 ? x < end : x > end; x += step) out.push(x);\n  return out;\n}\n"
+  },
+  "explanation": "Advance by the signed step using an exclusive endpoint test. O(result count) time/output. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

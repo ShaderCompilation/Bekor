@@ -1,0 +1,183 @@
+{
+  "public": {
+    "id": "js-sleep",
+    "slug": "js-sleep",
+    "version": "1.0.0",
+    "title": "Sleep",
+    "description": "Simulate concurrent sleep requests on a virtual clock. Each request is {start,duration}; both are integers from 0 through 100, with at most 20 requests. Return request indices in wake order, where wake time is start plus duration and ties use input order. Duration zero wakes at start. This tests delay completion ordering without wall-clock timing or actual blocking. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["timers", "sorting"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Compute deadlines and stably sort by wake time."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(requests: {start:number,duration:number}[]): JSON-compatible result",
+        "starter": "export function solve(requests) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "start": 0,
+                  "duration": 5
+                },
+                {
+                  "start": 1,
+                  "duration": 1
+                }
+              ]
+            ],
+            "expected": [1, 0]
+          },
+          {
+            "args": [
+              [
+                {
+                  "start": 0,
+                  "duration": 2
+                },
+                {
+                  "start": 1,
+                  "duration": 1
+                }
+              ]
+            ],
+            "expected": [0, 1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(requests: {start:number,duration:number}[]): JSON-compatible result",
+        "starter": "export function solve(requests: { start: number; duration: number }[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "start": 0,
+                  "duration": 5
+                },
+                {
+                  "start": 1,
+                  "duration": 1
+                }
+              ]
+            ],
+            "expected": [1, 0]
+          },
+          {
+            "args": [
+              [
+                {
+                  "start": 0,
+                  "duration": 2
+                },
+                {
+                  "start": 1,
+                  "duration": 1
+                }
+              ]
+            ],
+            "expected": [0, 1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "start": 0,
+            "duration": 0
+          }
+        ]
+      ],
+      "expected": [0]
+    },
+    {
+      "args": [
+        [
+          {
+            "start": 5,
+            "duration": 0
+          },
+          {
+            "start": 0,
+            "duration": 4
+          }
+        ]
+      ],
+      "expected": [1, 0]
+    },
+    {
+      "args": [
+        [
+          {
+            "start": 0,
+            "duration": 3
+          },
+          {
+            "start": 0,
+            "duration": 1
+          },
+          {
+            "start": 0,
+            "duration": 2
+          }
+        ]
+      ],
+      "expected": [1, 2, 0]
+    },
+    {
+      "args": [
+        [
+          {
+            "start": 2,
+            "duration": 2
+          },
+          {
+            "start": 2,
+            "duration": 2
+          },
+          {
+            "start": 2,
+            "duration": 2
+          }
+        ]
+      ],
+      "expected": [0, 1, 2]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(requests) {\n  return requests\n    .map((r, i) => ({ i, time: r.start + r.duration }))\n    .sort((a, b) => a.time - b.time || a.i - b.i)\n    .map((r) => r.i);\n}\n",
+    "typescript": "export function solve(requests: { start: number; duration: number }[]): any {\n  return requests\n    .map((r, i) => ({ i, time: r.start + r.duration }))\n    .sort((a, b) => a.time - b.time || a.i - b.i)\n    .map((r) => r.i);\n}\n"
+  },
+  "explanation": "Compute deadlines and stably sort by wake time. O(n log n) time and O(n) space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

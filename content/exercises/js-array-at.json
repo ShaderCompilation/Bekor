@@ -1,0 +1,118 @@
+{
+  "public": {
+    "id": "js-array-at",
+    "slug": "js-array-at",
+    "version": "1.0.0",
+    "title": "Array.prototype.at",
+    "description": "Return the array element at index, allowing negative indices to count back from the end. Return {found:false,value:null} when out of bounds, otherwise {found:true,value:element}; this distinguishes an absent index from a present null. values is a dense array of at most 50 JSON values, and index is an integer from -100 through 100. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "indexing"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Normalize one negative offset and check bounds before accessing."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(values: any[], index: number): JSON-compatible result",
+        "starter": "export function solve(values, index) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3], -1],
+            "expected": {
+              "found": true,
+              "value": 3
+            }
+          },
+          {
+            "args": [[null], 0],
+            "expected": {
+              "found": true,
+              "value": null
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(values: any[], index: number): JSON-compatible result",
+        "starter": "export function solve(values: any[], index: number): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3], -1],
+            "expected": {
+              "found": true,
+              "value": 3
+            }
+          },
+          {
+            "args": [[null], 0],
+            "expected": {
+              "found": true,
+              "value": null
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 0],
+      "expected": {
+        "found": false,
+        "value": null
+      }
+    },
+    {
+      "args": [[1, 2], -2],
+      "expected": {
+        "found": true,
+        "value": 1
+      }
+    },
+    {
+      "args": [[1, 2], -3],
+      "expected": {
+        "found": false,
+        "value": null
+      }
+    },
+    {
+      "args": [[1, 2], 2],
+      "expected": {
+        "found": false,
+        "value": null
+      }
+    },
+    {
+      "args": [[false, 0], 0],
+      "expected": {
+        "found": true,
+        "value": false
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(values, index) {\n  const i = index < 0 ? values.length + index : index;\n  return i >= 0 && i < values.length\n    ? { found: true, value: values[i] }\n    : { found: false, value: null };\n}\n",
+    "typescript": "export function solve(values: any[], index: number): any {\n  const i = index < 0 ? values.length + index : index;\n  return i >= 0 && i < values.length\n    ? { found: true, value: values[i] }\n    : { found: false, value: null };\n}\n"
+  },
+  "explanation": "Normalize one negative offset and check bounds before accessing. O(1) time and space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

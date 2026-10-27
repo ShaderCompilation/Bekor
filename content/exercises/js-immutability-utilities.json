@@ -1,0 +1,273 @@
+{
+  "public": {
+    "id": "js-immutability-utilities",
+    "slug": "js-immutability-utilities",
+    "version": "1.0.0",
+    "title": "Immutability Utilities",
+    "description": "input {value,operations}; value is an object. Operations are {op:\"set\",path,value} or {op:\"delete\",path}, with nonempty string-key paths, existing object ancestors, and arbitrary JSON set values. Apply nested immutable edits in order. Return {original,updated}; preserve original structurally. Delete of a missing final key is a no-op. This path-spec adapter models nested immutable updates; structural sharing is unobservable in JSON. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["immutability", "objects"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "value": {
+                  "a": 1
+                },
+                "operations": [
+                  {
+                    "op": "set",
+                    "path": ["a"],
+                    "value": 2
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "original": {
+                "a": 1
+              },
+              "updated": {
+                "a": 2
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "value": {
+                  "a": {
+                    "b": 1
+                  }
+                },
+                "operations": [
+                  {
+                    "op": "delete",
+                    "path": ["a", "b"]
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "original": {
+                "a": {
+                  "b": 1
+                }
+              },
+              "updated": {
+                "a": {}
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "value": {
+                  "a": 1
+                },
+                "operations": [
+                  {
+                    "op": "set",
+                    "path": ["a"],
+                    "value": 2
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "original": {
+                "a": 1
+              },
+              "updated": {
+                "a": 2
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "value": {
+                  "a": {
+                    "b": 1
+                  }
+                },
+                "operations": [
+                  {
+                    "op": "delete",
+                    "path": ["a", "b"]
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "original": {
+                "a": {
+                  "b": 1
+                }
+              },
+              "updated": {
+                "a": {}
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "value": {},
+          "operations": []
+        }
+      ],
+      "expected": {
+        "original": {},
+        "updated": {}
+      }
+    },
+    {
+      "args": [
+        {
+          "value": {
+            "a": {
+              "b": 1
+            }
+          },
+          "operations": [
+            {
+              "op": "set",
+              "path": ["a", "b"],
+              "value": null
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": {
+            "b": 1
+          }
+        },
+        "updated": {
+          "a": {
+            "b": null
+          }
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "value": {
+            "a": {}
+          },
+          "operations": [
+            {
+              "op": "delete",
+              "path": ["a", "z"]
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": {}
+        },
+        "updated": {
+          "a": {}
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "value": {
+            "a": 1,
+            "b": 2
+          },
+          "operations": [
+            {
+              "op": "delete",
+              "path": ["a"]
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": 1,
+          "b": 2
+        },
+        "updated": {
+          "b": 2
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "value": {
+            "a": {}
+          },
+          "operations": [
+            {
+              "op": "set",
+              "path": ["a", "x"],
+              "value": [1]
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "original": {
+          "a": {}
+        },
+        "updated": {
+          "a": {
+            "x": [1]
+          }
+        }
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const clone = (v) => JSON.parse(JSON.stringify(v));\n  const original = clone(d.value),\n    updated = clone(d.value);\n  for (const op of d.operations) {\n    let n = updated;\n    for (const k of op.path.slice(0, -1)) n = n[k];\n    const k = op.path.at(-1);\n    if (op.op === \"set\") n[k] = clone(op.value);\n    else delete n[k];\n  }\n  return { original, updated };\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const clone = (v: any): any => JSON.parse(JSON.stringify(v));\n  const original = clone(d.value),\n    updated = clone(d.value);\n  for (const op of d.operations) {\n    let n = updated;\n    for (const k of op.path.slice(0, -1)) n = n[k];\n    const k = op.path.at(-1);\n    if (op.op === \"set\") n[k] = clone(op.value);\n    else delete n[k];\n  }\n  return { original, updated };\n}\n"
+  },
+  "explanation": "Deep-copy the value then resolve each nested edit path. O(input plus operation payloads and total path lengths) time and space; identity sharing cannot be tested through this contract. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

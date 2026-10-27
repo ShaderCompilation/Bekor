@@ -1,0 +1,237 @@
+{
+  "public": {
+    "id": "js-promise-merge",
+    "slug": "js-promise-merge",
+    "version": "1.0.0",
+    "title": "Promise Merge",
+    "description": "Merge two settled promise values. Inputs are {status,value}, where status is \"fulfilled\" or \"rejected\". If left rejects return it; otherwise if right rejects return it. For successful pairs, numbers add, strings concatenate, arrays concatenate, and plain objects shallow-merge with right keys winning. Different value categories, null or booleans produce {status:\"rejected\",value:\"incompatible\"}. Return {status,value}; no asynchronous scheduling is modeled. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "medium",
+    "concepts": ["promises", "objects"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Handle rejection precedence, dispatch by matching categories, and merge with deterministic right-hand overwrite."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(left: {status:string,value:any}, right: {status:string,value:any}): JSON-compatible result",
+        "starter": "export function solve(left, right) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "status": "fulfilled",
+                "value": 2
+              },
+              {
+                "status": "fulfilled",
+                "value": 3
+              }
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": 5
+            }
+          },
+          {
+            "args": [
+              {
+                "status": "fulfilled",
+                "value": {
+                  "a": 1
+                }
+              },
+              {
+                "status": "fulfilled",
+                "value": {
+                  "a": 2,
+                  "b": 3
+                }
+              }
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": {
+                "a": 2,
+                "b": 3
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(left: {status:string,value:any}, right: {status:string,value:any}): JSON-compatible result",
+        "starter": "export function solve(\n  left: { status: string; value: any },\n  right: { status: string; value: any },\n): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "status": "fulfilled",
+                "value": 2
+              },
+              {
+                "status": "fulfilled",
+                "value": 3
+              }
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": 5
+            }
+          },
+          {
+            "args": [
+              {
+                "status": "fulfilled",
+                "value": {
+                  "a": 1
+                }
+              },
+              {
+                "status": "fulfilled",
+                "value": {
+                  "a": 2,
+                  "b": 3
+                }
+              }
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": {
+                "a": 2,
+                "b": 3
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "status": "rejected",
+          "value": "a"
+        },
+        {
+          "status": "rejected",
+          "value": "b"
+        }
+      ],
+      "expected": {
+        "status": "rejected",
+        "value": "a"
+      }
+    },
+    {
+      "args": [
+        {
+          "status": "fulfilled",
+          "value": "a"
+        },
+        {
+          "status": "fulfilled",
+          "value": "b"
+        }
+      ],
+      "expected": {
+        "status": "fulfilled",
+        "value": "ab"
+      }
+    },
+    {
+      "args": [
+        {
+          "status": "fulfilled",
+          "value": [1]
+        },
+        {
+          "status": "fulfilled",
+          "value": [2]
+        }
+      ],
+      "expected": {
+        "status": "fulfilled",
+        "value": [1, 2]
+      }
+    },
+    {
+      "args": [
+        {
+          "status": "fulfilled",
+          "value": null
+        },
+        {
+          "status": "fulfilled",
+          "value": null
+        }
+      ],
+      "expected": {
+        "status": "rejected",
+        "value": "incompatible"
+      }
+    },
+    {
+      "args": [
+        {
+          "status": "fulfilled",
+          "value": 1
+        },
+        {
+          "status": "rejected",
+          "value": 0
+        }
+      ],
+      "expected": {
+        "status": "rejected",
+        "value": 0
+      }
+    },
+    {
+      "args": [
+        {
+          "status": "fulfilled",
+          "value": {
+            "a": null
+          }
+        },
+        {
+          "status": "fulfilled",
+          "value": {
+            "a": 0
+          }
+        }
+      ],
+      "expected": {
+        "status": "fulfilled",
+        "value": {
+          "a": 0
+        }
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(left, right) {\n  if (left.status === \"rejected\") return left;\n  if (right.status === \"rejected\") return right;\n  const a = left.value,\n    b = right.value;\n  let value;\n  if (typeof a === \"number\" && typeof b === \"number\") value = a + b;\n  else if (typeof a === \"string\" && typeof b === \"string\") value = a + b;\n  else if (Array.isArray(a) && Array.isArray(b)) value = [...a, ...b];\n  else if (\n    a !== null &&\n    b !== null &&\n    typeof a === \"object\" &&\n    typeof b === \"object\" &&\n    !Array.isArray(a) &&\n    !Array.isArray(b)\n  )\n    value = { ...a, ...b };\n  else return { status: \"rejected\", value: \"incompatible\" };\n  return { status: \"fulfilled\", value };\n}\n",
+    "typescript": "export function solve(\n  left: { status: string; value: any },\n  right: { status: string; value: any },\n): any {\n  if (left.status === \"rejected\") return left;\n  if (right.status === \"rejected\") return right;\n  const a = left.value,\n    b = right.value;\n  let value: any;\n  if (typeof a === \"number\" && typeof b === \"number\") value = a + b;\n  else if (typeof a === \"string\" && typeof b === \"string\") value = a + b;\n  else if (Array.isArray(a) && Array.isArray(b)) value = [...a, ...b];\n  else if (\n    a !== null &&\n    b !== null &&\n    typeof a === \"object\" &&\n    typeof b === \"object\" &&\n    !Array.isArray(a) &&\n    !Array.isArray(b)\n  )\n    value = { ...a, ...b };\n  else return { status: \"rejected\", value: \"incompatible\" };\n  return { status: \"fulfilled\", value };\n}\n"
+  },
+  "explanation": "Handle rejection precedence, dispatch by matching categories, and merge with deterministic right-hand overwrite. O(total merged data) time and output. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

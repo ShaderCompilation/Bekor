@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-cancellable-interval",
+    "slug": "js-cancellable-interval",
+    "version": "1.0.0",
+    "title": "Cancellable Interval",
+    "description": "Simulate a cancellable interval. Given start, positive period, cancelTime and horizon, return tick times. All are integers from 0 through 120, period is from 1 through 20, and cancelTime is null or an integer no earlier than start. The first tick is start plus period. A cancellation wins a tie with a tick, so no tick at cancelTime fires. A horizon tie includes the tick. No wall-clock timer is used. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["timers", "simulation"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Generate period boundaries until cancellation or horizon."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(start: number, period: number, cancelTime: number|null, horizon: number): JSON-compatible result",
+        "starter": "export function solve(start, period, cancelTime, horizon) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [0, 3, 8, 12],
+            "expected": [3, 6]
+          },
+          {
+            "args": [2, 2, null, 8],
+            "expected": [4, 6, 8]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(start: number, period: number, cancelTime: number|null, horizon: number): JSON-compatible result",
+        "starter": "export function solve(\n  start: number,\n  period: number,\n  cancelTime: number | null,\n  horizon: number,\n): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [0, 3, 8, 12],
+            "expected": [3, 6]
+          },
+          {
+            "args": [2, 2, null, 8],
+            "expected": [4, 6, 8]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [0, 2, 0, 10],
+      "expected": []
+    },
+    {
+      "args": [0, 2, 2, 10],
+      "expected": []
+    },
+    {
+      "args": [5, 3, null, 7],
+      "expected": []
+    },
+    {
+      "args": [0, 1, 3, 5],
+      "expected": [1, 2]
+    },
+    {
+      "args": [10, 2, null, 10],
+      "expected": []
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(start, period, cancelTime, horizon) {\n  const out = [];\n  for (let t = start + period; t <= horizon; t += period) {\n    if (cancelTime !== null && t >= cancelTime) break;\n    out.push(t);\n  }\n  return out;\n}\n",
+    "typescript": "export function solve(\n  start: number,\n  period: number,\n  cancelTime: number | null,\n  horizon: number,\n): any {\n  const out: number[] = [];\n  for (let t = start + period; t <= horizon; t += period) {\n    if (cancelTime !== null && t >= cancelTime) break;\n    out.push(t);\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Generate period boundaries until cancellation or horizon. O(number of tick candidates) time, O(ticks) output. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

@@ -1,0 +1,95 @@
+{
+  "public": {
+    "id": "js-url-search-params",
+    "slug": "js-url-search-params",
+    "version": "1.0.0",
+    "title": "Query String Entries",
+    "description": "Parse an ASCII form query string, optionally beginning with ?. Split on ampersands, ignore empty segments, and split each segment at its first equals sign. Missing equals means empty value. Decode percent escapes and plus as space. Return [key,value] pairs preserving duplicates and order. Percent escapes always form valid UTF-8. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["urls", "parsing"],
+    "hints": [
+      "Split each segment at only the first equals sign, then decode plus and percent escapes.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(query): JSON value",
+        "starter": "export function solve(query) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": ["?a=1&a=2"],
+            "expected": [["a", "1"], ["a", "2"]]
+          },
+          {
+            "args": ["q=a+b"],
+            "expected": [["q", "a b"]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(query): JSON value",
+        "starter": "type Value = any;\nexport function solve(query: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": ["?a=1&a=2"],
+            "expected": [["a", "1"], ["a", "2"]]
+          },
+          {
+            "args": ["q=a+b"],
+            "expected": [["q", "a b"]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [""],
+      "expected": []
+    },
+    {
+      "args": ["x"],
+      "expected": [["x", ""]]
+    },
+    {
+      "args": ["&&a=&"],
+      "expected": [["a", ""]]
+    },
+    {
+      "args": ["a=b=c"],
+      "expected": [["a", "b=c"]]
+    },
+    {
+      "args": ["%26=%3D"],
+      "expected": [["&", "="]]
+    },
+    {
+      "args": ["x=one+two&y=%2B"],
+      "expected": [["x", "one two"], ["y", "+"]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(query) {\n  const text = query.startsWith(\"?\") ? query.slice(1) : query;\n  const decode = (s) => decodeURIComponent(s.replace(/\\+/g, \" \"));\n  return text\n    .split(\"&\")\n    .filter(Boolean)\n    .map((part) => {\n      const i = part.indexOf(\"=\");\n      return i < 0 ? [decode(part), \"\"] : [decode(part.slice(0, i)), decode(part.slice(i + 1))];\n    });\n}\n",
+    "typescript": "type Value = any;\nexport function solve(query: Value): Value {\n  const text = query.startsWith(\"?\") ? query.slice(1) : query;\n  const decode = (s: Value) => decodeURIComponent(s.replace(/\\+/g, \" \"));\n  return text\n    .split(\"&\")\n    .filter(Boolean)\n    .map((part: Value) => {\n      const i = part.indexOf(\"=\");\n      return i < 0 ? [decode(part), \"\"] : [decode(part.slice(0, i)), decode(part.slice(i + 1))];\n    });\n}\n"
+  },
+  "explanation": "Preserve duplicates in an ordered pair list instead of an object. O(query length plus output length) time and space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

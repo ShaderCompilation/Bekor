@@ -1,0 +1,163 @@
+{
+  "public": {
+    "id": "js-promisify",
+    "slug": "js-promisify",
+    "version": "1.0.0",
+    "title": "Promisify",
+    "description": "Use an error-first callback adapter. A descriptor is {error,values}; error is null or a scalar reason, and values is an array of up to 5 scalar success arguments. Return {status,value}. Any non-null error rejects; otherwise resolve with the first success argument, or null when absent. This adapter checks error-first settlement and excludes native callback scheduling. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["callbacks", "promises"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Check the error sentinel explicitly, then take only the first success argument."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(descriptor: {error:any,values:any[]}): JSON-compatible result",
+        "starter": "export function solve(descriptor) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "error": null,
+                "values": [3, 4]
+              }
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": 3
+            }
+          },
+          {
+            "args": [
+              {
+                "error": "bad",
+                "values": [1]
+              }
+            ],
+            "expected": {
+              "status": "rejected",
+              "value": "bad"
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(descriptor: {error:any,values:any[]}): JSON-compatible result",
+        "starter": "export function solve(descriptor: { error: any; values: any[] }): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "error": null,
+                "values": [3, 4]
+              }
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": 3
+            }
+          },
+          {
+            "args": [
+              {
+                "error": "bad",
+                "values": [1]
+              }
+            ],
+            "expected": {
+              "status": "rejected",
+              "value": "bad"
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "error": null,
+          "values": []
+        }
+      ],
+      "expected": {
+        "status": "fulfilled",
+        "value": null
+      }
+    },
+    {
+      "args": [
+        {
+          "error": 0,
+          "values": [1]
+        }
+      ],
+      "expected": {
+        "status": "rejected",
+        "value": 0
+      }
+    },
+    {
+      "args": [
+        {
+          "error": false,
+          "values": []
+        }
+      ],
+      "expected": {
+        "status": "rejected",
+        "value": false
+      }
+    },
+    {
+      "args": [
+        {
+          "error": null,
+          "values": [false]
+        }
+      ],
+      "expected": {
+        "status": "fulfilled",
+        "value": false
+      }
+    },
+    {
+      "args": [
+        {
+          "error": null,
+          "values": [null, 1]
+        }
+      ],
+      "expected": {
+        "status": "fulfilled",
+        "value": null
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(descriptor) {\n  return descriptor.error !== null\n    ? { status: \"rejected\", value: descriptor.error }\n    : { status: \"fulfilled\", value: descriptor.values.length ? descriptor.values[0] : null };\n}\n",
+    "typescript": "export function solve(descriptor: { error: any; values: any[] }): any {\n  return descriptor.error !== null\n    ? { status: \"rejected\", value: descriptor.error }\n    : { status: \"fulfilled\", value: descriptor.values.length ? descriptor.values[0] : null };\n}\n"
+  },
+  "explanation": "Check the error sentinel explicitly, then take only the first success argument. O(1) time and auxiliary space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

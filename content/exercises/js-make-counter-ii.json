@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-make-counter-ii",
+    "slug": "js-make-counter-ii",
+    "version": "1.0.0",
+    "title": "Counter With Reset",
+    "description": "Process operations increment, decrement, or reset. Increment/decrement first changes the counter by one; reset restores initial. Return the value after each operation. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["state-machines", "closures"],
+    "hints": [
+      "Keep initial separate from the mutable counter.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(initial, operations): JSON value",
+        "starter": "export function solve(initial, operations) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [3, ["increment", "reset"]],
+            "expected": [4, 3]
+          },
+          {
+            "args": [0, ["decrement", "decrement"]],
+            "expected": [-1, -2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(initial, operations): JSON value",
+        "starter": "type Value = any;\nexport function solve(initial: Value, operations: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [3, ["increment", "reset"]],
+            "expected": [4, 3]
+          },
+          {
+            "args": [0, ["decrement", "decrement"]],
+            "expected": [-1, -2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [5, []],
+      "expected": []
+    },
+    {
+      "args": [2, ["reset"]],
+      "expected": [2]
+    },
+    {
+      "args": [-1, ["increment", "decrement"]],
+      "expected": [0, -1]
+    },
+    {
+      "args": [0, ["increment", "increment", "reset", "decrement"]],
+      "expected": [1, 2, 0, -1]
+    },
+    {
+      "args": [9, ["reset", "reset"]],
+      "expected": [9, 9]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(initial, operations) {\n  let value = initial;\n  return operations.map((op) => {\n    if (op === \"reset\") value = initial;\n    else value += op === \"increment\" ? 1 : -1;\n    return value;\n  });\n}\n",
+    "typescript": "type Value = any;\nexport function solve(initial: Value, operations: Value): Value {\n  let value = initial;\n  return operations.map((op: Value) => {\n    if (op === \"reset\") value = initial;\n    else value += op === \"increment\" ? 1 : -1;\n    return value;\n  });\n}\n"
+  },
+  "explanation": "Process each operation once; reset copies initial rather than zero. O(n) time and O(n) output space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

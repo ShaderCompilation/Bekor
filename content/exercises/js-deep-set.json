@@ -1,0 +1,160 @@
+{
+  "public": {
+    "id": "js-deep-set",
+    "slug": "js-deep-set",
+    "version": "1.0.0",
+    "title": "Deep Set",
+    "description": "Return an updated deep copy of object, assigning value at a nonempty array of string keys path. Intermediates are objects or missing; create missing objects. Arrays are permitted as leaf values only. Keys are lowercase letters, excluding prototype-related names. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["objects", "path-traversal"],
+    "hints": [
+      "Only missing intermediate objects need to be created.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(object, path, value): JSON value",
+        "starter": "export function solve(object, path, value) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [{}, ["a", "b"], 3],
+            "expected": {
+              "a": {
+                "b": 3
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "a": 1
+              },
+              ["a"],
+              2
+            ],
+            "expected": {
+              "a": 2
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(object, path, value): JSON value",
+        "starter": "type Value = any;\nexport function solve(object: Value, path: Value, value: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [{}, ["a", "b"], 3],
+            "expected": {
+              "a": {
+                "b": 3
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "a": 1
+              },
+              ["a"],
+              2
+            ],
+            "expected": {
+              "a": 2
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [{}, ["x"], null],
+      "expected": {
+        "x": null
+      }
+    },
+    {
+      "args": [
+        {
+          "a": {
+            "b": 1,
+            "c": 2
+          }
+        },
+        ["a", "b"],
+        0
+      ],
+      "expected": {
+        "a": {
+          "b": 0,
+          "c": 2
+        }
+      }
+    },
+    {
+      "args": [{}, ["a", "b", "c"], false],
+      "expected": {
+        "a": {
+          "b": {
+            "c": false
+          }
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "z": 4
+        },
+        ["a"],
+        []
+      ],
+      "expected": {
+        "z": 4,
+        "a": []
+      }
+    },
+    {
+      "args": [
+        {
+          "a": {}
+        },
+        ["a", "x"],
+        {
+          "v": 1
+        }
+      ],
+      "expected": {
+        "a": {
+          "x": {
+            "v": 1
+          }
+        }
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(object, path, value) {\n  const copy = structuredClone(object);\n  let current = copy;\n  for (let i = 0; i < path.length - 1; i++) {\n    current[path[i]] ??= {};\n    current = current[path[i]];\n  }\n  current[path[path.length - 1]] = value;\n  return copy;\n}\n",
+    "typescript": "type Value = any;\nexport function solve(object: Value, path: Value, value: Value): Value {\n  const copy = structuredClone(object);\n  let current = copy;\n  for (let i = 0; i < path.length - 1; i++) {\n    current[path[i]] ??= {};\n    current = current[path[i]];\n  }\n  current[path[path.length - 1]] = value;\n  return copy;\n}\n"
+  },
+  "explanation": "Clone the input to avoid aliases, walk all but the last key, and assign at the final key. O(input size plus path length plus value size) time and space. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

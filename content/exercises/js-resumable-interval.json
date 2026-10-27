@@ -1,0 +1,94 @@
+{
+  "public": {
+    "id": "js-resumable-interval",
+    "slug": "js-resumable-interval",
+    "version": "1.0.0",
+    "title": "Resumable Interval",
+    "description": "Model a virtual interval, initially paused. Operations are [\"advance\",delta], [\"resume\"], or [\"pause\"]. advance increases virtual time; while running emit every scheduled tick through that time. resume when paused schedules the next tick one period from now; redundant resume has no effect. pause discards the pending tick. Return all tick times. period is 1 through 100 and total advanced time is at most 1000. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["timers", "state-machines"],
+    "hints": [
+      "Resuming schedules from the current time and redundant resume keeps the pending tick.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(period, operations): JSON value",
+        "starter": "export function solve(period, operations) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [2, [["resume"], ["advance", 5]]],
+            "expected": [2, 4]
+          },
+          {
+            "args": [2, [["advance", 5]]],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(period, operations): JSON value",
+        "starter": "type Value = any;\nexport function solve(period: Value, operations: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [2, [["resume"], ["advance", 5]]],
+            "expected": [2, 4]
+          },
+          {
+            "args": [2, [["advance", 5]]],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [2, []],
+      "expected": []
+    },
+    {
+      "args": [
+        2,
+        [["resume"], ["advance", 1], ["pause"], ["advance", 3], ["resume"], ["advance", 2]]
+      ],
+      "expected": [6]
+    },
+    {
+      "args": [1, [["resume"], ["resume"], ["advance", 2]]],
+      "expected": [1, 2]
+    },
+    {
+      "args": [3, [["resume"], ["advance", 3]]],
+      "expected": [3]
+    },
+    {
+      "args": [2, [["resume"], ["advance", 0]]],
+      "expected": []
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(period, operations) {\n  let now = 0,\n    next = null;\n  const ticks = [];\n  for (const [op, n] of operations) {\n    if (op === \"resume\") {\n      if (next === null) next = now + period;\n    } else if (op === \"pause\") next = null;\n    else {\n      now += n;\n      while (next !== null && next <= now) {\n        ticks.push(next);\n        next += period;\n      }\n    }\n  }\n  return ticks;\n}\n",
+    "typescript": "type Value = any;\nexport function solve(period: Value, operations: Value): Value {\n  let now = 0;\n  let next: number | null = null;\n  const ticks: Value[] = [];\n  for (const [op, n] of operations) {\n    if (op === \"resume\") {\n      if (next === null) next = now + period;\n    } else if (op === \"pause\") next = null;\n    else {\n      now += n;\n      while (next !== null && next <= now) {\n        ticks.push(next);\n        next += period;\n      }\n    }\n  }\n  return ticks;\n}\n"
+  },
+  "explanation": "Keep one pending deadline or a paused sentinel; advancing emits every reached deadline. O(n+t) time and O(t) output space for t ticks. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

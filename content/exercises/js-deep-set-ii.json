@@ -1,0 +1,205 @@
+{
+  "public": {
+    "id": "js-deep-set-ii",
+    "slug": "js-deep-set-ii",
+    "version": "1.0.0",
+    "title": "Deep Set II",
+    "description": "input {value,path,replacement}; path is a nonempty safe string-key array and existing ancestors are objects. At the leaf, if current and replacement values are objects, shallow-merge their keys taking replacement conflicts; if both are arrays, concatenate them; otherwise replace the leaf. Missing leaf acts as replacement. Return a deep copy with this edit. This extends a deep setter specifically by leaf merging, with no recursive merge of conflicting child objects. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["objects", "arrays"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "value": {
+                  "a": {
+                    "x": 1
+                  }
+                },
+                "path": ["a"],
+                "replacement": {
+                  "y": 2
+                }
+              }
+            ],
+            "expected": {
+              "a": {
+                "x": 1,
+                "y": 2
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "value": {
+                  "a": [1]
+                },
+                "path": ["a"],
+                "replacement": [2]
+              }
+            ],
+            "expected": {
+              "a": [1, 2]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "value": {
+                  "a": {
+                    "x": 1
+                  }
+                },
+                "path": ["a"],
+                "replacement": {
+                  "y": 2
+                }
+              }
+            ],
+            "expected": {
+              "a": {
+                "x": 1,
+                "y": 2
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "value": {
+                  "a": [1]
+                },
+                "path": ["a"],
+                "replacement": [2]
+              }
+            ],
+            "expected": {
+              "a": [1, 2]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "value": {
+            "a": 1
+          },
+          "path": ["a"],
+          "replacement": 2
+        }
+      ],
+      "expected": {
+        "a": 2
+      }
+    },
+    {
+      "args": [
+        {
+          "value": {
+            "a": {
+              "x": 1,
+              "y": 2
+            }
+          },
+          "path": ["a"],
+          "replacement": {
+            "x": 3
+          }
+        }
+      ],
+      "expected": {
+        "a": {
+          "x": 3,
+          "y": 2
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "value": {
+            "a": []
+          },
+          "path": ["a"],
+          "replacement": [1]
+        }
+      ],
+      "expected": {
+        "a": [1]
+      }
+    },
+    {
+      "args": [
+        {
+          "value": {
+            "a": {
+              "b": [1]
+            }
+          },
+          "path": ["a", "b"],
+          "replacement": [2, 3]
+        }
+      ],
+      "expected": {
+        "a": {
+          "b": [1, 2, 3]
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "value": {},
+          "path": ["x"],
+          "replacement": null
+        }
+      ],
+      "expected": {
+        "x": null
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const clone = (v) => JSON.parse(JSON.stringify(v));\n  const object = (v) => v !== null && typeof v === \"object\" && !Array.isArray(v);\n  const out = clone(d.value);\n  let n = out;\n  for (const k of d.path.slice(0, -1)) n = n[k];\n  const k = d.path.at(-1),\n    old = n[k],\n    v = d.replacement;\n  n[k] =\n    Array.isArray(old) && Array.isArray(v)\n      ? old.concat(clone(v))\n      : object(old) && object(v)\n        ? { ...old, ...clone(v) }\n        : clone(v);\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const clone = (v: any): any => JSON.parse(JSON.stringify(v));\n  const object = (v: any): boolean => v !== null && typeof v === \"object\" && !Array.isArray(v);\n  const out = clone(d.value);\n  let n = out;\n  for (const k of d.path.slice(0, -1)) n = n[k];\n  const k = d.path.at(-1),\n    old = n[k],\n    v = d.replacement;\n  n[k] =\n    Array.isArray(old) && Array.isArray(v)\n      ? old.concat(clone(v))\n      : object(old) && object(v)\n        ? { ...old, ...clone(v) }\n        : clone(v);\n  return out;\n}\n"
+  },
+  "explanation": "Resolve the path, then distinguish array concatenation, object shallow merge and replacement. O(input plus replacement plus path length) time and space. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

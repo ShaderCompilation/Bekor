@@ -1,0 +1,271 @@
+{
+  "public": {
+    "id": "js-event-emitter",
+    "slug": "js-event-emitter",
+    "version": "1.0.0",
+    "title": "Event Emitter",
+    "description": "Replay event-emitter operations. Operations are {kind:\"on\",event,id}, {kind:\"off\",event,id}, or {kind:\"emit\",event,value}. Register a listener ID once per event, preserving registration order; off removes only that event/ID. Emitting records {id,value} for each active listener. Return the flat delivery log. IDs/events are ASCII strings of length 1 through 12; at most 20 operations, and at most 8 listener IDs are active across all events at any time. Listeners only record deliveries and never mutate subscriptions during an emit. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "medium",
+    "concepts": ["events", "maps"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Maintain insertion-ordered sets per event."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(operations: any[]): JSON-compatible result",
+        "starter": "export function solve(operations) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "kind": "on",
+                  "event": "x",
+                  "id": "a"
+                },
+                {
+                  "kind": "emit",
+                  "event": "x",
+                  "value": 2
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "id": "a",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "args": [
+              [
+                {
+                  "kind": "on",
+                  "event": "x",
+                  "id": "a"
+                },
+                {
+                  "kind": "off",
+                  "event": "x",
+                  "id": "a"
+                },
+                {
+                  "kind": "emit",
+                  "event": "x",
+                  "value": 2
+                }
+              ]
+            ],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(operations: any[]): JSON-compatible result",
+        "starter": "export function solve(operations: any[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              [
+                {
+                  "kind": "on",
+                  "event": "x",
+                  "id": "a"
+                },
+                {
+                  "kind": "emit",
+                  "event": "x",
+                  "value": 2
+                }
+              ]
+            ],
+            "expected": [
+              {
+                "id": "a",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "args": [
+              [
+                {
+                  "kind": "on",
+                  "event": "x",
+                  "id": "a"
+                },
+                {
+                  "kind": "off",
+                  "event": "x",
+                  "id": "a"
+                },
+                {
+                  "kind": "emit",
+                  "event": "x",
+                  "value": 2
+                }
+              ]
+            ],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "kind": "emit",
+            "event": "none",
+            "value": 0
+          }
+        ]
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        [
+          {
+            "kind": "on",
+            "event": "x",
+            "id": "a"
+          },
+          {
+            "kind": "on",
+            "event": "x",
+            "id": "b"
+          },
+          {
+            "kind": "emit",
+            "event": "x",
+            "value": false
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "id": "a",
+          "value": false
+        },
+        {
+          "id": "b",
+          "value": false
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "kind": "on",
+            "event": "x",
+            "id": "a"
+          },
+          {
+            "kind": "on",
+            "event": "x",
+            "id": "a"
+          },
+          {
+            "kind": "emit",
+            "event": "x",
+            "value": null
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "id": "a",
+          "value": null
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "kind": "on",
+            "event": "x",
+            "id": "a"
+          },
+          {
+            "kind": "on",
+            "event": "y",
+            "id": "a"
+          },
+          {
+            "kind": "off",
+            "event": "y",
+            "id": "a"
+          },
+          {
+            "kind": "emit",
+            "event": "x",
+            "value": 1
+          }
+        ]
+      ],
+      "expected": [
+        {
+          "id": "a",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "args": [
+        [
+          {
+            "kind": "on",
+            "event": "x",
+            "id": "a"
+          },
+          {
+            "kind": "off",
+            "event": "x",
+            "id": "a"
+          },
+          {
+            "kind": "emit",
+            "event": "x",
+            "value": 2
+          }
+        ]
+      ],
+      "expected": []
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(operations) {\n  const subscriptions = new Map();\n  const out = [];\n  for (const op of operations) {\n    if (op.kind === \"on\") {\n      if (!subscriptions.has(op.event)) subscriptions.set(op.event, new Set());\n      subscriptions.get(op.event).add(op.id);\n    } else if (op.kind === \"off\") subscriptions.get(op.event)?.delete(op.id);\n    else for (const id of subscriptions.get(op.event) ?? []) out.push({ id, value: op.value });\n  }\n  return out;\n}\n",
+    "typescript": "export function solve(operations: any[]): any {\n  const subscriptions = new Map<string, Set<string>>();\n  const out: any[] = [];\n  for (const op of operations) {\n    if (op.kind === \"on\") {\n      if (!subscriptions.has(op.event)) subscriptions.set(op.event, new Set());\n      subscriptions.get(op.event)!.add(op.id);\n    } else if (op.kind === \"off\") subscriptions.get(op.event)?.delete(op.id);\n    else for (const id of subscriptions.get(op.event) ?? []) out.push({ id, value: op.value });\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Maintain insertion-ordered sets per event. O(operations + deliveries) expected time and space. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

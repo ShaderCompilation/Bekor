@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "js-array-square",
+    "slug": "js-array-square",
+    "version": "1.0.0",
+    "title": "Array.prototype.square",
+    "description": "Return a new array containing the square of each integer, in input order. Input has at most 50 integers from -1000 through 1000. Do not change the input. The adapter is a standalone function rather than prototype mutation. Supported inputs are dense JSON values only: at most 100 total nodes, nesting depth at most 6, each string at most 80 UTF-16 code units, and integers from -1000 through 1000 unless narrower bounds are given. Unless the adapter explicitly defines path keys or another key format, object keys are nonempty ASCII letters without dots. All keys exclude prototype-related names. Inputs are valid; no validation is requested. Array order matters, object key order does not. Return a JSON value; no browser or third-party library is available. The complete serialized argument array is limited to 2048 UTF-8 bytes, counting JSON escaping. These whole-input limits also apply to descriptors, operations and nested values.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "numbers"],
+    "hints": [
+      "Track the distinctions and boundary rules in the statement before coding.",
+      "Map each element independently."
+    ],
+    "attribution": "Original Bekor statement, fixtures and implementation, 2026. Covers a common JavaScript practice topic; no third-party exercise prose or solution code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(values: number[]): JSON-compatible result",
+        "starter": "export function solve(values) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[-2, 0, 3]],
+            "expected": [4, 0, 9]
+          },
+          {
+            "args": [[1, 2]],
+            "expected": [1, 4]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(values: number[]): JSON-compatible result",
+        "starter": "export function solve(values: number[]): any {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [[-2, 0, 3]],
+            "expected": [4, 0, 9]
+          },
+          {
+            "args": [[1, 2]],
+            "expected": [1, 4]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[-1]],
+      "expected": [1]
+    },
+    {
+      "args": [[0, 0]],
+      "expected": [0, 0]
+    },
+    {
+      "args": [[1000]],
+      "expected": [1000000]
+    },
+    {
+      "args": [[-3, -2, -3]],
+      "expected": [9, 4, 9]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(values) {\n  return values.map((x) => x * x);\n}\n",
+    "typescript": "export function solve(values: number[]): any {\n  return values.map((x) => x * x);\n}\n"
+  },
+  "explanation": "Map each element independently. O(n) time and output. Functional tests verify the documented adapter, not restrictions on built-ins or full browser/native-function identity."
+}

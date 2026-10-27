@@ -1,0 +1,361 @@
+{
+  "public": {
+    "id": "js-undo-redo-manager-ii",
+    "slug": "js-undo-redo-manager-ii",
+    "version": "1.0.0",
+    "title": "Undo / Redo Manager II",
+    "description": "input {initial,operations}; initial is an integer. Set {value} changes only draft; commit adds a checkpoint only when draft differs from committed and clears redo only for an effective commit. Undo/redo first discard uncommitted draft then navigate checkpoint history, with boundary no-ops. Return {draft,committed} after each operation. At most 20 operations. This batch manager uses explicit commits instead of per-edit history. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["history", "state-machines"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "initial": 0,
+                "operations": [
+                  {
+                    "op": "set",
+                    "value": 1
+                  },
+                  {
+                    "op": "commit"
+                  },
+                  {
+                    "op": "undo"
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              {
+                "draft": 1,
+                "committed": 0
+              },
+              {
+                "draft": 1,
+                "committed": 1
+              },
+              {
+                "draft": 0,
+                "committed": 0
+              }
+            ]
+          },
+          {
+            "args": [
+              {
+                "initial": 0,
+                "operations": [
+                  {
+                    "op": "set",
+                    "value": 1
+                  },
+                  {
+                    "op": "undo"
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              {
+                "draft": 1,
+                "committed": 0
+              },
+              {
+                "draft": 0,
+                "committed": 0
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "initial": 0,
+                "operations": [
+                  {
+                    "op": "set",
+                    "value": 1
+                  },
+                  {
+                    "op": "commit"
+                  },
+                  {
+                    "op": "undo"
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              {
+                "draft": 1,
+                "committed": 0
+              },
+              {
+                "draft": 1,
+                "committed": 1
+              },
+              {
+                "draft": 0,
+                "committed": 0
+              }
+            ]
+          },
+          {
+            "args": [
+              {
+                "initial": 0,
+                "operations": [
+                  {
+                    "op": "set",
+                    "value": 1
+                  },
+                  {
+                    "op": "undo"
+                  }
+                ]
+              }
+            ],
+            "expected": [
+              {
+                "draft": 1,
+                "committed": 0
+              },
+              {
+                "draft": 0,
+                "committed": 0
+              }
+            ]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "initial": 0,
+          "operations": []
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "initial": 0,
+          "operations": [
+            {
+              "op": "commit"
+            },
+            {
+              "op": "undo"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "draft": 0,
+          "committed": 0
+        },
+        {
+          "draft": 0,
+          "committed": 0
+        }
+      ]
+    },
+    {
+      "args": [
+        {
+          "initial": 0,
+          "operations": [
+            {
+              "op": "set",
+              "value": 2
+            },
+            {
+              "op": "commit"
+            },
+            {
+              "op": "undo"
+            },
+            {
+              "op": "redo"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "draft": 2,
+          "committed": 0
+        },
+        {
+          "draft": 2,
+          "committed": 2
+        },
+        {
+          "draft": 0,
+          "committed": 0
+        },
+        {
+          "draft": 2,
+          "committed": 2
+        }
+      ]
+    },
+    {
+      "args": [
+        {
+          "initial": 0,
+          "operations": [
+            {
+              "op": "set",
+              "value": 2
+            },
+            {
+              "op": "commit"
+            },
+            {
+              "op": "undo"
+            },
+            {
+              "op": "commit"
+            },
+            {
+              "op": "redo"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "draft": 2,
+          "committed": 0
+        },
+        {
+          "draft": 2,
+          "committed": 2
+        },
+        {
+          "draft": 0,
+          "committed": 0
+        },
+        {
+          "draft": 0,
+          "committed": 0
+        },
+        {
+          "draft": 2,
+          "committed": 2
+        }
+      ]
+    },
+    {
+      "args": [
+        {
+          "initial": 1,
+          "operations": [
+            {
+              "op": "set",
+              "value": 3
+            },
+            {
+              "op": "commit"
+            },
+            {
+              "op": "set",
+              "value": 4
+            },
+            {
+              "op": "redo"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "draft": 3,
+          "committed": 1
+        },
+        {
+          "draft": 3,
+          "committed": 3
+        },
+        {
+          "draft": 4,
+          "committed": 3
+        },
+        {
+          "draft": 3,
+          "committed": 3
+        }
+      ]
+    },
+    {
+      "args": [
+        {
+          "initial": 5,
+          "operations": [
+            {
+              "op": "set",
+              "value": 6
+            },
+            {
+              "op": "undo"
+            }
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "draft": 6,
+          "committed": 5
+        },
+        {
+          "draft": 5,
+          "committed": 5
+        }
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const clone = (v) => JSON.parse(JSON.stringify(v));\n  let committed = clone(d.initial),\n    draft = clone(d.initial);\n  let past = [],\n    future = [];\n  const out = [];\n  for (const op of d.operations) {\n    if (op.op === \"set\") draft = clone(op.value);\n    else if (op.op === \"put\") draft[op.key] = clone(op.value);\n    else if (op.op === \"delete\") delete draft[op.key];\n    else if (op.op === \"commit\") {\n      if (JSON.stringify(draft) !== JSON.stringify(committed)) {\n        past.push(clone(committed));\n        committed = clone(draft);\n        future = [];\n      }\n    } else if (op.op === \"undo\") {\n      draft = clone(committed);\n      if (past.length) {\n        future.push(clone(committed));\n        committed = past.pop();\n        draft = clone(committed);\n      }\n    } else if (op.op === \"redo\") {\n      draft = clone(committed);\n      if (future.length) {\n        past.push(clone(committed));\n        committed = future.pop();\n        draft = clone(committed);\n      }\n    }\n    out.push({ draft: clone(draft), committed: clone(committed) });\n  }\n  return out;\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const clone = (v: any): any => JSON.parse(JSON.stringify(v));\n  let committed = clone(d.initial),\n    draft = clone(d.initial);\n  let past: any[] = [],\n    future: any[] = [];\n  const out: any[] = [];\n  for (const op of d.operations) {\n    if (op.op === \"set\") draft = clone(op.value);\n    else if (op.op === \"put\") draft[op.key] = clone(op.value);\n    else if (op.op === \"delete\") delete draft[op.key];\n    else if (op.op === \"commit\") {\n      if (JSON.stringify(draft) !== JSON.stringify(committed)) {\n        past.push(clone(committed));\n        committed = clone(draft);\n        future = [];\n      }\n    } else if (op.op === \"undo\") {\n      draft = clone(committed);\n      if (past.length) {\n        future.push(clone(committed));\n        committed = past.pop();\n        draft = clone(committed);\n      }\n    } else if (op.op === \"redo\") {\n      draft = clone(committed);\n      if (future.length) {\n        past.push(clone(committed));\n        committed = future.pop();\n        draft = clone(committed);\n      }\n    }\n    out.push({ draft: clone(draft), committed: clone(committed) });\n  }\n  return out;\n}\n"
+  },
+  "explanation": "Keep draft separate from committed state; only effective commits touch history, while navigation discards drafts. O(q) time and storage for scalar values. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

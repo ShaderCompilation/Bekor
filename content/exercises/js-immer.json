@@ -1,0 +1,258 @@
+{
+  "public": {
+    "id": "js-immer",
+    "slug": "js-immer",
+    "version": "1.0.0",
+    "title": "Immer",
+    "description": "input {base,recipe}; base is an object or array, recipe is an ordered list of {path,value} assignments with nonempty key/index paths and existing ancestor containers. Array indices must exist. Model produce by applying recipe to a mutable deep copy; return {base,next}. The supplied base must remain structurally unchanged. Recipe is data instead of a callback; structural sharing and proxy traps are not observable. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["immutability", "recipes"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "base": {
+                  "a": 1
+                },
+                "recipe": [
+                  {
+                    "path": ["a"],
+                    "value": 2
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "base": {
+                "a": 1
+              },
+              "next": {
+                "a": 2
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "base": {
+                  "a": [1]
+                },
+                "recipe": [
+                  {
+                    "path": ["a", 0],
+                    "value": 3
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "base": {
+                "a": [1]
+              },
+              "next": {
+                "a": [3]
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "base": {
+                  "a": 1
+                },
+                "recipe": [
+                  {
+                    "path": ["a"],
+                    "value": 2
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "base": {
+                "a": 1
+              },
+              "next": {
+                "a": 2
+              }
+            }
+          },
+          {
+            "args": [
+              {
+                "base": {
+                  "a": [1]
+                },
+                "recipe": [
+                  {
+                    "path": ["a", 0],
+                    "value": 3
+                  }
+                ]
+              }
+            ],
+            "expected": {
+              "base": {
+                "a": [1]
+              },
+              "next": {
+                "a": [3]
+              }
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "base": {},
+          "recipe": []
+        }
+      ],
+      "expected": {
+        "base": {},
+        "next": {}
+      }
+    },
+    {
+      "args": [
+        {
+          "base": {
+            "a": 1,
+            "b": 2
+          },
+          "recipe": [
+            {
+              "path": ["a"],
+              "value": null
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "base": {
+          "a": 1,
+          "b": 2
+        },
+        "next": {
+          "a": null,
+          "b": 2
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "base": [0],
+          "recipe": [
+            {
+              "path": [0],
+              "value": false
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "base": [0],
+        "next": [false]
+      }
+    },
+    {
+      "args": [
+        {
+          "base": {
+            "a": {
+              "b": 1
+            }
+          },
+          "recipe": [
+            {
+              "path": ["a", "b"],
+              "value": 2
+            },
+            {
+              "path": ["a", "b"],
+              "value": 3
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "base": {
+          "a": {
+            "b": 1
+          }
+        },
+        "next": {
+          "a": {
+            "b": 3
+          }
+        }
+      }
+    },
+    {
+      "args": [
+        {
+          "base": {
+            "a": []
+          },
+          "recipe": [
+            {
+              "path": ["a"],
+              "value": [1]
+            }
+          ]
+        }
+      ],
+      "expected": {
+        "base": {
+          "a": []
+        },
+        "next": {
+          "a": [1]
+        }
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const clone = (v) => JSON.parse(JSON.stringify(v));\n  const base = clone(d.base),\n    next = clone(d.base);\n  for (const e of d.recipe) {\n    let n = next;\n    for (const k of e.path.slice(0, -1)) n = n[k];\n    n[e.path.at(-1)] = clone(e.value);\n  }\n  return { base, next };\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const clone = (v: any): any => JSON.parse(JSON.stringify(v));\n  const base = clone(d.base),\n    next = clone(d.base);\n  for (const e of d.recipe) {\n    let n = next;\n    for (const k of e.path.slice(0, -1)) n = n[k];\n    n[e.path.at(-1)] = clone(e.value);\n  }\n  return { base, next };\n}\n"
+  },
+  "explanation": "Deep-copy the base once and apply all recipe paths. O(base size plus recipe data and total path lengths) time and space; this does not test copy-on-write optimizations. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}

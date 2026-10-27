@@ -1,0 +1,181 @@
+{
+  "public": {
+    "id": "js-promise-timeout",
+    "slug": "js-promise-timeout",
+    "version": "1.0.0",
+    "title": "Promise Timeout",
+    "description": "task is {delay,status,value}, with status fulfilled or rejected. Return {status,value} for its settlement unless delay is greater than timeout, when return {status:\"rejected\",value:\"Timeout\"}. Settlement wins ties. Delays and timeout are 0 through 1000. This deterministic adapter models settlement times without wall-clock waiting. Supported inputs contain at most 100 array entries per sequence and at most 20 operations or requests per sequence, at most 60 total object properties and array elements in any single JSON value, nesting depth at most 8, strings at most 100 ASCII characters unless specified otherwise, and integers from -100 through 100 unless a tighter or explicit alternate bound is stated. The entire argument JSON encoding is at most 1000 bytes. Nested sequences collectively have at most 100 entries; output snapshots therefore remain bounded. Inputs always satisfy the described shape and bounds.",
+    "difficulty": "medium",
+    "concepts": ["promises", "timers"],
+    "hints": [
+      "Check the specified tie rule at exactly timeout.",
+      "Check the public examples against the documented empty-input and boundary rules."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and reference code, 2026. Covers a common JavaScript practice topic; no third-party prose or code copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(task, timeout): JSON value",
+        "starter": "export function solve(task, timeout) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "delay": 3,
+                "status": "fulfilled",
+                "value": 7
+              },
+              5
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": 7
+            }
+          },
+          {
+            "args": [
+              {
+                "delay": 9,
+                "status": "fulfilled",
+                "value": 7
+              },
+              5
+            ],
+            "expected": {
+              "status": "rejected",
+              "value": "Timeout"
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(task, timeout): JSON value",
+        "starter": "type Value = any;\nexport function solve(task: Value, timeout: Value): Value {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "delay": 3,
+                "status": "fulfilled",
+                "value": 7
+              },
+              5
+            ],
+            "expected": {
+              "status": "fulfilled",
+              "value": 7
+            }
+          },
+          {
+            "args": [
+              {
+                "delay": 9,
+                "status": "fulfilled",
+                "value": 7
+              },
+              5
+            ],
+            "expected": {
+              "status": "rejected",
+              "value": "Timeout"
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "delay": 5,
+          "status": "fulfilled",
+          "value": 0
+        },
+        5
+      ],
+      "expected": {
+        "status": "fulfilled",
+        "value": 0
+      }
+    },
+    {
+      "args": [
+        {
+          "delay": 0,
+          "status": "rejected",
+          "value": "bad"
+        },
+        0
+      ],
+      "expected": {
+        "status": "rejected",
+        "value": "bad"
+      }
+    },
+    {
+      "args": [
+        {
+          "delay": 2,
+          "status": "rejected",
+          "value": false
+        },
+        3
+      ],
+      "expected": {
+        "status": "rejected",
+        "value": false
+      }
+    },
+    {
+      "args": [
+        {
+          "delay": 1,
+          "status": "fulfilled",
+          "value": null
+        },
+        0
+      ],
+      "expected": {
+        "status": "rejected",
+        "value": "Timeout"
+      }
+    },
+    {
+      "args": [
+        {
+          "delay": 0,
+          "status": "fulfilled",
+          "value": []
+        },
+        100
+      ],
+      "expected": {
+        "status": "fulfilled",
+        "value": []
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(task, timeout) {\n  return task.delay > timeout\n    ? { status: \"rejected\", value: \"Timeout\" }\n    : { status: task.status, value: task.value };\n}\n",
+    "typescript": "type Value = any;\nexport function solve(task: Value, timeout: Value): Value {\n  return task.delay > timeout\n    ? { status: \"rejected\", value: \"Timeout\" }\n    : { status: task.status, value: task.value };\n}\n"
+  },
+  "explanation": "Compare the settlement delay to the deadline; preserve fulfillment or rejection unless the deadline is strictly earlier. O(1) auxiliary work, plus copying/serializing the returned value. This JSON adapter verifies observable results; it does not establish built-in-method restrictions, garbage collection, browser behavior or real timer/microtask scheduling."
+}

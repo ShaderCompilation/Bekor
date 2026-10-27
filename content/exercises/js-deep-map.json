@@ -1,0 +1,166 @@
+{
+  "public": {
+    "id": "js-deep-map",
+    "slug": "js-deep-map",
+    "version": "1.0.0",
+    "title": "Deep Map",
+    "description": "input has value and delta. Recursively add delta to every integer leaf of value; preserve null, booleans, strings, array ordering and object keys. The fixed numeric mapper is a JSON substitute for a callback. Supported inputs are valid for this contract. Aggregate JSON-serialized input is at most 512 UTF-8 bytes, nesting depth at most 6, arrays at most 40 items, operation/call lists at most 20 items, and individual strings at most 100 ASCII characters unless a tighter bound is stated. Integers have absolute value at most 1000; output arithmetic stays within safe integers. String object keys and string path segments are nonempty safe alphanumeric/underscore names excluding __proto__, constructor and prototype. Empty arrays/objects are allowed where consistent with the contract. Output ordering follows the rules above. These bounds include all nested payloads and all operations together.",
+    "difficulty": "medium",
+    "concepts": ["recursion", "json"],
+    "hints": [
+      "Separate the documented JSON representation from the behavior being modeled.",
+      "Preserve ordering and distinguish missing values, null, zero and false carefully."
+    ],
+    "attribution": "Original Bekor statement, fixtures and reference solutions, 2026. Covers a common JavaScript practice topic; no third-party exercise text or implementation copied.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "export function solve(input) {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "value": [
+                  1,
+                  {
+                    "x": 2
+                  }
+                ],
+                "delta": 3
+              }
+            ],
+            "expected": [
+              4,
+              {
+                "x": 5
+              }
+            ]
+          },
+          {
+            "args": [
+              {
+                "value": "x",
+                "delta": 2
+              }
+            ],
+            "expected": "x"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "solve",
+        "signature": "solve(input: Json): Json",
+        "starter": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  // Implement the documented JSON adapter.\n  return null;\n}\n",
+        "publicTests": [
+          {
+            "args": [
+              {
+                "value": [
+                  1,
+                  {
+                    "x": 2
+                  }
+                ],
+                "delta": 3
+              }
+            ],
+            "expected": [
+              4,
+              {
+                "x": 5
+              }
+            ]
+          },
+          {
+            "args": [
+              {
+                "value": "x",
+                "delta": 2
+              }
+            ],
+            "expected": "x"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [
+        {
+          "value": null,
+          "delta": 1
+        }
+      ],
+      "expected": null
+    },
+    {
+      "args": [
+        {
+          "value": {
+            "a": 0,
+            "b": false
+          },
+          "delta": -2
+        }
+      ],
+      "expected": {
+        "a": -2,
+        "b": false
+      }
+    },
+    {
+      "args": [
+        {
+          "value": [],
+          "delta": 1
+        }
+      ],
+      "expected": []
+    },
+    {
+      "args": [
+        {
+          "value": [[1]],
+          "delta": 0
+        }
+      ],
+      "expected": [[1]]
+    },
+    {
+      "args": [
+        {
+          "value": {
+            "a": [-1, 4]
+          },
+          "delta": 2
+        }
+      ],
+      "expected": {
+        "a": [1, 6]
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function solve(input) {\n  const d = input;\n  const object = (v) => v !== null && typeof v === \"object\" && !Array.isArray(v);\n  const visit = (v) =>\n    typeof v === \"number\"\n      ? v + d.delta\n      : Array.isArray(v)\n        ? v.map(visit)\n        : object(v)\n          ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, visit(x)]))\n          : v;\n  return visit(d.value);\n}\n",
+    "typescript": "type Json = null | boolean | number | string | Json[] | { [key: string]: Json };\nexport function solve(input: Json): Json {\n  const d = input as any;\n  const object = (v: any): boolean => v !== null && typeof v === \"object\" && !Array.isArray(v);\n  const visit = (v: any): any =>\n    typeof v === \"number\"\n      ? v + d.delta\n      : Array.isArray(v)\n        ? v.map(visit)\n        : object(v)\n          ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, visit(x)]))\n          : v;\n  return visit(d.value);\n}\n"
+  },
+  "explanation": "Recursively dispatch on the JSON node kind. Time O(n) and auxiliary traversal space O(h), excluding the returned tree. Functional tests check the documented adapter behavior; they do not enforce implementation technique or prohibit built-in APIs."
+}
