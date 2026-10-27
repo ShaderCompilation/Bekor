@@ -1,0 +1,95 @@
+{
+  "public": {
+    "id": "insert-interval",
+    "slug": "insert-interval",
+    "version": "1.0.0",
+    "title": "Insert Interval",
+    "description": "intervals is sorted by start and contains disjoint closed intervals; each existing end is strictly less than the next start. Insert added and merge all overlaps, including touching endpoints. Return sorted disjoint intervals. There are 0 to 1000 existing intervals. Every pair has integer start no greater than end and endpoints between -1000000 and 1000000.",
+    "difficulty": "medium",
+    "concepts": ["intervals", "arrays"],
+    "hints": [
+      "Copy intervals entirely before the added one.",
+      "Grow the merged range until the next interval starts after it."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "insertInterval",
+        "signature": "insertInterval(intervals: number[][], added: number[]): number[][]",
+        "starter": "export function insertInterval(intervals, added) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 2], [6, 8]], [2, 6]],
+            "expected": [[1, 8]]
+          },
+          {
+            "args": [[[2, 3], [7, 9]], [4, 5]],
+            "expected": [[2, 3], [4, 5], [7, 9]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "insertInterval",
+        "signature": "insertInterval(intervals: number[][], added: number[]): number[][]",
+        "starter": "export function insertInterval(intervals: number[][], added: number[]): number[][] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 2], [6, 8]], [2, 6]],
+            "expected": [[1, 8]]
+          },
+          {
+            "args": [[[2, 3], [7, 9]], [4, 5]],
+            "expected": [[2, 3], [4, 5], [7, 9]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], [1, 2]],
+      "expected": [[1, 2]]
+    },
+    {
+      "args": [[[2, 3]], [0, 1]],
+      "expected": [[0, 1], [2, 3]]
+    },
+    {
+      "args": [[[2, 3]], [4, 5]],
+      "expected": [[2, 3], [4, 5]]
+    },
+    {
+      "args": [[[1, 10]], [3, 4]],
+      "expected": [[1, 10]]
+    },
+    {
+      "args": [[[1, 2], [4, 5], [7, 8]], [0, 9]],
+      "expected": [[0, 9]]
+    },
+    {
+      "args": [[[1, 2], [4, 6]], [2, 4]],
+      "expected": [[1, 6]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function insertInterval(intervals            , added          )             {\n  const result             = []; let [start,end] = added, i = 0; while (i < intervals.length && intervals[i][1] < start) result.push([...intervals[i++]]); while (i < intervals.length && intervals[i][0] <= end) { start = Math.min(start,intervals[i][0]); end = Math.max(end,intervals[i][1]); i++; } result.push([start,end]); while (i < intervals.length) result.push([...intervals[i++]]); return result;\n}\n",
+    "typescript": "export function insertInterval(intervals: number[][], added: number[]): number[][] {\n  const result: number[][] = []; let [start,end] = added, i = 0; while (i < intervals.length && intervals[i][1] < start) result.push([...intervals[i++]]); while (i < intervals.length && intervals[i][0] <= end) { start = Math.min(start,intervals[i][0]); end = Math.max(end,intervals[i][1]); i++; } result.push([start,end]); while (i < intervals.length) result.push([...intervals[i++]]); return result;\n}\n"
+  },
+  "explanation": "Scan the before, overlapping and after portions in order. O(n) time and O(n) output space."
+}

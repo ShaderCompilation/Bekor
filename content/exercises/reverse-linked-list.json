@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "reverse-linked-list",
+    "slug": "reverse-linked-list",
+    "version": "1.0.0",
+    "title": "Reverse Linked List",
+    "description": "A singly linked list is serialized as its values from head to tail. Return the values of the list after reversing its links. The array has 0 to 1000 integers from -10000 to 10000. This value-only JSON adaptation does not test pointer identity or in-place mutation.",
+    "difficulty": "easy",
+    "concepts": ["linked-lists", "arrays"],
+    "hints": ["The last node becomes the new head.", "Visit serialized values from right to left."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "reverseList",
+        "signature": "reverseList(values: number[]): number[]",
+        "starter": "export function reverseList(values) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[7, 2, 9]],
+            "expected": [9, 2, 7]
+          },
+          {
+            "args": [[1, 2]],
+            "expected": [2, 1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "reverseList",
+        "signature": "reverseList(values: number[]): number[]",
+        "starter": "export function reverseList(values: number[]): number[] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[7, 2, 9]],
+            "expected": [9, 2, 7]
+          },
+          {
+            "args": [[1, 2]],
+            "expected": [2, 1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[8]],
+      "expected": [8]
+    },
+    {
+      "args": [[-3, 0, 4]],
+      "expected": [4, 0, -3]
+    },
+    {
+      "args": [[2, 2, 1]],
+      "expected": [1, 2, 2]
+    },
+    {
+      "args": [[0, -1, -2, -3]],
+      "expected": [-3, -2, -1, 0]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function reverseList(values          )           {\n  const result           = []; for (let i = values.length - 1; i >= 0; i--) result.push(values[i]); return result;\n}\n",
+    "typescript": "export function reverseList(values: number[]): number[] {\n  const result: number[] = []; for (let i = values.length - 1; i >= 0; i--) result.push(values[i]); return result;\n}\n"
+  },
+  "explanation": "Read serialized nodes backward to produce the reversed list. O(n) time and O(n) output space. Pointer identity is outside this JSON contract."
+}

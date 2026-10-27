@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "accounts-merge",
+    "slug": "accounts-merge",
+    "version": "1.0.0",
+    "title": "Accounts Merge",
+    "description": "Each account row contains a name followed by one or more email strings. Rows sharing any email belong to the same person, including transitive connections. Connected rows always have the same name, while equal names alone do not imply a connection. Merge each component into [name,...uniqueEmails], with emails in ascending ASCII order. Sort output rows lexicographically by name, then by their complete email sequence using ASCII order; a proper prefix comes first. There are 0 to 100 accounts, at most 20 emails per row, and each name or email is a nonempty ASCII alphanumeric string of length at most 80, with emails also allowing @ and dot. The sum of all string lengths across all input rows is at most 12000.",
+    "difficulty": "medium",
+    "concepts": ["graphs", "union-find"],
+    "hints": [
+      "Treat shared emails as edges connecting account rows.",
+      "After all unions, collect distinct emails by the final component representative."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "accountsMerge",
+        "signature": "accountsMerge(accounts: string[][]): string[][]",
+        "starter": "export function accountsMerge(accounts) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[["Ada", "a@x", "b@x"], ["Ada", "b@x", "c@x"]]],
+            "expected": [["Ada", "a@x", "b@x", "c@x"]]
+          },
+          {
+            "args": [[["Bo", "z@x"], ["Ada", "a@x"]]],
+            "expected": [["Ada", "a@x"], ["Bo", "z@x"]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "accountsMerge",
+        "signature": "accountsMerge(accounts: string[][]): string[][]",
+        "starter": "export function accountsMerge(accounts: string[][]): string[][] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[["Ada", "a@x", "b@x"], ["Ada", "b@x", "c@x"]]],
+            "expected": [["Ada", "a@x", "b@x", "c@x"]]
+          },
+          {
+            "args": [[["Bo", "z@x"], ["Ada", "a@x"]]],
+            "expected": [["Ada", "a@x"], ["Bo", "z@x"]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[["Ada", "a@x", "a@x"]]],
+      "expected": [["Ada", "a@x"]]
+    },
+    {
+      "args": [[["Ada", "a@x"], ["Ada", "b@x"]]],
+      "expected": [["Ada", "a@x"], ["Ada", "b@x"]]
+    },
+    {
+      "args": [[["X", "a", "b"], ["X", "c", "d"], ["X", "b", "c"]]],
+      "expected": [["X", "a", "b", "c", "d"]]
+    },
+    {
+      "args": [[["Z", "10", "2"], ["A", "b", "a"]]],
+      "expected": [["A", "a", "b"], ["Z", "10", "2"]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function accountsMerge(accounts            )             {\n  const parent=accounts.map((_,i)=>i); function find(i       )        { while(parent[i]!==i) {parent[i]=parent[parent[i]];i=parent[i];}return i; } const owner=new Map               ();for(let i=0;i<accounts.length;i++)for(const email of accounts[i].slice(1)) {const old=owner.get(email);if(old!==undefined)parent[find(i)]=find(old);else owner.set(email,i);} const groups=new Map                    ();for(let i=0;i<accounts.length;i++) {const root=find(i),emails=groups.get(root)??new Set        ();for(const email of accounts[i].slice(1))emails.add(email);groups.set(root,emails);} const result=Array.from(groups,([root,emails])=>[accounts[root][0],...Array.from(emails).sort()]);return result.sort((a,b)=>{for(let i=0;i<Math.min(a.length,b.length);i++){if(a[i]<b[i])return -1;if(a[i]>b[i])return 1;}return a.length-b.length;});\n}\n",
+    "typescript": "export function accountsMerge(accounts: string[][]): string[][] {\n  const parent=accounts.map((_,i)=>i); function find(i:number):number { while(parent[i]!==i) {parent[i]=parent[parent[i]];i=parent[i];}return i; } const owner=new Map<string,number>();for(let i=0;i<accounts.length;i++)for(const email of accounts[i].slice(1)) {const old=owner.get(email);if(old!==undefined)parent[find(i)]=find(old);else owner.set(email,i);} const groups=new Map<number,Set<string>>();for(let i=0;i<accounts.length;i++) {const root=find(i),emails=groups.get(root)??new Set<string>();for(const email of accounts[i].slice(1))emails.add(email);groups.set(root,emails);} const result=Array.from(groups,([root,emails])=>[accounts[root][0],...Array.from(emails).sort()]);return result.sort((a,b)=>{for(let i=0;i<Math.min(a.length,b.length);i++){if(a[i]<b[i])return -1;if(a[i]>b[i])return 1;}return a.length-b.length;});\n}\n"
+  },
+  "explanation": "Disjoint-set union joins rows transitively by shared emails. Group by representatives and sort names and email sequences deterministically. Near-linear union work plus email/output sorting; O(total email occurrences) storage."
+}

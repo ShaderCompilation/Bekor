@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "maximum-frequency-stack",
+    "slug": "maximum-frequency-stack",
+    "version": "1.0.0",
+    "title": "Maximum Frequency Stack",
+    "description": "Process [\"push\",value] and [\"pop\"] on an empty frequency stack. Pop removes a value with greatest current frequency; ties choose the most recently pushed surviving occurrence. Push returns null and pop returns the removed integer. Pop is called only on a nonempty stack. At most 500 operations; values between -10000 and 10000.",
+    "difficulty": "hard",
+    "concepts": ["hash-maps", "stack"],
+    "hints": ["Group push events by the frequency reached at that moment."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "maximumFrequencyStack",
+        "signature": "maximumFrequencyStack(operations: (string|number)[][]): (number|null)[]",
+        "starter": "export function maximumFrequencyStack(operations                     )                  {\n  throw new Error(\"Implement maximumFrequencyStack\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[["push", 5], ["push", 7], ["push", 5], ["pop"], ["pop"]]],
+            "expected": [null, null, null, 5, 7]
+          },
+          {
+            "args": [[["push", 1], ["push", 2], ["pop"]]],
+            "expected": [null, null, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "maximumFrequencyStack",
+        "signature": "maximumFrequencyStack(operations: (string|number)[][]): (number|null)[]",
+        "starter": "export function maximumFrequencyStack(operations: (string|number)[][]): (number|null)[] {\n  throw new Error(\"Implement maximumFrequencyStack\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[["push", 5], ["push", 7], ["push", 5], ["pop"], ["pop"]]],
+            "expected": [null, null, null, 5, 7]
+          },
+          {
+            "args": [[["push", 1], ["push", 2], ["pop"]]],
+            "expected": [null, null, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[["push", 0], ["pop"]]],
+      "expected": [null, 0]
+    },
+    {
+      "args": [[["push", 3], ["push", 3], ["pop"], ["pop"]]],
+      "expected": [null, null, 3, 3]
+    },
+    {
+      "args": [[["push", 1], ["push", 2], ["push", 1], ["push", 2], ["pop"], ["pop"]]],
+      "expected": [null, null, null, null, 2, 1]
+    },
+    {
+      "args": [[["push", -1], ["pop"], ["push", 4], ["pop"]]],
+      "expected": [null, -1, null, 4]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function maximumFrequencyStack(operations                     )                  {\nconst freq=new Map               (),groups=new Map                 ();let max=0;return operations.map(op=>{if(op[0]==='push'){const v=Number(op[1]),f=(freq.get(v)??0)+1;freq.set(v,f);if(!groups.has(f))groups.set(f,[]);groups.get(f) .push(v);max=Math.max(max,f);return null;}const group=groups.get(max) ,v=group.pop() ;freq.set(v,freq.get(v) -1);if(!group.length)max--;return v;});\n}\n",
+    "typescript": "export function maximumFrequencyStack(operations: (string|number)[][]): (number|null)[] {\nconst freq=new Map<number,number>(),groups=new Map<number,number[]>();let max=0;return operations.map(op=>{if(op[0]==='push'){const v=Number(op[1]),f=(freq.get(v)??0)+1;freq.set(v,f);if(!groups.has(f))groups.set(f,[]);groups.get(f)!.push(v);max=Math.max(max,f);return null;}const group=groups.get(max)!,v=group.pop()!;freq.set(v,freq.get(v)!-1);if(!group.length)max--;return v;});\n}\n"
+  },
+  "explanation": "The highest-frequency group is itself a recency stack. Removing its last value restores the previous frequency group. O(1) expected time per operation."
+}

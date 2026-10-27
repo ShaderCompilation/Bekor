@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "longest-repeating-character-replacement",
+    "slug": "longest-repeating-character-replacement",
+    "version": "1.0.0",
+    "title": "Longest Repeating Character Replacement",
+    "description": "Return the longest contiguous substring that can be made entirely one repeated letter by replacing at most k characters. text has 0 to 1000 uppercase ASCII letters; k is 0 through text length.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["A window needs its length minus its most frequent count replacements."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "characterReplacement",
+        "signature": "characterReplacement(text: string, k: number): number",
+        "starter": "export function characterReplacement(text, k) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["AABABBA", 1],
+            "expected": 4
+          },
+          {
+            "args": ["ABAB", 2],
+            "expected": 4
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "characterReplacement",
+        "signature": "characterReplacement(text: string, k: number): number",
+        "starter": "export function characterReplacement(text: string, k: number): number {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["AABABBA", 1],
+            "expected": 4
+          },
+          {
+            "args": ["ABAB", 2],
+            "expected": 4
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["", 0],
+      "expected": 0
+    },
+    {
+      "args": ["ABCD", 0],
+      "expected": 1
+    },
+    {
+      "args": ["AAAA", 0],
+      "expected": 4
+    },
+    {
+      "args": ["ABCD", 4],
+      "expected": 4
+    },
+    {
+      "args": ["BAAAB", 1],
+      "expected": 4
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function characterReplacement(text        , k        )         {\nconst counts         =Array(26).fill(0);let left=0,largest=0,best=0;for(let right=0;right<text.length;right++){const c=text.charCodeAt(right)-65;largest=Math.max(largest,++counts[c]);while(right-left+1-largest>k)counts[text.charCodeAt(left++)-65]--;best=Math.max(best,right-left+1);}return best;\n}\n",
+    "typescript": "export function characterReplacement(text: string, k: number): number {\nconst counts:number[]=Array(26).fill(0);let left=0,largest=0,best=0;for(let right=0;right<text.length;right++){const c=text.charCodeAt(right)-65;largest=Math.max(largest,++counts[c]);while(right-left+1-largest>k)counts[text.charCodeAt(left++)-65]--;best=Math.max(best,right-left+1);}return best;\n}\n"
+  },
+  "explanation": "A sliding window keeps a nondecreasing maximum frequency and shrinks when the replacement bound is exceeded. Stale maxima preserve the best achievable length. O(n) time."
+}

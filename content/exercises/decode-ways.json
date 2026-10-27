@@ -1,0 +1,92 @@
+{
+  "public": {
+    "id": "decode-ways",
+    "slug": "decode-ways",
+    "version": "1.0.0",
+    "title": "Decode Ways",
+    "description": "A through Z correspond to decimal codes 1 through 26. Return the number of ways to split a digit string into valid codes; codes cannot start with zero. Empty input returns zero. Length is 0 to 30.",
+    "difficulty": "medium",
+    "concepts": ["strings", "dynamic-programming"],
+    "hints": ["Count ways ending in a one-digit or two-digit code."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "decodeWays",
+        "signature": "decodeWays(digits: string): number",
+        "starter": "export function decodeWays(digits        )         {\n  throw new Error(\"Implement decodeWays\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["123"],
+            "expected": 3
+          },
+          {
+            "args": ["27"],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "decodeWays",
+        "signature": "decodeWays(digits: string): number",
+        "starter": "export function decodeWays(digits: string): number {\n  throw new Error(\"Implement decodeWays\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["123"],
+            "expected": 3
+          },
+          {
+            "args": ["27"],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [""],
+      "expected": 0
+    },
+    {
+      "args": ["0"],
+      "expected": 0
+    },
+    {
+      "args": ["10"],
+      "expected": 1
+    },
+    {
+      "args": ["100"],
+      "expected": 0
+    },
+    {
+      "args": ["1111"],
+      "expected": 5
+    },
+    {
+      "args": ["27"],
+      "expected": 1
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function decodeWays(digits        )         {\nif(!digits.length)return 0;let a=1,b=digits[0]==='0'?0:1;for(let i=1;i<digits.length;i++){const pair=Number(digits.slice(i-1,i+1));const next=(digits[i]!=='0'?b:0)+(pair>=10&&pair<=26?a:0);a=b;b=next;}return b;\n}\n",
+    "typescript": "export function decodeWays(digits: string): number {\nif(!digits.length)return 0;let a=1,b=digits[0]==='0'?0:1;for(let i=1;i<digits.length;i++){const pair=Number(digits.slice(i-1,i+1));const next=(digits[i]!=='0'?b:0)+(pair>=10&&pair<=26?a:0);a=b;b=next;}return b;\n}\n"
+  },
+  "explanation": "Dynamic programming tracks the previous two prefix counts. Zero cannot form a one-digit code. Time O(n), extra space O(1)."
+}

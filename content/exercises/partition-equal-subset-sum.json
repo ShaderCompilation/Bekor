@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "partition-equal-subset-sum",
+    "slug": "partition-equal-subset-sum",
+    "version": "1.0.0",
+    "title": "Partition Equal Subset Sum",
+    "description": "Return whether values can be split into two disjoint groups with equal sums, using every value once. Empty groups are allowed. There are 0 to 100 positive integers, each at most 100.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["The target sum is half the total. Update reachable sums in descending order."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "canPartition",
+        "signature": "canPartition(values: number[]): boolean",
+        "starter": "export function canPartition(values) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3]],
+            "expected": true
+          },
+          {
+            "args": [[1, 2, 4]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "canPartition",
+        "signature": "canPartition(values: number[]): boolean",
+        "starter": "export function canPartition(values: number[]): boolean {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3]],
+            "expected": true
+          },
+          {
+            "args": [[1, 2, 4]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": true
+    },
+    {
+      "args": [[2]],
+      "expected": false
+    },
+    {
+      "args": [[2, 2]],
+      "expected": true
+    },
+    {
+      "args": [[1, 1, 1, 3]],
+      "expected": true
+    },
+    {
+      "args": [[2, 2, 2]],
+      "expected": false
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function canPartition(values          )          {\nconst sum=values.reduce((a,b)=>a+b,0);if(sum%2)return false;const target=sum/2;const possible          =Array(target+1).fill(false);possible[0]=true;for(const x of values)for(let t=target;t>=x;t--)possible[t]=possible[t]||possible[t-x];return possible[target];\n}\n",
+    "typescript": "export function canPartition(values: number[]): boolean {\nconst sum=values.reduce((a,b)=>a+b,0);if(sum%2)return false;const target=sum/2;const possible:boolean[]=Array(target+1).fill(false);possible[0]=true;for(const x of values)for(let t=target;t>=x;t--)possible[t]=possible[t]||possible[t-x];return possible[target];\n}\n"
+  },
+  "explanation": "Descending updates prevent reusing the current number. The dynamic program costs O(n times total sum) time."
+}

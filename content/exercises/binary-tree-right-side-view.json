@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "binary-tree-right-side-view",
+    "slug": "binary-tree-right-side-view",
+    "version": "1.0.0",
+    "title": "Binary Tree Right Side View",
+    "description": "Return the rightmost visible value at each depth, from root downward. Trees use compact breadth-first arrays: the first value is the root; each non-null node consumes the next two entries as left and right children. Null marks a missing child; trailing nulls may be omitted. Empty arrays mean no tree. Values are integers from -10000 to 10000, with at most 200 nodes.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Process one breadth-first level at a time."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "rightSideView",
+        "signature": "rightSideView(values: (number|null)[]): number[]",
+        "starter": "export function rightSideView(values) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, null, 5, null, 4]],
+            "expected": [1, 3, 4]
+          },
+          {
+            "args": [[]],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "rightSideView",
+        "signature": "rightSideView(values: (number|null)[]): number[]",
+        "starter": "export function rightSideView(values: (number|null)[]): number[] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, null, 5, null, 4]],
+            "expected": [1, 3, 4]
+          },
+          {
+            "args": [[]],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[8]],
+      "expected": [8]
+    },
+    {
+      "args": [[1, 2, null, 3]],
+      "expected": [1, 2, 3]
+    },
+    {
+      "args": [[1, null, 2, null, 3]],
+      "expected": [1, 2, 3]
+    },
+    {
+      "args": [[1, 2, 3, 4]],
+      "expected": [1, 3, 4]
+    },
+    {
+      "args": [[0, -1, -2]],
+      "expected": [0, -2]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "                                      \nfunction tree(a                )        { if(!a.length||a[0]===null)return null; const root  ={v:a[0],l:null,r:null};const q    =[root];let j=1;for(let i=0;i<q.length&&j<a.length;i++){for(const side of ['l','r']         ){const v=a[j++];if(v!==null&&v!==undefined){const n  ={v,l:null,r:null};q[i][side]=n;q.push(n);}}}return root;}\nexport function rightSideView(values                 )           {\nconst root=tree(values);if(!root)return [];let q    =[root];const out         =[];while(q.length){out.push(q[q.length-1].v);const next    =[];for(const n of q){if(n.l)next.push(n.l);if(n.r)next.push(n.r);}q=next;}return out;\n}\n",
+    "typescript": "type N = {v:number,l:N|null,r:N|null};\nfunction tree(a:(number|null)[]):N|null { if(!a.length||a[0]===null)return null; const root:N={v:a[0],l:null,r:null};const q:N[]=[root];let j=1;for(let i=0;i<q.length&&j<a.length;i++){for(const side of ['l','r'] as const){const v=a[j++];if(v!==null&&v!==undefined){const n:N={v,l:null,r:null};q[i][side]=n;q.push(n);}}}return root;}\nexport function rightSideView(values: (number|null)[]): number[] {\nconst root=tree(values);if(!root)return [];let q:N[]=[root];const out:number[]=[];while(q.length){out.push(q[q.length-1].v);const next:N[]=[];for(const n of q){if(n.l)next.push(n.l);if(n.r)next.push(n.r);}q=next;}return out;\n}\n"
+  },
+  "explanation": "The last node of each left-to-right breadth-first level is visible from the right. O(n) time and O(n) space."
+}

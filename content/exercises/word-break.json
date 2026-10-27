@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "word-break",
+    "slug": "word-break",
+    "version": "1.0.0",
+    "title": "Word Break",
+    "description": "Return whether text can be segmented into one or more dictionary words, allowing reuse. Empty text returns true. Text and dictionary words contain lowercase ASCII letters. Text has at most 200 characters; there are at most 100 distinct nonempty words of length at most 30.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Track which prefixes can be fully segmented."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "wordBreak",
+        "signature": "wordBreak(text: string, words: string[]): boolean",
+        "starter": "export function wordBreak(text, words) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["redblue", ["red", "blue"]],
+            "expected": true
+          },
+          {
+            "args": ["abcd", ["ab", "bc", "d"]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "wordBreak",
+        "signature": "wordBreak(text: string, words: string[]): boolean",
+        "starter": "export function wordBreak(text: string, words: string[]): boolean {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["redblue", ["red", "blue"]],
+            "expected": true
+          },
+          {
+            "args": ["abcd", ["ab", "bc", "d"]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["", []],
+      "expected": true
+    },
+    {
+      "args": ["a", []],
+      "expected": false
+    },
+    {
+      "args": ["aaaa", ["aa"]],
+      "expected": true
+    },
+    {
+      "args": ["aaaaab", ["a", "aa", "aaa"]],
+      "expected": false
+    },
+    {
+      "args": ["appleapple", ["apple"]],
+      "expected": true
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function wordBreak(text        , words          )          {\nconst ok          =Array(text.length+1).fill(false);ok[0]=true;for(let i=1;i<=text.length;i++)for(const w of words)if(i>=w.length&&ok[i-w.length]&&text.slice(i-w.length,i)===w)ok[i]=true;return ok[text.length];\n}\n",
+    "typescript": "export function wordBreak(text: string, words: string[]): boolean {\nconst ok:boolean[]=Array(text.length+1).fill(false);ok[0]=true;for(let i=1;i<=text.length;i++)for(const w of words)if(i>=w.length&&ok[i-w.length]&&text.slice(i-w.length,i)===w)ok[i]=true;return ok[text.length];\n}\n"
+  },
+  "explanation": "A prefix is reachable when a reachable shorter prefix is followed by a dictionary word. Checking all words at every endpoint uses O(n times dictionary character count) time."
+}

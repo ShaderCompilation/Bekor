@@ -1,0 +1,92 @@
+{
+  "public": {
+    "id": "next-permutation",
+    "slug": "next-permutation",
+    "version": "1.0.0",
+    "title": "Next Permutation",
+    "description": "Return the next lexicographic permutation of the input integer sequence. If no larger permutation exists, return ascending order. There are 0 to 1000 integers from -1000 to 1000; duplicates are allowed. Return an array; mutation is optional.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Locate the rightmost ascent, increase it minimally, and reverse the suffix."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "nextPermutation",
+        "signature": "nextPermutation(values: number[]): number[]",
+        "starter": "export function nextPermutation(values) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3]],
+            "expected": [1, 3, 2]
+          },
+          {
+            "args": [[3, 2, 1]],
+            "expected": [1, 2, 3]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "nextPermutation",
+        "signature": "nextPermutation(values: number[]): number[]",
+        "starter": "export function nextPermutation(values: number[]): number[] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3]],
+            "expected": [1, 3, 2]
+          },
+          {
+            "args": [[3, 2, 1]],
+            "expected": [1, 2, 3]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[1]],
+      "expected": [1]
+    },
+    {
+      "args": [[1, 1, 5]],
+      "expected": [1, 5, 1]
+    },
+    {
+      "args": [[1, 5, 1]],
+      "expected": [5, 1, 1]
+    },
+    {
+      "args": [[2, 2, 2]],
+      "expected": [2, 2, 2]
+    },
+    {
+      "args": [[1, 3, 2]],
+      "expected": [2, 1, 3]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function nextPermutation(values          )           {\nconst a=[...values];let i=a.length-2;while(i>=0&&a[i]>=a[i+1])i--;if(i>=0){let j=a.length-1;while(a[j]<=a[i])j--;[a[i],a[j]]=[a[j],a[i]];}let l=i+1,r=a.length-1;while(l<r){[a[l],a[r]]=[a[r],a[l]];l++;r--;}return a;\n}\n",
+    "typescript": "export function nextPermutation(values: number[]): number[] {\nconst a=[...values];let i=a.length-2;while(i>=0&&a[i]>=a[i+1])i--;if(i>=0){let j=a.length-1;while(a[j]<=a[i])j--;[a[i],a[j]]=[a[j],a[i]];}let l=i+1,r=a.length-1;while(l<r){[a[l],a[r]]=[a[r],a[l]];l++;r--;}return a;\n}\n"
+  },
+  "explanation": "The descending suffix is already maximal. Swap its pivot with the smallest larger suffix value, then reverse the suffix for the minimal continuation. O(n) time."
+}

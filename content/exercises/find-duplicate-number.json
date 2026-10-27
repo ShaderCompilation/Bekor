@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "find-duplicate-number",
+    "slug": "find-duplicate-number",
+    "version": "1.0.0",
+    "title": "Find the Duplicate Number",
+    "description": "values contains n+1 integers, each from 1 through n, with exactly one distinct value repeated two or more times. Return that value. n is 1 to 1000. Input mutation is optional; try constant auxiliary space as an extension.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Treat each value as a next-index pointer."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "findDuplicate",
+        "signature": "findDuplicate(values: number[]): number",
+        "starter": "export function findDuplicate(values) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 3, 4, 2, 2]],
+            "expected": 2
+          },
+          {
+            "args": [[3, 1, 3, 4, 2]],
+            "expected": 3
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "findDuplicate",
+        "signature": "findDuplicate(values: number[]): number",
+        "starter": "export function findDuplicate(values: number[]): number {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 3, 4, 2, 2]],
+            "expected": 2
+          },
+          {
+            "args": [[3, 1, 3, 4, 2]],
+            "expected": 3
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[1, 1]],
+      "expected": 1
+    },
+    {
+      "args": [[2, 2, 2]],
+      "expected": 2
+    },
+    {
+      "args": [[1, 2, 3, 4, 4]],
+      "expected": 4
+    },
+    {
+      "args": [[2, 1, 1]],
+      "expected": 1
+    },
+    {
+      "args": [[2, 3, 1, 4, 3]],
+      "expected": 3
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function findDuplicate(values          )         {\nlet slow=values[0],fast=values[0];do{slow=values[slow];fast=values[values[fast]];}while(slow!==fast);slow=values[0];while(slow!==fast){slow=values[slow];fast=values[fast];}return slow;\n}\n",
+    "typescript": "export function findDuplicate(values: number[]): number {\nlet slow=values[0],fast=values[0];do{slow=values[slow];fast=values[values[fast]];}while(slow!==fast);slow=values[0];while(slow!==fast){slow=values[slow];fast=values[fast];}return slow;\n}\n"
+  },
+  "explanation": "The index chain must enter a cycle, whose entry is the duplicated value. Floyd cycle detection finds it in O(n) time and O(1) auxiliary space."
+}

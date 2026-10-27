@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "cheapest-flights-within-k-stops",
+    "slug": "cheapest-flights-within-k-stops",
+    "version": "1.0.0",
+    "title": "Cheapest Flights Within K Stops",
+    "description": "Cities are numbered zero through n-1. Each directed flight is [from,to,positivePrice]; no duplicate directed edges. Return the lowest source-to-destination cost using at most k intermediate cities, or -1 if impossible. Staying at the source costs zero. n is 1 to 50, k is 0 to n, prices at most 10000, and there are at most 500 flights.",
+    "difficulty": "medium",
+    "concepts": ["graphs", "dynamic-programming"],
+    "hints": ["Relax flights in rounds using a copy of previous costs."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "cheapestFlightsWithinKStops",
+        "signature": "cheapestFlightsWithinKStops(n: number, flights: number[][], source: number, destination: number, k: number): number",
+        "starter": "export function cheapestFlightsWithinKStops(n        , flights            , source        , destination        , k        )         {\n  throw new Error(\"Implement cheapestFlightsWithinKStops\");\n}\n",
+        "publicTests": [
+          {
+            "args": [3, [[0, 1, 10], [1, 2, 10], [0, 2, 50]], 0, 2, 0],
+            "expected": 50
+          },
+          {
+            "args": [3, [[0, 1, 10], [1, 2, 10], [0, 2, 50]], 0, 2, 1],
+            "expected": 20
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "cheapestFlightsWithinKStops",
+        "signature": "cheapestFlightsWithinKStops(n: number, flights: number[][], source: number, destination: number, k: number): number",
+        "starter": "export function cheapestFlightsWithinKStops(n: number, flights: number[][], source: number, destination: number, k: number): number {\n  throw new Error(\"Implement cheapestFlightsWithinKStops\");\n}\n",
+        "publicTests": [
+          {
+            "args": [3, [[0, 1, 10], [1, 2, 10], [0, 2, 50]], 0, 2, 0],
+            "expected": 50
+          },
+          {
+            "args": [3, [[0, 1, 10], [1, 2, 10], [0, 2, 50]], 0, 2, 1],
+            "expected": 20
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [2, [], 0, 1, 1],
+      "expected": -1
+    },
+    {
+      "args": [1, [], 0, 0, 0],
+      "expected": 0
+    },
+    {
+      "args": [3, [[0, 1, 2], [1, 2, 3]], 2, 0, 2],
+      "expected": -1
+    },
+    {
+      "args": [4, [[0, 1, 1], [1, 2, 1], [2, 3, 1], [0, 3, 9]], 0, 3, 1],
+      "expected": 9
+    },
+    {
+      "args": [4, [[0, 1, 1], [1, 2, 1], [2, 3, 1]], 0, 3, 2],
+      "expected": 3
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function cheapestFlightsWithinKStops(n        , flights            , source        , destination        , k        )         {\nlet costs=Array(n).fill(Infinity);costs[source]=0;for(let step=0;step<=k;step++){const next=[...costs];for(const [a,b,p]of flights)next[b]=Math.min(next[b],costs[a]+p);costs=next;}return costs[destination]===Infinity?-1:costs[destination];\n}\n",
+    "typescript": "export function cheapestFlightsWithinKStops(n: number, flights: number[][], source: number, destination: number, k: number): number {\nlet costs=Array(n).fill(Infinity);costs[source]=0;for(let step=0;step<=k;step++){const next=[...costs];for(const [a,b,p]of flights)next[b]=Math.min(next[b],costs[a]+p);costs=next;}return costs[destination]===Infinity?-1:costs[destination];\n}\n"
+  },
+  "explanation": "After round r, costs represent paths using at most r edges. Reading only previous-round costs enforces the stop limit. O((k+1) times flights) time and O(n) space."
+}

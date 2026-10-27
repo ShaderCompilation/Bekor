@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "alien-dictionary",
+    "slug": "alien-dictionary",
+    "version": "1.0.0",
+    "title": "Alien Dictionary",
+    "description": "Words are sorted under an unknown alphabet order. Return the lexicographically smallest valid alphabet string containing every distinct lowercase ASCII character present, or an empty string if no order works. A longer word appearing before its exact prefix is invalid. There are 0 to 100 words, each length 0 to 30.",
+    "difficulty": "hard",
+    "concepts": ["graphs", "topological-sort"],
+    "hints": ["Only the first difference between neighboring words creates an ordering edge."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "alienDictionary",
+        "signature": "alienDictionary(words: string[]): string",
+        "starter": "export function alienDictionary(words          )         {\n  throw new Error(\"Implement alienDictionary\");\n}\n",
+        "publicTests": [
+          {
+            "args": [["za", "zb", "ca", "cb"]],
+            "expected": "abzc"
+          },
+          {
+            "args": [["abc", "ab"]],
+            "expected": ""
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "alienDictionary",
+        "signature": "alienDictionary(words: string[]): string",
+        "starter": "export function alienDictionary(words: string[]): string {\n  throw new Error(\"Implement alienDictionary\");\n}\n",
+        "publicTests": [
+          {
+            "args": [["za", "zb", "ca", "cb"]],
+            "expected": "abzc"
+          },
+          {
+            "args": [["abc", "ab"]],
+            "expected": ""
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": ""
+    },
+    {
+      "args": [["z"]],
+      "expected": "z"
+    },
+    {
+      "args": [["z", "x", "z"]],
+      "expected": ""
+    },
+    {
+      "args": [["ab", "ab"]],
+      "expected": "ab"
+    },
+    {
+      "args": [["a", "b", "c"]],
+      "expected": "abc"
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function alienDictionary(words          )         {\nconst adj=new Map                    (),indegree=new Map               ();for(const w of words)for(const c of w){adj.set(c,new Set());indegree.set(c,0);}for(let i=1;i<words.length;i++){const a=words[i-1],b=words[i];let j=0;while(j<Math.min(a.length,b.length)&&a[j]===b[j])j++;if(j===b.length&&a.length>b.length)return '';if(j<a.length&&j<b.length&&!adj.get(a[j]) .has(b[j])){adj.get(a[j]) .add(b[j]);indegree.set(b[j],indegree.get(b[j]) +1);}}let result='';const ready=[...indegree.keys()].filter(c=>indegree.get(c)===0);while(ready.length){ready.sort();const c=ready.shift() ;result+=c;for(const d of adj.get(c) ){indegree.set(d,indegree.get(d) -1);if(indegree.get(d)===0)ready.push(d);}}return result.length===indegree.size?result:'';\n}\n",
+    "typescript": "export function alienDictionary(words: string[]): string {\nconst adj=new Map<string,Set<string>>(),indegree=new Map<string,number>();for(const w of words)for(const c of w){adj.set(c,new Set());indegree.set(c,0);}for(let i=1;i<words.length;i++){const a=words[i-1],b=words[i];let j=0;while(j<Math.min(a.length,b.length)&&a[j]===b[j])j++;if(j===b.length&&a.length>b.length)return '';if(j<a.length&&j<b.length&&!adj.get(a[j])!.has(b[j])){adj.get(a[j])!.add(b[j]);indegree.set(b[j],indegree.get(b[j])!+1);}}let result='';const ready=[...indegree.keys()].filter(c=>indegree.get(c)===0);while(ready.length){ready.sort();const c=ready.shift()!;result+=c;for(const d of adj.get(c)!){indegree.set(d,indegree.get(d)!-1);if(indegree.get(d)===0)ready.push(d);}}return result.length===indegree.size?result:'';\n}\n"
+  },
+  "explanation": "Topological sorting chooses the smallest currently available letter at every step, producing the lexicographically smallest order. Reject prefix contradictions and cycles."
+}

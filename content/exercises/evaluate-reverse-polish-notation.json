@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "evaluate-reverse-polish-notation",
+    "slug": "evaluate-reverse-polish-notation",
+    "version": "1.0.0",
+    "title": "Evaluate Reverse Polish Notation",
+    "description": "Evaluate a valid reverse Polish expression using integers and the binary operators +, -, *, /. Each operator consumes the two previous stack values in left-then-right order. Integer division truncates toward zero. There are 1 to 200 tokens; division by zero never occurs. All literals and intermediate results are signed 32-bit integers.",
+    "difficulty": "medium",
+    "concepts": ["stacks", "parsing"],
+    "hints": [
+      "Operators take the right operand from the top of the stack.",
+      "Use truncation toward zero for negative quotients."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "evalRPN",
+        "signature": "evalRPN(tokens: string[]): number",
+        "starter": "export function evalRPN(tokens) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [["5", "2", "-"]],
+            "expected": 3
+          },
+          {
+            "args": [["7", "-3", "/"]],
+            "expected": -2
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "evalRPN",
+        "signature": "evalRPN(tokens: string[]): number",
+        "starter": "export function evalRPN(tokens: string[]): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [["5", "2", "-"]],
+            "expected": 3
+          },
+          {
+            "args": [["7", "-3", "/"]],
+            "expected": -2
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [["9"]],
+      "expected": 9
+    },
+    {
+      "args": [["2", "3", "+", "4", "*"]],
+      "expected": 20
+    },
+    {
+      "args": [["-7", "3", "/"]],
+      "expected": -2
+    },
+    {
+      "args": [["3", "5", "-"]],
+      "expected": -2
+    },
+    {
+      "args": [["12", "4", "/", "2", "+"]],
+      "expected": 5
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function evalRPN(tokens          )         {\n  const stack          =[]; for(const token of tokens) { if(['+','-','*','/'].includes(token)) { const right=stack.pop() ,left=stack.pop() ; stack.push(token==='+'?left+right:token==='-'?left-right:token==='*'?left*right:Math.trunc(left/right)); } else stack.push(Number(token)); } return stack[0];\n}\n",
+    "typescript": "export function evalRPN(tokens: string[]): number {\n  const stack: number[]=[]; for(const token of tokens) { if(['+','-','*','/'].includes(token)) { const right=stack.pop()!,left=stack.pop()!; stack.push(token==='+'?left+right:token==='-'?left-right:token==='*'?left*right:Math.trunc(left/right)); } else stack.push(Number(token)); } return stack[0];\n}\n"
+  },
+  "explanation": "Push numeric literals and replace operand pairs with each operator result. O(token count) time and space."
+}

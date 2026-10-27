@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "word-search-ii",
+    "slug": "word-search-ii",
+    "version": "1.0.0",
+    "title": "Word Search II",
+    "description": "Find all distinct dictionary words that can be formed by a path through a lowercase ASCII board, moving only up/down/left/right and never reusing a cell within one word. Return found words once each in lexicographic order. Rectangular dimensions are 0 to 6; dictionary contains 0 to 100 words, each length 1 to 8. Duplicate dictionary entries are allowed.",
+    "difficulty": "hard",
+    "concepts": ["backtracking", "strings"],
+    "hints": ["Search each word with a visited set local to the current path."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "wordSearchIi",
+        "signature": "wordSearchIi(board: string[][], words: string[]): string[]",
+        "starter": "export function wordSearchIi(board            , words          )           {\n  throw new Error(\"Implement wordSearchIi\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[["a", "b"], ["c", "d"]], ["ab", "ac", "ad", "bd"]],
+            "expected": ["ab", "ac", "bd"]
+          },
+          {
+            "args": [[["a"]], ["a", "aa", "a"]],
+            "expected": ["a"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "wordSearchIi",
+        "signature": "wordSearchIi(board: string[][], words: string[]): string[]",
+        "starter": "export function wordSearchIi(board: string[][], words: string[]): string[] {\n  throw new Error(\"Implement wordSearchIi\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[["a", "b"], ["c", "d"]], ["ab", "ac", "ad", "bd"]],
+            "expected": ["ab", "ac", "bd"]
+          },
+          {
+            "args": [[["a"]], ["a", "aa", "a"]],
+            "expected": ["a"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], ["a"]],
+      "expected": []
+    },
+    {
+      "args": [[[]], ["a"]],
+      "expected": []
+    },
+    {
+      "args": [[["a", "b"]], ["aba"]],
+      "expected": []
+    },
+    {
+      "args": [[["a", "b"], ["d", "c"]], ["abcd", "dcba"]],
+      "expected": ["abcd", "dcba"]
+    },
+    {
+      "args": [[["x"]], []],
+      "expected": []
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function wordSearchIi(board            , words          )           {\nconst h=board.length,w=h?board[0].length:0;function exists(word       )        {const used=new Set        ();function dfs(r       ,c       ,i       )        {if(i===word.length)return true;if(r<0||r>=h||c<0||c>=w||used.has(r*w+c)||board[r][c]!==word[i])return false;used.add(r*w+c);const ok=dfs(r+1,c,i+1)||dfs(r-1,c,i+1)||dfs(r,c+1,i+1)||dfs(r,c-1,i+1);used.delete(r*w+c);return ok;}for(let r=0;r<h;r++)for(let c=0;c<w;c++)if(dfs(r,c,0))return true;return false;}return [...new Set(words)].filter(exists).sort();\n}\n",
+    "typescript": "export function wordSearchIi(board: string[][], words: string[]): string[] {\nconst h=board.length,w=h?board[0].length:0;function exists(word:string):boolean{const used=new Set<number>();function dfs(r:number,c:number,i:number):boolean{if(i===word.length)return true;if(r<0||r>=h||c<0||c>=w||used.has(r*w+c)||board[r][c]!==word[i])return false;used.add(r*w+c);const ok=dfs(r+1,c,i+1)||dfs(r-1,c,i+1)||dfs(r,c+1,i+1)||dfs(r,c-1,i+1);used.delete(r*w+c);return ok;}for(let r=0;r<h;r++)for(let c=0;c<w;c++)if(dfs(r,c,0))return true;return false;}return [...new Set(words)].filter(exists).sort();\n}\n"
+  },
+  "explanation": "Backtracking explores neighboring cells while forbidding reuse. Deduplicate and sort successful words. For W words of length L, worst-case time is O(W times cells times 4 to the L)."
+}

@@ -1,0 +1,92 @@
+{
+  "public": {
+    "id": "spiral-matrix",
+    "slug": "spiral-matrix",
+    "version": "1.0.0",
+    "title": "Spiral Matrix",
+    "description": "Return matrix entries in clockwise spiral order, starting at the top-left corner moving right. A rectangular matrix has 0 to 30 rows and 0 to 30 columns, with integer entries from -1000 to 1000. Empty matrices return [].",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Maintain the four boundaries of the remaining rectangle."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "spiralOrder",
+        "signature": "spiralOrder(matrix: number[][]): number[]",
+        "starter": "export function spiralOrder(matrix) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 2], [3, 4]]],
+            "expected": [1, 2, 4, 3]
+          },
+          {
+            "args": [[[1, 2, 3], [4, 5, 6]]],
+            "expected": [1, 2, 3, 6, 5, 4]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "spiralOrder",
+        "signature": "spiralOrder(matrix: number[][]): number[]",
+        "starter": "export function spiralOrder(matrix: number[][]): number[] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 2], [3, 4]]],
+            "expected": [1, 2, 4, 3]
+          },
+          {
+            "args": [[[1, 2, 3], [4, 5, 6]]],
+            "expected": [1, 2, 3, 6, 5, 4]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[[]]],
+      "expected": []
+    },
+    {
+      "args": [[[7]]],
+      "expected": [7]
+    },
+    {
+      "args": [[[1], [2], [3]]],
+      "expected": [1, 2, 3]
+    },
+    {
+      "args": [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]],
+      "expected": [1, 2, 3, 6, 9, 8, 7, 4, 5]
+    },
+    {
+      "args": [[[1, 2, 3, 4], [5, 6, 7, 8]]],
+      "expected": [1, 2, 3, 4, 8, 7, 6, 5]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function spiralOrder(matrix            )           {\nconst out         =[];let top=0,bottom=matrix.length-1,left=0,right=(matrix[0]?.length??0)-1;while(top<=bottom&&left<=right){for(let c=left;c<=right;c++)out.push(matrix[top][c]);top++;for(let r=top;r<=bottom;r++)out.push(matrix[r][right]);right--;if(top<=bottom){for(let c=right;c>=left;c--)out.push(matrix[bottom][c]);bottom--;}if(left<=right){for(let r=bottom;r>=top;r--)out.push(matrix[r][left]);left++;}}return out;\n}\n",
+    "typescript": "export function spiralOrder(matrix: number[][]): number[] {\nconst out:number[]=[];let top=0,bottom=matrix.length-1,left=0,right=(matrix[0]?.length??0)-1;while(top<=bottom&&left<=right){for(let c=left;c<=right;c++)out.push(matrix[top][c]);top++;for(let r=top;r<=bottom;r++)out.push(matrix[r][right]);right--;if(top<=bottom){for(let c=right;c>=left;c--)out.push(matrix[bottom][c]);bottom--;}if(left<=right){for(let r=bottom;r>=top;r--)out.push(matrix[r][left]);left++;}}return out;\n}\n"
+  },
+  "explanation": "Consume a top row, right column, bottom row and left column, checking boundaries before the last two. Every cell is visited once."
+}

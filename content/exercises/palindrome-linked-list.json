@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "palindrome-linked-list",
+    "slug": "palindrome-linked-list",
+    "version": "1.0.0",
+    "title": "Palindrome Linked List",
+    "description": "A singly linked list is serialized as values from head to tail. Return whether those values read the same forward and backward. The empty list is a palindrome. There are 0 to 1000 integers from -10000 to 10000. This JSON adaptation checks values rather than pointer identity.",
+    "difficulty": "easy",
+    "concepts": ["linked-lists", "palindromes"],
+    "hints": [
+      "Compare matching distances from the two ends.",
+      "Any unequal pair disproves palindrome symmetry."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "isPalindromeList",
+        "signature": "isPalindromeList(values: number[]): boolean",
+        "starter": "export function isPalindromeList(values) {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": [[3, 8, 3]],
+            "expected": true
+          },
+          {
+            "args": [[1, 2]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "isPalindromeList",
+        "signature": "isPalindromeList(values: number[]): boolean",
+        "starter": "export function isPalindromeList(values: number[]): boolean {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": [[3, 8, 3]],
+            "expected": true
+          },
+          {
+            "args": [[1, 2]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": true
+    },
+    {
+      "args": [[7]],
+      "expected": true
+    },
+    {
+      "args": [[1, 2, 2, 1]],
+      "expected": true
+    },
+    {
+      "args": [[1, 2, 3, 1]],
+      "expected": false
+    },
+    {
+      "args": [[0, -1, 0]],
+      "expected": true
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function isPalindromeList(values          )          {\n  for (let i = 0, j = values.length - 1; i < j; i++, j--) if (values[i] !== values[j]) return false; return true;\n}\n",
+    "typescript": "export function isPalindromeList(values: number[]): boolean {\n  for (let i = 0, j = values.length - 1; i < j; i++, j--) if (values[i] !== values[j]) return false; return true;\n}\n"
+  },
+  "explanation": "Use two indices moving inward and reject at the first unequal pair. O(n) time and O(1) auxiliary space."
+}

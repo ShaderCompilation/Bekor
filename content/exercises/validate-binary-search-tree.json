@@ -1,0 +1,95 @@
+{
+  "public": {
+    "id": "validate-binary-search-tree",
+    "slug": "validate-binary-search-tree",
+    "version": "1.0.0",
+    "title": "Validate Binary Search Tree",
+    "description": "Return whether every node of the binary tree satisfies strict binary-search ordering: all values in its left subtree are smaller, and all values in its right subtree are larger. Duplicates are invalid. The empty tree is valid. Trees use compact breadth-first arrays: read the root, then left and right child slots for each non-null node in queue order. null marks a missing child; absent trailing slots are null. [] is empty. Values are integers from -10000 to 10000 and there are at most 200 nodes.",
+    "difficulty": "medium",
+    "concepts": ["trees", "binary-search-trees"],
+    "hints": [
+      "A node must obey every ancestor bound.",
+      "Strict inequalities reject duplicate keys."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "isValidBST",
+        "signature": "isValidBST(values: (number | null)[]): boolean",
+        "starter": "export function isValidBST(values) {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": [[5, 2, 8, 1, 3]],
+            "expected": true
+          },
+          {
+            "args": [[5, 2, 8, null, null, 4, 9]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "isValidBST",
+        "signature": "isValidBST(values: (number | null)[]): boolean",
+        "starter": "export function isValidBST(values: (number | null)[]): boolean {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": [[5, 2, 8, 1, 3]],
+            "expected": true
+          },
+          {
+            "args": [[5, 2, 8, null, null, 4, 9]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": true
+    },
+    {
+      "args": [[0]],
+      "expected": true
+    },
+    {
+      "args": [[2, 2, 3]],
+      "expected": false
+    },
+    {
+      "args": [[0, -1, 1]],
+      "expected": true
+    },
+    {
+      "args": [[10, 5, 15, null, null, 6, 20]],
+      "expected": false
+    },
+    {
+      "args": [[2, 1, 2]],
+      "expected": false
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "                                                                     \nfunction readTree(values                   )              {\n  if (values.length === 0 || values[0] === null) return null;\n  const root       = { value: values[0], left: null, right: null };\n  const queue         = [root]; let index = 1;\n  for (let i = 0; i < queue.length && index < values.length; i++) {\n    const node = queue[i];\n    for (const side of ['left', 'right']         ) {\n      const value = values[index++];\n      if (value !== null && value !== undefined) { const child       = { value, left: null, right: null }; node[side] = child; queue.push(child); }\n    }\n  }\n  return root;\n}\nexport function isValidBST(values                   )          {\n  function valid(node          ,low       ,high       )         { if(!node) return true; return node.value>low&&node.value<high&&valid(node.left,low,node.value)&&valid(node.right,node.value,high); } return valid(readTree(values),-Infinity,Infinity);\n}\n",
+    "typescript": "type Tree = { value: number; left: Tree | null; right: Tree | null };\nfunction readTree(values: (number | null)[]): Tree | null {\n  if (values.length === 0 || values[0] === null) return null;\n  const root: Tree = { value: values[0], left: null, right: null };\n  const queue: Tree[] = [root]; let index = 1;\n  for (let i = 0; i < queue.length && index < values.length; i++) {\n    const node = queue[i];\n    for (const side of ['left', 'right'] as const) {\n      const value = values[index++];\n      if (value !== null && value !== undefined) { const child: Tree = { value, left: null, right: null }; node[side] = child; queue.push(child); }\n    }\n  }\n  return root;\n}\nexport function isValidBST(values: (number | null)[]): boolean {\n  function valid(node:Tree|null,low:number,high:number):boolean { if(!node) return true; return node.value>low&&node.value<high&&valid(node.left,low,node.value)&&valid(node.right,node.value,high); } return valid(readTree(values),-Infinity,Infinity);\n}\n"
+  },
+  "explanation": "Carry an open lower and upper bound down the tree. O(n) time and O(h) traversal space."
+}

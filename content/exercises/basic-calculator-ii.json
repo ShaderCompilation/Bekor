@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "basic-calculator-ii",
+    "slug": "basic-calculator-ii",
+    "version": "1.0.0",
+    "title": "Basic Calculator II",
+    "description": "Evaluate a valid nonempty expression of nonnegative decimal integers, spaces, and binary + - * / operators. Multiplication and division have higher precedence; equal-precedence operators associate left to right. Division truncates toward zero. There are no parentheses or unary operators; divisors are nonzero. Length is at most 500 and all intermediate integers have magnitude at most 1000000000.",
+    "difficulty": "medium",
+    "concepts": ["strings", "stack"],
+    "hints": ["Keep signed additive terms on a stack."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "basicCalculatorIi",
+        "signature": "basicCalculatorIi(expression: string): number",
+        "starter": "export function basicCalculatorIi(expression        )         {\n  throw new Error(\"Implement basicCalculatorIi\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["8+6/4"],
+            "expected": 9
+          },
+          {
+            "args": [" 14-3*2 "],
+            "expected": 8
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "basicCalculatorIi",
+        "signature": "basicCalculatorIi(expression: string): number",
+        "starter": "export function basicCalculatorIi(expression: string): number {\n  throw new Error(\"Implement basicCalculatorIi\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["8+6/4"],
+            "expected": 9
+          },
+          {
+            "args": [" 14-3*2 "],
+            "expected": 8
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["0"],
+      "expected": 0
+    },
+    {
+      "args": ["1-7/3"],
+      "expected": -1
+    },
+    {
+      "args": ["20/3/2"],
+      "expected": 3
+    },
+    {
+      "args": ["2*3+4*5"],
+      "expected": 26
+    },
+    {
+      "args": ["100-20-3"],
+      "expected": 77
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function basicCalculatorIi(expression        )         {\nconst s=expression.replace(/ /g,'');const stack         =[];let number=0,op='+';for(let i=0;i<=s.length;i++){const c=s[i];if(c!==undefined&&/\\d/.test(c)){number=number*10+Number(c);continue;}if(op==='+')stack.push(number);if(op==='-')stack.push(-number);if(op==='*')stack.push(stack.pop() *number);if(op==='/')stack.push(Math.trunc(stack.pop() /number));op=c;number=0;}return stack.reduce((a,b)=>a+b,0);\n}\n",
+    "typescript": "export function basicCalculatorIi(expression: string): number {\nconst s=expression.replace(/ /g,'');const stack:number[]=[];let number=0,op='+';for(let i=0;i<=s.length;i++){const c=s[i];if(c!==undefined&&/\\d/.test(c)){number=number*10+Number(c);continue;}if(op==='+')stack.push(number);if(op==='-')stack.push(-number);if(op==='*')stack.push(stack.pop()!*number);if(op==='/')stack.push(Math.trunc(stack.pop()!/number));op=c;number=0;}return stack.reduce((a,b)=>a+b,0);\n}\n"
+  },
+  "explanation": "Resolve multiplication and division against the current term immediately, then sum additive terms. O(n) time and space."
+}

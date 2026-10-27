@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "reverse-nodes-in-k-group",
+    "slug": "reverse-nodes-in-k-group",
+    "version": "1.0.0",
+    "title": "Reverse Nodes in k-Group",
+    "description": "The array encodes a singly linked list in head-to-tail order. Reverse each full consecutive group of k nodes and leave a final shorter group unchanged. Return the resulting values. This value-only adaptation does not check node identity or in-place rewiring. Length is 0 to 1000, k is 1 to 1000, and values are integers between -10000 and 10000.",
+    "difficulty": "hard",
+    "concepts": ["linked-lists"],
+    "hints": ["Check group length before reversing it."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "reverseNodesInKGroup",
+        "signature": "reverseNodesInKGroup(values: number[], k: number): number[]",
+        "starter": "export function reverseNodesInKGroup(values          , k        )           {\n  throw new Error(\"Implement reverseNodesInKGroup\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, 4, 5], 2],
+            "expected": [2, 1, 4, 3, 5]
+          },
+          {
+            "args": [[1, 2, 3, 4, 5], 3],
+            "expected": [3, 2, 1, 4, 5]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "reverseNodesInKGroup",
+        "signature": "reverseNodesInKGroup(values: number[], k: number): number[]",
+        "starter": "export function reverseNodesInKGroup(values: number[], k: number): number[] {\n  throw new Error(\"Implement reverseNodesInKGroup\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, 4, 5], 2],
+            "expected": [2, 1, 4, 3, 5]
+          },
+          {
+            "args": [[1, 2, 3, 4, 5], 3],
+            "expected": [3, 2, 1, 4, 5]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 3],
+      "expected": []
+    },
+    {
+      "args": [[1], 1],
+      "expected": [1]
+    },
+    {
+      "args": [[1, 2], 3],
+      "expected": [1, 2]
+    },
+    {
+      "args": [[1, 2, 3], 3],
+      "expected": [3, 2, 1]
+    },
+    {
+      "args": [[1, 2, 3, 4], 1],
+      "expected": [1, 2, 3, 4]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function reverseNodesInKGroup(values          , k        )           {\nconst out         =[];for(let i=0;i<values.length;i+=k){const group=values.slice(i,i+k);out.push(...(group.length===k?group.reverse():group));}return out;\n}\n",
+    "typescript": "export function reverseNodesInKGroup(values: number[], k: number): number[] {\nconst out:number[]=[];for(let i=0;i<values.length;i+=k){const group=values.slice(i,i+k);out.push(...(group.length===k?group.reverse():group));}return out;\n}\n"
+  },
+  "explanation": "Copy full groups in reverse and preserve the final partial group. O(n) time and output space."
+}

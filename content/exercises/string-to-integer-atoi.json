@@ -1,0 +1,96 @@
+{
+  "public": {
+    "id": "string-to-integer-atoi",
+    "slug": "string-to-integer-atoi",
+    "version": "1.0.0",
+    "title": "String to Integer (atoi)",
+    "description": "Parse text using these rules: skip leading ASCII spaces, consume one optional + or - sign, then consume consecutive ASCII digits until the first other character. Return 0 if no digit is consumed. Clamp the signed result to the 32-bit range -2147483648 through 2147483647. Text contains at most 200 ASCII characters.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Keep the accumulated magnitude bounded before applying the sign."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "atoi",
+        "signature": "atoi(text: string): number",
+        "starter": "export function atoi(text) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["  -42tail"],
+            "expected": -42
+          },
+          {
+            "args": ["words 9"],
+            "expected": 0
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "atoi",
+        "signature": "atoi(text: string): number",
+        "starter": "export function atoi(text: string): number {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["  -42tail"],
+            "expected": -42
+          },
+          {
+            "args": ["words 9"],
+            "expected": 0
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [""],
+      "expected": 0
+    },
+    {
+      "args": ["+-12"],
+      "expected": 0
+    },
+    {
+      "args": ["2147483648"],
+      "expected": 2147483647
+    },
+    {
+      "args": ["-999999999999999999999"],
+      "expected": -2147483648
+    },
+    {
+      "args": ["+00017x"],
+      "expected": 17
+    },
+    {
+      "args": ["\t12"],
+      "expected": 0
+    },
+    {
+      "args": ["   +12end"],
+      "expected": 12
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function atoi(text        )         {\nlet i=0;while(text[i]===\" \")i++;let sign=1;if(text[i]===\"-\"||text[i]===\"+\"){if(text[i]===\"-\")sign=-1;i++;}let n=0;while(i<text.length&&text[i]>=\"0\"&&text[i]<=\"9\"){n=Math.min(2147483648,n*10+Number(text[i++]));}return Math.max(-2147483648,Math.min(2147483647,sign*n))||0;\n}\n",
+    "typescript": "export function atoi(text: string): number {\nlet i=0;while(text[i]===\" \")i++;let sign=1;if(text[i]===\"-\"||text[i]===\"+\"){if(text[i]===\"-\")sign=-1;i++;}let n=0;while(i<text.length&&text[i]>=\"0\"&&text[i]<=\"9\"){n=Math.min(2147483648,n*10+Number(text[i++]));}return Math.max(-2147483648,Math.min(2147483647,sign*n))||0;\n}\n"
+  },
+  "explanation": "Consume characters in the specified order. Saturating the magnitude avoids precision loss on long digit runs; clamp after applying the sign. Time O(n)."
+}

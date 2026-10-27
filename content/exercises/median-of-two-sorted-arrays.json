@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "median-of-two-sorted-arrays",
+    "slug": "median-of-two-sorted-arrays",
+    "version": "1.0.0",
+    "title": "Median of Two Sorted Arrays",
+    "description": "Two ascending integer arrays have at least one total element. Return TWICE their mathematical median so the output remains an integer. For an odd total return twice the middle value; for an even total return the sum of the two middle values. Total length is 1 to 1000; values between -1000000 and 1000000.",
+    "difficulty": "hard",
+    "concepts": ["arrays", "sorting"],
+    "hints": ["Merge the arrays and locate the middle position or positions."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "medianOfTwoSortedArrays",
+        "signature": "medianOfTwoSortedArrays(left: number[], right: number[]): number",
+        "starter": "export function medianOfTwoSortedArrays(left          , right          )         {\n  throw new Error(\"Implement medianOfTwoSortedArrays\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 3], [2]],
+            "expected": 4
+          },
+          {
+            "args": [[1, 2], [3, 4]],
+            "expected": 5
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "medianOfTwoSortedArrays",
+        "signature": "medianOfTwoSortedArrays(left: number[], right: number[]): number",
+        "starter": "export function medianOfTwoSortedArrays(left: number[], right: number[]): number {\n  throw new Error(\"Implement medianOfTwoSortedArrays\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 3], [2]],
+            "expected": 4
+          },
+          {
+            "args": [[1, 2], [3, 4]],
+            "expected": 5
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], [5]],
+      "expected": 10
+    },
+    {
+      "args": [[-3], [-2]],
+      "expected": -5
+    },
+    {
+      "args": [[0, 0], [0]],
+      "expected": 0
+    },
+    {
+      "args": [[1, 1], [1, 1]],
+      "expected": 2
+    },
+    {
+      "args": [[2], []],
+      "expected": 4
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function medianOfTwoSortedArrays(left          , right          )         {\nconst a         =[];let i=0,j=0;while(i<left.length||j<right.length){if(j===right.length||(i<left.length&&left[i]<=right[j]))a.push(left[i++]);else a.push(right[j++]);}const n=a.length;return n%2?2*a[n>>1]:a[n/2-1]+a[n/2];\n}\n",
+    "typescript": "export function medianOfTwoSortedArrays(left: number[], right: number[]): number {\nconst a:number[]=[];let i=0,j=0;while(i<left.length||j<right.length){if(j===right.length||(i<left.length&&left[i]<=right[j]))a.push(left[i++]);else a.push(right[j++]);}const n=a.length;return n%2?2*a[n>>1]:a[n/2-1]+a[n/2];\n}\n"
+  },
+  "explanation": "The direct reference merges in O(m+n) time and space, then computes the doubled median exactly."
+}

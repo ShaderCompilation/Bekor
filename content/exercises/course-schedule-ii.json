@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "course-schedule-ii",
+    "slug": "course-schedule-ii",
+    "version": "1.0.0",
+    "title": "Course Schedule II",
+    "description": "There are n courses numbered 0 through n-1. Each pair [course, prerequisite] requires the second course first. Return the lexicographically smallest valid course order, or [] when a cycle makes completion impossible. n is 0 to 100; prerequisites has at most 500 distinct pairs of different valid course IDs.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Among currently available courses, always choose the smallest ID."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "findOrder",
+        "signature": "findOrder(n: number, prerequisites: number[][]): number[]",
+        "starter": "export function findOrder(n, prerequisites) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [3, [[2, 0], [2, 1]]],
+            "expected": [0, 1, 2]
+          },
+          {
+            "args": [2, [[0, 1], [1, 0]]],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "findOrder",
+        "signature": "findOrder(n: number, prerequisites: number[][]): number[]",
+        "starter": "export function findOrder(n: number, prerequisites: number[][]): number[] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [3, [[2, 0], [2, 1]]],
+            "expected": [0, 1, 2]
+          },
+          {
+            "args": [2, [[0, 1], [1, 0]]],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [0, []],
+      "expected": []
+    },
+    {
+      "args": [1, []],
+      "expected": [0]
+    },
+    {
+      "args": [3, []],
+      "expected": [0, 1, 2]
+    },
+    {
+      "args": [4, [[0, 2], [1, 2]]],
+      "expected": [2, 0, 1, 3]
+    },
+    {
+      "args": [3, [[0, 1], [1, 2]]],
+      "expected": [2, 1, 0]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function findOrder(n        , prerequisites            )           {\nconst adj           =Array.from({length:n},()=>[]),degree         =Array(n).fill(0);for(const [c,p] of prerequisites){adj[p].push(c);degree[c]++;}const ready         =[];for(let i=0;i<n;i++)if(!degree[i])ready.push(i);const out         =[];while(ready.length){ready.sort((a,b)=>a-b);const x=ready.shift() ;out.push(x);for(const y of adj[x])if(--degree[y]===0)ready.push(y);}return out.length===n?out:[];\n}\n",
+    "typescript": "export function findOrder(n: number, prerequisites: number[][]): number[] {\nconst adj:number[][]=Array.from({length:n},()=>[]),degree:number[]=Array(n).fill(0);for(const [c,p] of prerequisites){adj[p].push(c);degree[c]++;}const ready:number[]=[];for(let i=0;i<n;i++)if(!degree[i])ready.push(i);const out:number[]=[];while(ready.length){ready.sort((a,b)=>a-b);const x=ready.shift()!;out.push(x);for(const y of adj[x])if(--degree[y]===0)ready.push(y);}return out.length===n?out:[];\n}\n"
+  },
+  "explanation": "Kahn topological sorting with smallest-ready selection gives the lexicographically smallest valid order. Sorting the ready set is acceptable at these bounds."
+}

@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "inorder-successor-bst",
+    "slug": "inorder-successor-bst",
+    "version": "1.0.0",
+    "title": "Inorder Successor in BST",
+    "description": "Given a valid BST with distinct values and a target value present in it, return the next greater value, or null if target is largest. Trees use compact breadth-first arrays: the first value is the root; each non-null node consumes the next two entries as left and right children. Null marks a missing child; trailing nulls may be omitted. Empty arrays mean no tree. Values are integers from -10000 to 10000, with at most 200 nodes.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Search for the smallest BST value strictly greater than target."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "inorderSuccessor",
+        "signature": "inorderSuccessor(values: (number|null)[], target: number): number|null",
+        "starter": "export function inorderSuccessor(values, target) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 1, 3], 1],
+            "expected": 2
+          },
+          {
+            "args": [[2, 1, 3], 3],
+            "expected": null
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "inorderSuccessor",
+        "signature": "inorderSuccessor(values: (number|null)[], target: number): number|null",
+        "starter": "export function inorderSuccessor(values: (number|null)[], target: number): number|null {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 1, 3], 1],
+            "expected": 2
+          },
+          {
+            "args": [[2, 1, 3], 3],
+            "expected": null
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[7], 7],
+      "expected": null
+    },
+    {
+      "args": [[4, 2, 6, 1, 3, 5, 7], 4],
+      "expected": 5
+    },
+    {
+      "args": [[4, 2, 6, 1, 3, 5, 7], 3],
+      "expected": 4
+    },
+    {
+      "args": [[0, -2, 2], -2],
+      "expected": 0
+    },
+    {
+      "args": [[1, null, 2, null, 3], 2],
+      "expected": 3
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "                                      \nfunction tree(a                )        { if(!a.length||a[0]===null)return null; const root  ={v:a[0],l:null,r:null};const q    =[root];let j=1;for(let i=0;i<q.length&&j<a.length;i++){for(const side of ['l','r']         ){const v=a[j++];if(v!==null&&v!==undefined){const n  ={v,l:null,r:null};q[i][side]=n;q.push(n);}}}return root;}\nexport function inorderSuccessor(values                 , target        )              {\nlet n=tree(values),best            =null;while(n){if(n.v>target){best=n.v;n=n.l;}else n=n.r;}return best;\n}\n",
+    "typescript": "type N = {v:number,l:N|null,r:N|null};\nfunction tree(a:(number|null)[]):N|null { if(!a.length||a[0]===null)return null; const root:N={v:a[0],l:null,r:null};const q:N[]=[root];let j=1;for(let i=0;i<q.length&&j<a.length;i++){for(const side of ['l','r'] as const){const v=a[j++];if(v!==null&&v!==undefined){const n:N={v,l:null,r:null};q[i][side]=n;q.push(n);}}}return root;}\nexport function inorderSuccessor(values: (number|null)[], target: number): number|null {\nlet n=tree(values),best:number|null=null;while(n){if(n.v>target){best=n.v;n=n.l;}else n=n.r;}return best;\n}\n"
+  },
+  "explanation": "When a node exceeds target, retain it and search left for a smaller successor; otherwise search right. O(height) time."
+}

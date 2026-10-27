@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "trapping-rain-water",
+    "slug": "trapping-rain-water",
+    "version": "1.0.0",
+    "title": "Trapping Rain Water",
+    "description": "Unit-width bars have nonnegative integer heights. Return the total water trapped after rain. There are 0 to 1000 bars with heights at most 10000.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "two-pointers"],
+    "hints": ["Water is bounded by the smaller of the best walls on each side."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "trappingRainWater",
+        "signature": "trappingRainWater(heights: number[]): number",
+        "starter": "export function trappingRainWater(heights          )         {\n  throw new Error(\"Implement trappingRainWater\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[3, 0, 2, 0, 4]],
+            "expected": 7
+          },
+          {
+            "args": [[1, 2, 3]],
+            "expected": 0
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "trappingRainWater",
+        "signature": "trappingRainWater(heights: number[]): number",
+        "starter": "export function trappingRainWater(heights: number[]): number {\n  throw new Error(\"Implement trappingRainWater\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[3, 0, 2, 0, 4]],
+            "expected": 7
+          },
+          {
+            "args": [[1, 2, 3]],
+            "expected": 0
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": 0
+    },
+    {
+      "args": [[4]],
+      "expected": 0
+    },
+    {
+      "args": [[3, 0, 3]],
+      "expected": 3
+    },
+    {
+      "args": [[0, 2, 0, 2, 0]],
+      "expected": 2
+    },
+    {
+      "args": [[5, 1, 2, 1, 5]],
+      "expected": 11
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function trappingRainWater(heights          )         {\nlet l=0,r=heights.length-1,left=0,right=0,total=0;while(l<=r){if(left<=right){left=Math.max(left,heights[l]);total+=left-heights[l++];}else{right=Math.max(right,heights[r]);total+=right-heights[r--];}}return total;\n}\n",
+    "typescript": "export function trappingRainWater(heights: number[]): number {\nlet l=0,r=heights.length-1,left=0,right=0,total=0;while(l<=r){if(left<=right){left=Math.max(left,heights[l]);total+=left-heights[l++];}else{right=Math.max(right,heights[r]);total+=right-heights[r--];}}return total;\n}\n"
+  },
+  "explanation": "Process the side with the smaller known wall; its water amount is already determined. O(n) time and O(1) extra space."
+}

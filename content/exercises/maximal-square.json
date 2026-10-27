@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "maximal-square",
+    "slug": "maximal-square",
+    "version": "1.0.0",
+    "title": "Maximal Square",
+    "description": "Return the area of the largest all-one square in a rectangular binary matrix. Empty matrices and zero-width rows return zero. Dimensions are at most 100 by 100.",
+    "difficulty": "medium",
+    "concepts": ["dynamic-programming", "matrices"],
+    "hints": ["Store the square side ending at each cell."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "maximalSquare",
+        "signature": "maximalSquare(matrix: number[][]): number",
+        "starter": "export function maximalSquare(matrix            )         {\n  throw new Error(\"Implement maximalSquare\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 1], [1, 1]]],
+            "expected": 4
+          },
+          {
+            "args": [[[1, 0, 1], [1, 1, 1]]],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "maximalSquare",
+        "signature": "maximalSquare(matrix: number[][]): number",
+        "starter": "export function maximalSquare(matrix: number[][]): number {\n  throw new Error(\"Implement maximalSquare\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 1], [1, 1]]],
+            "expected": 4
+          },
+          {
+            "args": [[[1, 0, 1], [1, 1, 1]]],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": 0
+    },
+    {
+      "args": [[[]]],
+      "expected": 0
+    },
+    {
+      "args": [[[0, 0], [0, 0]]],
+      "expected": 0
+    },
+    {
+      "args": [[[1, 1, 1], [1, 1, 1], [1, 1, 1]]],
+      "expected": 9
+    },
+    {
+      "args": [[[1], [1], [1]]],
+      "expected": 1
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function maximalSquare(matrix            )         {\nif(!matrix.length)return 0;const d=Array(matrix[0].length+1).fill(0);let best=0;for(const row of matrix){let diagonal=0;for(let j=1;j<=row.length;j++){const old=d[j];d[j]=row[j-1]===1?1+Math.min(d[j],d[j-1],diagonal):0;best=Math.max(best,d[j]);diagonal=old;}}return best*best;\n}\n",
+    "typescript": "export function maximalSquare(matrix: number[][]): number {\nif(!matrix.length)return 0;const d=Array(matrix[0].length+1).fill(0);let best=0;for(const row of matrix){let diagonal=0;for(let j=1;j<=row.length;j++){const old=d[j];d[j]=row[j-1]===1?1+Math.min(d[j],d[j-1],diagonal):0;best=Math.max(best,d[j]);diagonal=old;}}return best*best;\n}\n"
+  },
+  "explanation": "A one cell extends a square by one plus the minimum of top, left and diagonal side lengths. Track the greatest side, then square it. O(rows times columns) time and O(columns) space."
+}

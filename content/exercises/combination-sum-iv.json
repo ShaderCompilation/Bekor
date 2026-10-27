@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "combination-sum-iv",
+    "slug": "combination-sum-iv",
+    "version": "1.0.0",
+    "title": "Combination Sum IV",
+    "description": "Return the number of ordered sequences of elements from values whose sum is target. Reuse is allowed and order matters. Values are distinct positive integers from 1 to 100; there are 0 to 20 values. target is 0 to 30. The empty sequence is the single way to make zero.",
+    "difficulty": "medium",
+    "concepts": ["dynamic-programming"],
+    "hints": ["Choose the final element of each ordered sequence."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "combinationSumIv",
+        "signature": "combinationSumIv(values: number[], target: number): number",
+        "starter": "export function combinationSumIv(values          , target        )         {\n  throw new Error(\"Implement combinationSumIv\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2], 3],
+            "expected": 3
+          },
+          {
+            "args": [[2, 3], 4],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "combinationSumIv",
+        "signature": "combinationSumIv(values: number[], target: number): number",
+        "starter": "export function combinationSumIv(values: number[], target: number): number {\n  throw new Error(\"Implement combinationSumIv\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2], 3],
+            "expected": 3
+          },
+          {
+            "args": [[2, 3], 4],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 0],
+      "expected": 1
+    },
+    {
+      "args": [[], 4],
+      "expected": 0
+    },
+    {
+      "args": [[2], 3],
+      "expected": 0
+    },
+    {
+      "args": [[1, 2, 3], 4],
+      "expected": 7
+    },
+    {
+      "args": [[5], 0],
+      "expected": 1
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function combinationSumIv(values          , target        )         {\nconst dp=Array(target+1).fill(0);dp[0]=1;for(let t=1;t<=target;t++)for(const x of values)if(x<=t)dp[t]+=dp[t-x];return dp[target];\n}\n",
+    "typescript": "export function combinationSumIv(values: number[], target: number): number {\nconst dp=Array(target+1).fill(0);dp[0]=1;for(let t=1;t<=target;t++)for(const x of values)if(x<=t)dp[t]+=dp[t-x];return dp[target];\n}\n"
+  },
+  "explanation": "For each total, sum the counts for totals obtained by removing one possible last value. O(target times values) time and O(target) space."
+}

@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "shortest-path-to-get-food",
+    "slug": "shortest-path-to-get-food",
+    "version": "1.0.0",
+    "title": "Shortest Path to Get Food",
+    "description": "Find the shortest number of horizontal or vertical steps from the single \"*\" start cell to any \"#\" food cell. \"O\" cells are walkable; \"X\" cells are blocked. Return -1 if no food is reachable. The grid is rectangular with 1 to 30 rows and columns, exactly one start, and zero or more food cells.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Breadth-first search reaches cells in increasing distance."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "getFood",
+        "signature": "getFood(grid: string[][]): number",
+        "starter": "export function getFood(grid) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[["*", "O", "#"]]],
+            "expected": 2
+          },
+          {
+            "args": [[["*", "X", "#"]]],
+            "expected": -1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "getFood",
+        "signature": "getFood(grid: string[][]): number",
+        "starter": "export function getFood(grid: string[][]): number {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[["*", "O", "#"]]],
+            "expected": 2
+          },
+          {
+            "args": [[["*", "X", "#"]]],
+            "expected": -1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[["*"]]],
+      "expected": -1
+    },
+    {
+      "args": [[["*", "#"]]],
+      "expected": 1
+    },
+    {
+      "args": [[["*", "O"], ["O", "#"]]],
+      "expected": 2
+    },
+    {
+      "args": [[["*", "X"], ["X", "#"]]],
+      "expected": -1
+    },
+    {
+      "args": [[["#", "O", "*", "O", "#"]]],
+      "expected": 2
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function getFood(grid            )         {\nconst rows=grid.length,cols=grid[0].length,q           =[],seen=new Set        ();for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)if(grid[r][c]===\"*\"){q.push([r,c,0]);seen.add(r+\",\"+c);}for(let i=0;i<q.length;i++){const [r,c,d]=q[i];if(grid[r][c]===\"#\")return d;for(const [nr,nc] of [[r-1,c],[r+1,c],[r,c-1],[r,c+1]]){const key=nr+\",\"+nc;if(nr>=0&&nc>=0&&nr<rows&&nc<cols&&grid[nr][nc]!==\"X\"&&!seen.has(key)){seen.add(key);q.push([nr,nc,d+1]);}}}return -1;\n}\n",
+    "typescript": "export function getFood(grid: string[][]): number {\nconst rows=grid.length,cols=grid[0].length,q:number[][]=[],seen=new Set<string>();for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)if(grid[r][c]===\"*\"){q.push([r,c,0]);seen.add(r+\",\"+c);}for(let i=0;i<q.length;i++){const [r,c,d]=q[i];if(grid[r][c]===\"#\")return d;for(const [nr,nc] of [[r-1,c],[r+1,c],[r,c-1],[r,c+1]]){const key=nr+\",\"+nc;if(nr>=0&&nc>=0&&nr<rows&&nc<cols&&grid[nr][nc]!==\"X\"&&!seen.has(key)){seen.add(key);q.push([nr,nc,d+1]);}}}return -1;\n}\n"
+  },
+  "explanation": "Enqueue the start with distance zero. The first dequeued food cell is nearest. O(rows times columns) time and space."
+}

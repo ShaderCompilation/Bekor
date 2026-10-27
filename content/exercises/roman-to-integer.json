@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "roman-to-integer",
+    "slug": "roman-to-integer",
+    "version": "1.0.0",
+    "title": "Roman to Integer",
+    "description": "roman is a valid canonical uppercase Roman numeral representing 1 to 3999, using I,V,X,L,C,D,M. Return its integer value. Subtractive pairs are IV, IX, XL, XC, CD, CM. Inputs are guaranteed valid; numeral validation is not required.",
+    "difficulty": "easy",
+    "concepts": ["strings", "parsing"],
+    "hints": [
+      "A smaller symbol before a larger one is subtracted.",
+      "Otherwise add the symbol value."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "romanToInt",
+        "signature": "romanToInt(roman: string): number",
+        "starter": "export function romanToInt(roman) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": ["XIV"],
+            "expected": 14
+          },
+          {
+            "args": ["DCC"],
+            "expected": 700
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "romanToInt",
+        "signature": "romanToInt(roman: string): number",
+        "starter": "export function romanToInt(roman: string): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": ["XIV"],
+            "expected": 14
+          },
+          {
+            "args": ["DCC"],
+            "expected": 700
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["I"],
+      "expected": 1
+    },
+    {
+      "args": ["IX"],
+      "expected": 9
+    },
+    {
+      "args": ["XLIX"],
+      "expected": 49
+    },
+    {
+      "args": ["MCMXCIV"],
+      "expected": 1994
+    },
+    {
+      "args": ["MMMCMXCIX"],
+      "expected": 3999
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function romanToInt(roman        )         {\n  const value                         = {I:1,V:5,X:10,L:50,C:100,D:500,M:1000}; let total = 0; for (let i = 0; i < roman.length; i++) { const current = value[roman[i]], next = value[roman[i+1]] ?? 0; total += current < next ? -current : current; } return total;\n}\n",
+    "typescript": "export function romanToInt(roman: string): number {\n  const value: Record<string, number> = {I:1,V:5,X:10,L:50,C:100,D:500,M:1000}; let total = 0; for (let i = 0; i < roman.length; i++) { const current = value[roman[i]], next = value[roman[i+1]] ?? 0; total += current < next ? -current : current; } return total;\n}\n"
+  },
+  "explanation": "Scan symbols, subtracting exactly when the next symbol has larger value. O(n) time and O(1) lookup space."
+}

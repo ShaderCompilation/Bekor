@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "find-all-anagrams-in-string",
+    "slug": "find-all-anagrams-in-string",
+    "version": "1.0.0",
+    "title": "Find All Anagrams in a String",
+    "description": "Return ascending start indices where a substring of text is a permutation of pattern. Both strings contain lowercase ASCII letters, text has at most 1000 characters, and pattern has 1 to 100 characters.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Maintain letter counts in a fixed-size sliding window."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "findAnagrams",
+        "signature": "findAnagrams(text: string, pattern: string): number[]",
+        "starter": "export function findAnagrams(text, pattern) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["cbaebabacd", "abc"],
+            "expected": [0, 6]
+          },
+          {
+            "args": ["abab", "ab"],
+            "expected": [0, 1, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "findAnagrams",
+        "signature": "findAnagrams(text: string, pattern: string): number[]",
+        "starter": "export function findAnagrams(text: string, pattern: string): number[] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["cbaebabacd", "abc"],
+            "expected": [0, 6]
+          },
+          {
+            "args": ["abab", "ab"],
+            "expected": [0, 1, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["", "a"],
+      "expected": []
+    },
+    {
+      "args": ["a", "aa"],
+      "expected": []
+    },
+    {
+      "args": ["aaaa", "aa"],
+      "expected": [0, 1, 2]
+    },
+    {
+      "args": ["abcd", "x"],
+      "expected": []
+    },
+    {
+      "args": ["baa", "aa"],
+      "expected": [1]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function findAnagrams(text        , pattern        )           {\nconst need         =Array(26).fill(0),have         =Array(26).fill(0),out         =[];for(const c of pattern)need[c.charCodeAt(0)-97]++;for(let i=0;i<text.length;i++){have[text.charCodeAt(i)-97]++;if(i>=pattern.length)have[text.charCodeAt(i-pattern.length)-97]--;if(i>=pattern.length-1&&have.every((n,j)=>n===need[j]))out.push(i-pattern.length+1);}return out;\n}\n",
+    "typescript": "export function findAnagrams(text: string, pattern: string): number[] {\nconst need:number[]=Array(26).fill(0),have:number[]=Array(26).fill(0),out:number[]=[];for(const c of pattern)need[c.charCodeAt(0)-97]++;for(let i=0;i<text.length;i++){have[text.charCodeAt(i)-97]++;if(i>=pattern.length)have[text.charCodeAt(i-pattern.length)-97]--;if(i>=pattern.length-1&&have.every((n,j)=>n===need[j]))out.push(i-pattern.length+1);}return out;\n}\n"
+  },
+  "explanation": "Add the next letter and remove the expired letter. Equal 26-element count vectors identify anagrams. O(text length) time."
+}

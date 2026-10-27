@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "employee-free-time",
+    "slug": "employee-free-time",
+    "version": "1.0.0",
+    "title": "Employee Free Time",
+    "description": "Each employee has nonoverlapping sorted busy intervals [start,end], with integer start strictly less than end. Return all positive-length finite intervals when every employee is free, sorted by start. Ignore unbounded time before the first or after the last busy interval; touching busy intervals leave no gap. There are 0 to 100 employees with at most 500 total intervals; endpoints from 0 to 1000000. With no busy interval return [].",
+    "difficulty": "hard",
+    "concepts": ["intervals", "sorting"],
+    "hints": ["Find gaps in the union of all busy intervals."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "employeeFreeTime",
+        "signature": "employeeFreeTime(schedules: number[][][]): number[][]",
+        "starter": "export function employeeFreeTime(schedules              )             {\n  throw new Error(\"Implement employeeFreeTime\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[[1, 3], [6, 8]], [[2, 4], [9, 10]]]],
+            "expected": [[4, 6], [8, 9]]
+          },
+          {
+            "args": [[[[1, 2]], [[2, 4]]]],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "employeeFreeTime",
+        "signature": "employeeFreeTime(schedules: number[][][]): number[][]",
+        "starter": "export function employeeFreeTime(schedules: number[][][]): number[][] {\n  throw new Error(\"Implement employeeFreeTime\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[[1, 3], [6, 8]], [[2, 4], [9, 10]]]],
+            "expected": [[4, 6], [8, 9]]
+          },
+          {
+            "args": [[[[1, 2]], [[2, 4]]]],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[[], []]],
+      "expected": []
+    },
+    {
+      "args": [[[[1, 10]], [[2, 3], [4, 5]]]],
+      "expected": []
+    },
+    {
+      "args": [[[[1, 2], [5, 7]]]],
+      "expected": [[2, 5]]
+    },
+    {
+      "args": [[[[5, 6]], [[1, 2]]]],
+      "expected": [[2, 5]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function employeeFreeTime(schedules              )             {\nconst a=schedules.flat().map(x=>[...x]).sort((x,y)=>x[0]-y[0]);if(!a.length)return [];let end=a[0][1];const out           =[];for(let i=1;i<a.length;i++){if(a[i][0]>end)out.push([end,a[i][0]]);end=Math.max(end,a[i][1]);}return out;\n}\n",
+    "typescript": "export function employeeFreeTime(schedules: number[][][]): number[][] {\nconst a=schedules.flat().map(x=>[...x]).sort((x,y)=>x[0]-y[0]);if(!a.length)return [];let end=a[0][1];const out:number[][]=[];for(let i=1;i<a.length;i++){if(a[i][0]>end)out.push([end,a[i][0]]);end=Math.max(end,a[i][1]);}return out;\n}\n"
+  },
+  "explanation": "A sorted sweep merges busy intervals and emits a gap whenever the next start is beyond the current merged end. O(n log n) time."
+}

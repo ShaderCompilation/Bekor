@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "rotate-list",
+    "slug": "rotate-list",
+    "version": "1.0.0",
+    "title": "Rotate List",
+    "description": "The array encodes linked-list values from head to tail. Return the list after moving the last element to the front k times. This value-only adaptation does not require node identity or in-place mutation. Length is 0 to 1000; k is 0 to 1000000; values are integers between -1000 and 1000.",
+    "difficulty": "medium",
+    "concepts": ["linked-lists"],
+    "hints": ["Only k modulo the length changes the result."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "rotateList",
+        "signature": "rotateList(values: number[], k: number): number[]",
+        "starter": "export function rotateList(values          , k        )           {\n  throw new Error(\"Implement rotateList\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, 4], 1],
+            "expected": [4, 1, 2, 3]
+          },
+          {
+            "args": [[1, 2, 3], 4],
+            "expected": [3, 1, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "rotateList",
+        "signature": "rotateList(values: number[], k: number): number[]",
+        "starter": "export function rotateList(values: number[], k: number): number[] {\n  throw new Error(\"Implement rotateList\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, 4], 1],
+            "expected": [4, 1, 2, 3]
+          },
+          {
+            "args": [[1, 2, 3], 4],
+            "expected": [3, 1, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 8],
+      "expected": []
+    },
+    {
+      "args": [[4], 20],
+      "expected": [4]
+    },
+    {
+      "args": [[1, 2], 0],
+      "expected": [1, 2]
+    },
+    {
+      "args": [[1, 2, 3], 3],
+      "expected": [1, 2, 3]
+    },
+    {
+      "args": [[1, 2, 3, 4, 5], 2],
+      "expected": [4, 5, 1, 2, 3]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function rotateList(values          , k        )           {\nif(!values.length)return [];const shift=k%values.length;return [...values.slice(values.length-shift),...values.slice(0,values.length-shift)];\n}\n",
+    "typescript": "export function rotateList(values: number[], k: number): number[] {\nif(!values.length)return [];const shift=k%values.length;return [...values.slice(values.length-shift),...values.slice(0,values.length-shift)];\n}\n"
+  },
+  "explanation": "Split before the last k modulo n elements and place that suffix first. O(n) time and output space."
+}

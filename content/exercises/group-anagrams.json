@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "group-anagrams",
+    "slug": "group-anagrams",
+    "version": "1.0.0",
+    "title": "Group Anagrams",
+    "description": "Group words that have identical letter counts. Each word has 0 to 30 lowercase ASCII letters; there are 0 to 200 words, including duplicates. Sort words within each group lexicographically. Sort groups lexicographically by their word sequences; a shorter identical prefix sorts first.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Sorted letters form a canonical key for each group."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "groupAnagrams",
+        "signature": "groupAnagrams(words: string[]): string[][]",
+        "starter": "export function groupAnagrams(words) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [["eat", "tea", "tan", "ate", "nat"]],
+            "expected": [["ate", "eat", "tea"], ["nat", "tan"]]
+          },
+          {
+            "args": [["", ""]],
+            "expected": [["", ""]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "groupAnagrams",
+        "signature": "groupAnagrams(words: string[]): string[][]",
+        "starter": "export function groupAnagrams(words: string[]): string[][] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [["eat", "tea", "tan", "ate", "nat"]],
+            "expected": [["ate", "eat", "tea"], ["nat", "tan"]]
+          },
+          {
+            "args": [["", ""]],
+            "expected": [["", ""]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [["a"]],
+      "expected": [["a"]]
+    },
+    {
+      "args": [["ab", "ba", "ab"]],
+      "expected": [["ab", "ab", "ba"]]
+    },
+    {
+      "args": [["b", "a"]],
+      "expected": [["a"], ["b"]]
+    },
+    {
+      "args": [["abc", "ab", "bc"]],
+      "expected": [["ab"], ["abc"], ["bc"]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function groupAnagrams(words          )             {\nconst groups=new Map                 ();for(const w of words){const key=[...w].sort().join(\"\");if(!groups.has(key))groups.set(key,[]);groups.get(key) .push(w);}return [...groups.values()].map(g=>g.sort()).sort((a,b)=>{for(let i=0;i<Math.min(a.length,b.length);i++)if(a[i]!==b[i])return a[i]<b[i]?-1:1;return a.length-b.length;});\n}\n",
+    "typescript": "export function groupAnagrams(words: string[]): string[][] {\nconst groups=new Map<string,string[]>();for(const w of words){const key=[...w].sort().join(\"\");if(!groups.has(key))groups.set(key,[]);groups.get(key)!.push(w);}return [...groups.values()].map(g=>g.sort()).sort((a,b)=>{for(let i=0;i<Math.min(a.length,b.length);i++)if(a[i]!==b[i])return a[i]<b[i]?-1:1;return a.length-b.length;});\n}\n"
+  },
+  "explanation": "Collect words under sorted-character keys and sort groups explicitly for deterministic output. Time depends on sorting each word and the final groups."
+}

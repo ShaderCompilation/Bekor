@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "longest-palindromic-substring",
+    "slug": "longest-palindromic-substring",
+    "version": "1.0.0",
+    "title": "Longest Palindromic Substring",
+    "description": "Return the longest contiguous palindromic substring of text. Break ties by the smallest starting index. Text contains 0 to 500 ASCII letters or digits. The empty string returns an empty string.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Expand around both odd and even palindrome centers."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "longestPalindromeSubstring",
+        "signature": "longestPalindromeSubstring(text: string): string",
+        "starter": "export function longestPalindromeSubstring(text) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["abac"],
+            "expected": "aba"
+          },
+          {
+            "args": ["cbbd"],
+            "expected": "bb"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "longestPalindromeSubstring",
+        "signature": "longestPalindromeSubstring(text: string): string",
+        "starter": "export function longestPalindromeSubstring(text: string): string {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["abac"],
+            "expected": "aba"
+          },
+          {
+            "args": ["cbbd"],
+            "expected": "bb"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [""],
+      "expected": ""
+    },
+    {
+      "args": ["a"],
+      "expected": "a"
+    },
+    {
+      "args": ["abc"],
+      "expected": "a"
+    },
+    {
+      "args": ["aaaa"],
+      "expected": "aaaa"
+    },
+    {
+      "args": ["noonabbad"],
+      "expected": "noon"
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function longestPalindromeSubstring(text        )         {\nlet start=0,best=0;for(let c=0;c<text.length;c++)for(const offset of [0,1]){let l=c,r=c+offset;while(l>=0&&r<text.length&&text[l]===text[r]){if(r-l+1>best){start=l;best=r-l+1;}l--;r++;}}return text.slice(start,start+best);\n}\n",
+    "typescript": "export function longestPalindromeSubstring(text: string): string {\nlet start=0,best=0;for(let c=0;c<text.length;c++)for(const offset of [0,1]){let l=c,r=c+offset;while(l>=0&&r<text.length&&text[l]===text[r]){if(r-l+1>best){start=l;best=r-l+1;}l--;r++;}}return text.slice(start,start+best);\n}\n"
+  },
+  "explanation": "Expansion finds the longest palindrome for every center. Scan centers from left to right and replace only on strict improvement to preserve the earliest tie. O(n squared) time."
+}

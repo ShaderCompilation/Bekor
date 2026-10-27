@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "sliding-window-maximum",
+    "slug": "sliding-window-maximum",
+    "version": "1.0.0",
+    "title": "Sliding Window Maximum",
+    "description": "Return the maximum in every consecutive window of exactly k values, from left to right. values contains 1 to 1000 integers between -10000 and 10000; k is between 1 and values.length.",
+    "difficulty": "hard",
+    "concepts": ["arrays", "monotone-deque"],
+    "hints": ["Keep candidate indices in decreasing value order."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "slidingWindowMaximum",
+        "signature": "slidingWindowMaximum(values: number[], k: number): number[]",
+        "starter": "export function slidingWindowMaximum(values          , k        )           {\n  throw new Error(\"Implement slidingWindowMaximum\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 3, -1, -3, 5, 3, 6, 7], 3],
+            "expected": [3, 3, 5, 5, 6, 7]
+          },
+          {
+            "args": [[4, 2], 1],
+            "expected": [4, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "slidingWindowMaximum",
+        "signature": "slidingWindowMaximum(values: number[], k: number): number[]",
+        "starter": "export function slidingWindowMaximum(values: number[], k: number): number[] {\n  throw new Error(\"Implement slidingWindowMaximum\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 3, -1, -3, 5, 3, 6, 7], 3],
+            "expected": [3, 3, 5, 5, 6, 7]
+          },
+          {
+            "args": [[4, 2], 1],
+            "expected": [4, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[7], 1],
+      "expected": [7]
+    },
+    {
+      "args": [[1, 2, 3], 3],
+      "expected": [3]
+    },
+    {
+      "args": [[-3, -1, -2], 2],
+      "expected": [-1, -1]
+    },
+    {
+      "args": [[2, 2, 2], 2],
+      "expected": [2, 2]
+    },
+    {
+      "args": [[5, 4, 3, 2], 2],
+      "expected": [5, 4, 3]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function slidingWindowMaximum(values          , k        )           {\nconst q         =[],out         =[];let head=0;for(let i=0;i<values.length;i++){while(q.length>head&&q[head]<=i-k)head++;while(q.length>head&&values[q[q.length-1]]<=values[i])q.pop();q.push(i);if(i>=k-1)out.push(values[q[head]]);}return out;\n}\n",
+    "typescript": "export function slidingWindowMaximum(values: number[], k: number): number[] {\nconst q:number[]=[],out:number[]=[];let head=0;for(let i=0;i<values.length;i++){while(q.length>head&&q[head]<=i-k)head++;while(q.length>head&&values[q[q.length-1]]<=values[i])q.pop();q.push(i);if(i>=k-1)out.push(values[q[head]]);}return out;\n}\n"
+  },
+  "explanation": "A monotone deque removes expired indices and values dominated by a newer element. Every index enters and leaves once. O(n) time and O(k) active space."
+}

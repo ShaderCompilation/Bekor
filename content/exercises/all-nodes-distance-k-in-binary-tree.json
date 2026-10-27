@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "all-nodes-distance-k-in-binary-tree",
+    "slug": "all-nodes-distance-k-in-binary-tree",
+    "version": "1.0.0",
+    "title": "All Nodes Distance K in Binary Tree",
+    "description": "Trees use compact breadth-first arrays: the root comes first, then the left and right children of each non-null node in queue order; null means absent and trailing nulls may be omitted. Empty arrays mean no root. Node values are unique; target names an existing node. Return the values of nodes exactly k edges from target, sorted numerically ascending. There are 1 to 500 nodes with values from -10000 to 10000, and k is 0 to 500.",
+    "difficulty": "medium",
+    "concepts": ["trees", "breadth-first-search"],
+    "hints": ["Add parent edges to turn the tree into an undirected graph."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "allNodesDistanceKInBinaryTree",
+        "signature": "allNodesDistanceKInBinaryTree(values: (number|null)[], target: number, k: number): number[]",
+        "starter": "export function allNodesDistanceKInBinaryTree(values                 , target        , k        )           {\n  throw new Error(\"Implement allNodesDistanceKInBinaryTree\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, 4, 5], 2, 1],
+            "expected": [1, 4, 5]
+          },
+          {
+            "args": [[1, 2, 3, 4, 5], 2, 2],
+            "expected": [3]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "allNodesDistanceKInBinaryTree",
+        "signature": "allNodesDistanceKInBinaryTree(values: (number|null)[], target: number, k: number): number[]",
+        "starter": "export function allNodesDistanceKInBinaryTree(values: (number|null)[], target: number, k: number): number[] {\n  throw new Error(\"Implement allNodesDistanceKInBinaryTree\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, 4, 5], 2, 1],
+            "expected": [1, 4, 5]
+          },
+          {
+            "args": [[1, 2, 3, 4, 5], 2, 2],
+            "expected": [3]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[7], 7, 0],
+      "expected": [7]
+    },
+    {
+      "args": [[7], 7, 1],
+      "expected": []
+    },
+    {
+      "args": [[1, null, 2, null, 3], 3, 2],
+      "expected": [1]
+    },
+    {
+      "args": [[1, 2, 3], 1, 1],
+      "expected": [2, 3]
+    },
+    {
+      "args": [[1, 2, 3], 2, 5],
+      "expected": []
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function allNodesDistanceKInBinaryTree(values                 , target        , k        )           {\n                                       function build(a                )        {if(!a.length||a[0]===null)return null;const root  ={v:a[0],l:null,r:null},q    =[root];let i=1;for(let j=0;j<q.length&&i<a.length;j++){for(const key of ['l','r']         ){const v=a[i++];if(v!==null&&v!==undefined){const n  ={v,l:null,r:null};q[j][key]=n;q.push(n);}}}return root;}const root=build(values),adj=new Map                 ();function visit(n       ,p       )     {if(!n)return;adj.set(n.v,p?[p.v]:[]);if(n.l)adj.get(n.v) .push(n.l.v);if(n.r)adj.get(n.v) .push(n.r.v);visit(n.l,n);visit(n.r,n);}visit(root,null);let q=[target];const seen=new Set(q);for(let d=0;d<k;d++){const next         =[];for(const v of q)for(const w of adj.get(v)??[])if(!seen.has(w)){seen.add(w);next.push(w);}q=next;}return q.sort((a,b)=>a-b);\n}\n",
+    "typescript": "export function allNodesDistanceKInBinaryTree(values: (number|null)[], target: number, k: number): number[] {\ntype N = {v:number,l:N|null,r:N|null}; function build(a:(number|null)[]):N|null {if(!a.length||a[0]===null)return null;const root:N={v:a[0],l:null,r:null},q:N[]=[root];let i=1;for(let j=0;j<q.length&&i<a.length;j++){for(const key of ['l','r'] as const){const v=a[i++];if(v!==null&&v!==undefined){const n:N={v,l:null,r:null};q[j][key]=n;q.push(n);}}}return root;}const root=build(values),adj=new Map<number,number[]>();function visit(n:N|null,p:N|null):void{if(!n)return;adj.set(n.v,p?[p.v]:[]);if(n.l)adj.get(n.v)!.push(n.l.v);if(n.r)adj.get(n.v)!.push(n.r.v);visit(n.l,n);visit(n.r,n);}visit(root,null);let q=[target];const seen=new Set(q);for(let d=0;d<k;d++){const next:number[]=[];for(const v of q)for(const w of adj.get(v)??[])if(!seen.has(w)){seen.add(w);next.push(w);}q=next;}return q.sort((a,b)=>a-b);\n}\n"
+  },
+  "explanation": "Breadth-first expansion from target reaches exactly the requested distance. Sort the last frontier. O(n plus output sorting) time and O(n) space."
+}

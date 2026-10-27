@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "zero-one-matrix",
+    "slug": "zero-one-matrix",
+    "version": "1.0.0",
+    "title": "01 Matrix",
+    "description": "Return a same-sized matrix giving the Manhattan distance from each cell to the nearest zero in matrix. matrix is rectangular, has 1 to 30 rows and 1 to 30 columns, contains only 0 and 1, and has at least one zero. Moves connect orthogonally adjacent cells.",
+    "difficulty": "medium",
+    "concepts": ["matrices", "breadth-first-search"],
+    "hints": [
+      "Seed one BFS queue with every zero cell.",
+      "The first visit to a cell gives its shortest distance."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "updateMatrix",
+        "signature": "updateMatrix(matrix: number[][]): number[][]",
+        "starter": "export function updateMatrix(matrix) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[[0, 1, 1], [1, 1, 1]]],
+            "expected": [[0, 1, 2], [1, 2, 3]]
+          },
+          {
+            "args": [[[1, 0, 1]]],
+            "expected": [[1, 0, 1]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "updateMatrix",
+        "signature": "updateMatrix(matrix: number[][]): number[][]",
+        "starter": "export function updateMatrix(matrix: number[][]): number[][] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[[0, 1, 1], [1, 1, 1]]],
+            "expected": [[0, 1, 2], [1, 2, 3]]
+          },
+          {
+            "args": [[[1, 0, 1]]],
+            "expected": [[1, 0, 1]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[[0]]],
+      "expected": [[0]]
+    },
+    {
+      "args": [[[0, 0], [0, 0]]],
+      "expected": [[0, 0], [0, 0]]
+    },
+    {
+      "args": [[[1], [1], [0]]],
+      "expected": [[2], [1], [0]]
+    },
+    {
+      "args": [[[1, 1, 1], [1, 0, 1], [1, 1, 1]]],
+      "expected": [[2, 1, 2], [1, 0, 1], [2, 1, 2]]
+    },
+    {
+      "args": [[[0, 1, 1, 0]]],
+      "expected": [[0, 1, 1, 0]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function updateMatrix(matrix            )             {\n  const rows = matrix.length, cols = matrix[0].length; const distances             = matrix.map(row => row.map(value => value === 0 ? 0 : -1)); const queue             = []; for (let r=0;r<rows;r++) for (let c=0;c<cols;c++) if (matrix[r][c]===0) queue.push([r,c]); for (let i=0;i<queue.length;i++) { const [r,c]=queue[i]; for (const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]) { const nr=r+dr,nc=c+dc; if(nr>=0&&nr<rows&&nc>=0&&nc<cols&&distances[nr][nc]===-1) { distances[nr][nc]=distances[r][c]+1; queue.push([nr,nc]); } } } return distances;\n}\n",
+    "typescript": "export function updateMatrix(matrix: number[][]): number[][] {\n  const rows = matrix.length, cols = matrix[0].length; const distances: number[][] = matrix.map(row => row.map(value => value === 0 ? 0 : -1)); const queue: number[][] = []; for (let r=0;r<rows;r++) for (let c=0;c<cols;c++) if (matrix[r][c]===0) queue.push([r,c]); for (let i=0;i<queue.length;i++) { const [r,c]=queue[i]; for (const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]) { const nr=r+dr,nc=c+dc; if(nr>=0&&nr<rows&&nc>=0&&nc<cols&&distances[nr][nc]===-1) { distances[nr][nc]=distances[r][c]+1; queue.push([nr,nc]); } } } return distances;\n}\n"
+  },
+  "explanation": "Multi-source BFS spreads distance layers from every zero simultaneously. O(rows*columns) time and space."
+}

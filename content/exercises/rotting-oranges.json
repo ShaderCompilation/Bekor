@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "rotting-oranges",
+    "slug": "rotting-oranges",
+    "version": "1.0.0",
+    "title": "Rotting Oranges",
+    "description": "grid is a rectangular matrix with 1 to 30 rows and columns. 0 is empty, 1 is fresh, and 2 is rotten. Every minute all currently rotten oranges simultaneously rot fresh orthogonal neighbors. Return minutes until no fresh orange remains, or -1 if some cannot rot. Return zero if no fresh orange exists initially.",
+    "difficulty": "medium",
+    "concepts": ["matrices", "breadth-first-search"],
+    "hints": [
+      "Start BFS simultaneously from every rotten orange.",
+      "Count fresh cells to detect unreachable leftovers."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "orangesRotting",
+        "signature": "orangesRotting(grid: number[][]): number",
+        "starter": "export function orangesRotting(grid) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[[2, 1, 1]]],
+            "expected": 2
+          },
+          {
+            "args": [[[2, 0, 1]]],
+            "expected": -1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "orangesRotting",
+        "signature": "orangesRotting(grid: number[][]): number",
+        "starter": "export function orangesRotting(grid: number[][]): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[[2, 1, 1]]],
+            "expected": 2
+          },
+          {
+            "args": [[[2, 0, 1]]],
+            "expected": -1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[[0]]],
+      "expected": 0
+    },
+    {
+      "args": [[[2]]],
+      "expected": 0
+    },
+    {
+      "args": [[[1]]],
+      "expected": -1
+    },
+    {
+      "args": [[[2, 1], [1, 1]]],
+      "expected": 2
+    },
+    {
+      "args": [[[2, 1, 1, 1, 2]]],
+      "expected": 2
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function orangesRotting(grid            )         {\n  const cells=grid.map(row=>[...row]),rows=cells.length,cols=cells[0].length; const queue           =[]; let fresh=0,minutes=0; for(let r=0;r<rows;r++)for(let c=0;c<cols;c++) { if(cells[r][c]===1)fresh++; if(cells[r][c]===2)queue.push([r,c,0]); } for(let i=0;i<queue.length;i++) { const [r,c,time]=queue[i]; minutes=Math.max(minutes,time); for(const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]) { const nr=r+dr,nc=c+dc; if(nr>=0&&nr<rows&&nc>=0&&nc<cols&&cells[nr][nc]===1) { cells[nr][nc]=2; fresh--;queue.push([nr,nc,time+1]); } } } return fresh===0?minutes:-1;\n}\n",
+    "typescript": "export function orangesRotting(grid: number[][]): number {\n  const cells=grid.map(row=>[...row]),rows=cells.length,cols=cells[0].length; const queue:number[][]=[]; let fresh=0,minutes=0; for(let r=0;r<rows;r++)for(let c=0;c<cols;c++) { if(cells[r][c]===1)fresh++; if(cells[r][c]===2)queue.push([r,c,0]); } for(let i=0;i<queue.length;i++) { const [r,c,time]=queue[i]; minutes=Math.max(minutes,time); for(const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]) { const nr=r+dr,nc=c+dc; if(nr>=0&&nr<rows&&nc>=0&&nc<cols&&cells[nr][nc]===1) { cells[nr][nc]=2; fresh--;queue.push([nr,nc,time+1]); } } } return fresh===0?minutes:-1;\n}\n"
+  },
+  "explanation": "Multi-source BFS timestamps each newly rotten orange. The last timestamp is the elapsed time if every fresh cell was reached. O(rows*columns) time and space."
+}

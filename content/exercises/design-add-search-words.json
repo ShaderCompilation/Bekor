@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "design-add-search-words",
+    "slug": "design-add-search-words",
+    "version": "1.0.0",
+    "title": "Design Add and Search Words Data Structure",
+    "description": "Simulate a word dictionary. Operations are [\"addWord\", word] returning null, or [\"search\", pattern] returning whether a stored word matches. A dot matches exactly one lowercase ASCII letter; other pattern characters are literal lowercase letters. Words may be empty, at most 30 letters; patterns have at most 30 characters. At most 200 operations.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Search candidates must have the same length as the pattern."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "wordDictionary",
+        "signature": "wordDictionary(operations: string[][]): (boolean|null)[]",
+        "starter": "export function wordDictionary(operations) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[["addWord", "cat"], ["search", "c.t"], ["search", "ca"]]],
+            "expected": [null, true, false]
+          },
+          {
+            "args": [[["search", "a"]]],
+            "expected": [false]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "wordDictionary",
+        "signature": "wordDictionary(operations: string[][]): (boolean|null)[]",
+        "starter": "export function wordDictionary(operations: string[][]): (boolean|null)[] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[["addWord", "cat"], ["search", "c.t"], ["search", "ca"]]],
+            "expected": [null, true, false]
+          },
+          {
+            "args": [[["search", "a"]]],
+            "expected": [false]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[["addWord", ""], ["search", ""]]],
+      "expected": [null, true]
+    },
+    {
+      "args": [[["addWord", "ab"], ["search", ".."], ["search", "..."]]],
+      "expected": [null, true, false]
+    },
+    {
+      "args": [[["addWord", "bad"], ["search", "b.."], ["search", "dad"]]],
+      "expected": [null, true, false]
+    },
+    {
+      "args": [[["addWord", "x"], ["addWord", "x"], ["search", "."]]],
+      "expected": [null, null, true]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function wordDictionary(operations            )                   {\nconst words=new Set        (),out                 =[];for(const [op,s] of operations){if(op===\"addWord\"){words.add(s);out.push(null);}else out.push([...words].some(w=>w.length===s.length&&[...s].every((c,i)=>c===\".\"||c===w[i])));}return out;\n}\n",
+    "typescript": "export function wordDictionary(operations: string[][]): (boolean|null)[] {\nconst words=new Set<string>(),out:(boolean|null)[]=[];for(const [op,s] of operations){if(op===\"addWord\"){words.add(s);out.push(null);}else out.push([...words].some(w=>w.length===s.length&&[...s].every((c,i)=>c===\".\"||c===w[i])));}return out;\n}\n"
+  },
+  "explanation": "Store distinct words and compare each search pattern character by character, treating dots as wildcards. Bounded inputs permit O(operations times words times length) time."
+}

@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "largest-rectangle-in-histogram",
+    "slug": "largest-rectangle-in-histogram",
+    "version": "1.0.0",
+    "title": "Largest Rectangle in Histogram",
+    "description": "Unit-width histogram bars have nonnegative integer heights. Return the largest rectangular area lying under consecutive bars. There are 0 to 1000 bars, each at most 10000.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "monotone-stack"],
+    "hints": ["A monotone stack identifies the first smaller bar on each side."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "largestRectangleInHistogram",
+        "signature": "largestRectangleInHistogram(heights: number[]): number",
+        "starter": "export function largestRectangleInHistogram(heights          )         {\n  throw new Error(\"Implement largestRectangleInHistogram\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 1, 5, 6, 2, 3]],
+            "expected": 10
+          },
+          {
+            "args": [[2, 4]],
+            "expected": 4
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "largestRectangleInHistogram",
+        "signature": "largestRectangleInHistogram(heights: number[]): number",
+        "starter": "export function largestRectangleInHistogram(heights: number[]): number {\n  throw new Error(\"Implement largestRectangleInHistogram\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 1, 5, 6, 2, 3]],
+            "expected": 10
+          },
+          {
+            "args": [[2, 4]],
+            "expected": 4
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": 0
+    },
+    {
+      "args": [[0, 0]],
+      "expected": 0
+    },
+    {
+      "args": [[3, 3, 3]],
+      "expected": 9
+    },
+    {
+      "args": [[4, 3, 2, 1]],
+      "expected": 6
+    },
+    {
+      "args": [[1, 2, 3, 4]],
+      "expected": 6
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function largestRectangleInHistogram(heights          )         {\nconst stack         =[],a=[...heights,0];let best=0;for(let i=0;i<a.length;i++){while(stack.length&&a[stack[stack.length-1]]>a[i]){const height=a[stack.pop() ],left=stack.length?stack[stack.length-1]:-1;best=Math.max(best,height*(i-left-1));}stack.push(i);}return best;\n}\n",
+    "typescript": "export function largestRectangleInHistogram(heights: number[]): number {\nconst stack:number[]=[],a=[...heights,0];let best=0;for(let i=0;i<a.length;i++){while(stack.length&&a[stack[stack.length-1]]>a[i]){const height=a[stack.pop()!],left=stack.length?stack[stack.length-1]:-1;best=Math.max(best,height*(i-left-1));}stack.push(i);}return best;\n}\n"
+  },
+  "explanation": "Popping a taller bar fixes its maximum-width rectangle. A zero sentinel flushes remaining bars. O(n) time and space."
+}

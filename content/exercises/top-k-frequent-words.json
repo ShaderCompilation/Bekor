@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "top-k-frequent-words",
+    "slug": "top-k-frequent-words",
+    "version": "1.0.0",
+    "title": "Top K Frequent Words",
+    "description": "Return the k most frequent distinct words, sorted by descending count and then ascending ASCII lexicographic order for ties. words contains 1 to 500 nonempty lowercase ASCII words of length at most 30. k is 1 through the number of distinct words.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Count first; sort distinct words with an explicit tie rule."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "topKFrequent",
+        "signature": "topKFrequent(words: string[], k: number): string[]",
+        "starter": "export function topKFrequent(words, k) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [["a", "b", "a", "c", "b", "a"], 2],
+            "expected": ["a", "b"]
+          },
+          {
+            "args": [["z", "a", "b"], 2],
+            "expected": ["a", "b"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "topKFrequent",
+        "signature": "topKFrequent(words: string[], k: number): string[]",
+        "starter": "export function topKFrequent(words: string[], k: number): string[] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [["a", "b", "a", "c", "b", "a"], 2],
+            "expected": ["a", "b"]
+          },
+          {
+            "args": [["z", "a", "b"], 2],
+            "expected": ["a", "b"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [["x"], 1],
+      "expected": ["x"]
+    },
+    {
+      "args": [["b", "b", "a", "a"], 1],
+      "expected": ["a"]
+    },
+    {
+      "args": [["c", "b", "a"], 3],
+      "expected": ["a", "b", "c"]
+    },
+    {
+      "args": [["aa", "a", "aa", "a"], 2],
+      "expected": ["a", "aa"]
+    },
+    {
+      "args": [["x", "x", "y"], 2],
+      "expected": ["x", "y"]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function topKFrequent(words          , k        )           {\nconst counts=new Map               ();for(const w of words)counts.set(w,(counts.get(w)??0)+1);return [...counts.keys()].sort((a,b)=>counts.get(b) -counts.get(a) ||(a<b?-1:a>b?1:0)).slice(0,k);\n}\n",
+    "typescript": "export function topKFrequent(words: string[], k: number): string[] {\nconst counts=new Map<string,number>();for(const w of words)counts.set(w,(counts.get(w)??0)+1);return [...counts.keys()].sort((a,b)=>counts.get(b)!-counts.get(a)!||(a<b?-1:a>b?1:0)).slice(0,k);\n}\n"
+  },
+  "explanation": "Frequency descending and ASCII word ascending define a total ordering. Sorting u distinct words uses O(u log u) comparisons."
+}

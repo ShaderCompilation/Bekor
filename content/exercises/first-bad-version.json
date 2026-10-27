@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "first-bad-version",
+    "slug": "first-bad-version",
+    "version": "1.0.0",
+    "title": "First Bad Version",
+    "description": "badFlags is an array of 0 to 1000 booleans, ordered with all false values before all true values. Entry i describes whether version i+1 fails. Treat reading badFlags[index] as the predicate for that version. Return the 1-based index of the first true value, or -1 when no version fails. Use binary search; functional tests check the boundary, not the number of predicate reads.",
+    "difficulty": "easy",
+    "concepts": ["binary-search", "boundaries"],
+    "hints": [
+      "Maintain a half-open interval around the first true position.",
+      "If the boundary equals the array length, no version fails."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "firstBadVersion",
+        "signature": "firstBadVersion(badFlags: boolean[]): number",
+        "starter": "export function firstBadVersion(badFlags) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[false, false, true, true]],
+            "expected": 3
+          },
+          {
+            "args": [[true, true]],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "firstBadVersion",
+        "signature": "firstBadVersion(badFlags: boolean[]): number",
+        "starter": "export function firstBadVersion(badFlags: boolean[]): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[false, false, true, true]],
+            "expected": 3
+          },
+          {
+            "args": [[true, true]],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": -1
+    },
+    {
+      "args": [[false]],
+      "expected": -1
+    },
+    {
+      "args": [[true]],
+      "expected": 1
+    },
+    {
+      "args": [[false, false, false, true]],
+      "expected": 4
+    },
+    {
+      "args": [[false, false, false]],
+      "expected": -1
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function firstBadVersion(badFlags           )         {\n  let low=0,high=badFlags.length; while(low<high) { const middle=low+Math.floor((high-low)/2); if(badFlags[middle])high=middle;else low=middle+1; } return low===badFlags.length?-1:low+1;\n}\n",
+    "typescript": "export function firstBadVersion(badFlags: boolean[]): number {\n  let low=0,high=badFlags.length; while(low<high) { const middle=low+Math.floor((high-low)/2); if(badFlags[middle])high=middle;else low=middle+1; } return low===badFlags.length?-1:low+1;\n}\n"
+  },
+  "explanation": "Binary search maintains the boundary between passing and failing versions. The exclusive upper bound permits the no-failure result. O(log n) predicate reads and O(1) space."
+}

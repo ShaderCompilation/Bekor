@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "time-based-key-value-store",
+    "slug": "time-based-key-value-store",
+    "version": "1.0.0",
+    "title": "Time Based Key-Value Store",
+    "description": "Process a fresh timestamped key-value store. [\"set\",key,value,timestamp] stores a string and returns null. [\"get\",key,timestamp] returns the value at the greatest stored timestamp no larger than the requested one, or \"\" when absent. Set timestamps increase strictly for each key; get timestamps may be arbitrary. Keys and values contain 1 to 20 lowercase letters or digits, timestamps are 1 to 1000000000, and there are 0 to 500 operations. Across all operations, key and value strings contain at most 10000 characters in total. Return one result per operation; there is no constructor operation.",
+    "difficulty": "medium",
+    "concepts": ["binary-search", "maps"],
+    "hints": [
+      "Maintain a sorted timestamp history for each key.",
+      "Binary search for the first entry later than the query."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "timeMapOperations",
+        "signature": "timeMapOperations(operations: (string | number)[][]): (string | null)[]",
+        "starter": "export function timeMapOperations(operations) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[["set", "a", "one", 2], ["get", "a", 3], ["get", "a", 1]]],
+            "expected": [null, "one", ""]
+          },
+          {
+            "args": [[["get", "x", 4]]],
+            "expected": [""]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "timeMapOperations",
+        "signature": "timeMapOperations(operations: (string | number)[][]): (string | null)[]",
+        "starter": "export function timeMapOperations(operations: (string | number)[][]): (string | null)[] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[["set", "a", "one", 2], ["get", "a", 3], ["get", "a", 1]]],
+            "expected": [null, "one", ""]
+          },
+          {
+            "args": [[["get", "x", 4]]],
+            "expected": [""]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[["set", "a", "x", 1], ["set", "a", "y", 4], ["get", "a", 4], ["get", "a", 3]]],
+      "expected": [null, null, "y", "x"]
+    },
+    {
+      "args": [[["set", "a", "x", 2], ["set", "b", "z", 1], ["get", "b", 2], ["get", "a", 2]]],
+      "expected": [null, null, "z", "x"]
+    },
+    {
+      "args": [[["set", "key", "v", 3], ["get", "key", 100]]],
+      "expected": [null, "v"]
+    },
+    {
+      "args": [[["set", "a", "x", 10], ["get", "a", 9], ["get", "a", 10]]],
+      "expected": [null, "", "x"]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function timeMapOperations(operations                       )                    {\n  const store=new Map                                     (),result                =[]; for(const op of operations) { const name=op[0]          ,key=op[1]          ; if(name==='set') { const history=store.get(key)??[];history.push({time:op[3]          ,value:op[2]          });store.set(key,history);result.push(null); } else { const history=store.get(key)??[],time=op[2]          ; let low=0,high=history.length;while(low<high) { const mid=Math.floor((low+high)/2);if(history[mid].time<=time)low=mid+1;else high=mid; } result.push(low===0?'':history[low-1].value); } } return result;\n}\n",
+    "typescript": "export function timeMapOperations(operations: (string | number)[][]): (string | null)[] {\n  const store=new Map<string,{time:number;value:string}[]>(),result:(string|null)[]=[]; for(const op of operations) { const name=op[0] as string,key=op[1] as string; if(name==='set') { const history=store.get(key)??[];history.push({time:op[3] as number,value:op[2] as string});store.set(key,history);result.push(null); } else { const history=store.get(key)??[],time=op[2] as number; let low=0,high=history.length;while(low<high) { const mid=Math.floor((low+high)/2);if(history[mid].time<=time)low=mid+1;else high=mid; } result.push(low===0?'':history[low-1].value); } } return result;\n}\n"
+  },
+  "explanation": "Per-key append-only histories remain sorted. Upper-bound search locates the final timestamp at or before the query. O(1) set, O(log history length) get, O(number of sets) storage."
+}

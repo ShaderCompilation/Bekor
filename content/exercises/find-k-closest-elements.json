@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "find-k-closest-elements",
+    "slug": "find-k-closest-elements",
+    "version": "1.0.0",
+    "title": "Find K Closest Elements",
+    "description": "values is sorted ascending and contains 1 to 1000 integers from -10000 to 10000, possibly repeated. Return k values closest to x, favoring the smaller value on equal distance; sort the result ascending. k is 1 through length; x is an integer from -10000 to 10000.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Rank candidates by distance first and value second."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "findClosestElements",
+        "signature": "findClosestElements(values: number[], k: number, x: number): number[]",
+        "starter": "export function findClosestElements(values, k, x) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, 4, 5], 4, 3],
+            "expected": [1, 2, 3, 4]
+          },
+          {
+            "args": [[1, 2, 3], 2, -5],
+            "expected": [1, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "findClosestElements",
+        "signature": "findClosestElements(values: number[], k: number, x: number): number[]",
+        "starter": "export function findClosestElements(values: number[], k: number, x: number): number[] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, 4, 5], 4, 3],
+            "expected": [1, 2, 3, 4]
+          },
+          {
+            "args": [[1, 2, 3], 2, -5],
+            "expected": [1, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[7], 1, 0],
+      "expected": [7]
+    },
+    {
+      "args": [[1, 2, 3], 2, 9],
+      "expected": [2, 3]
+    },
+    {
+      "args": [[1, 1, 2, 3], 2, 2],
+      "expected": [1, 2]
+    },
+    {
+      "args": [[-2, 0, 2], 2, 0],
+      "expected": [-2, 0]
+    },
+    {
+      "args": [[1, 2, 3], 3, 2],
+      "expected": [1, 2, 3]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function findClosestElements(values          , k        , x        )           {\nreturn [...values].sort((a,b)=>Math.abs(a-x)-Math.abs(b-x)||a-b).slice(0,k).sort((a,b)=>a-b);\n}\n",
+    "typescript": "export function findClosestElements(values: number[], k: number, x: number): number[] {\nreturn [...values].sort((a,b)=>Math.abs(a-x)-Math.abs(b-x)||a-b).slice(0,k).sort((a,b)=>a-b);\n}\n"
+  },
+  "explanation": "Explicitly sorting by the two selection keys then sorting the selected values produces deterministic output. O(n log n) time; binary-search windows are an extension."
+}

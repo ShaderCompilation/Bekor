@@ -1,0 +1,92 @@
+{
+  "public": {
+    "id": "rotate-array",
+    "slug": "rotate-array",
+    "version": "1.0.0",
+    "title": "Rotate Array",
+    "description": "Rotate values right by k positions and return the result. There are 0 to 1000 integer values from -10000 to 10000; k is an integer from 0 to 1000000. Empty input returns []. Mutation is optional.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Reduce k modulo the array length."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "rotateArray",
+        "signature": "rotateArray(values: number[], k: number): number[]",
+        "starter": "export function rotateArray(values, k) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, 4], 1],
+            "expected": [4, 1, 2, 3]
+          },
+          {
+            "args": [[1, 2, 3], 4],
+            "expected": [3, 1, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "rotateArray",
+        "signature": "rotateArray(values: number[], k: number): number[]",
+        "starter": "export function rotateArray(values: number[], k: number): number[] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3, 4], 1],
+            "expected": [4, 1, 2, 3]
+          },
+          {
+            "args": [[1, 2, 3], 4],
+            "expected": [3, 1, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 9],
+      "expected": []
+    },
+    {
+      "args": [[7], 100],
+      "expected": [7]
+    },
+    {
+      "args": [[1, 2], 0],
+      "expected": [1, 2]
+    },
+    {
+      "args": [[1, 2, 3], 3],
+      "expected": [1, 2, 3]
+    },
+    {
+      "args": [[-1, 0, 1, 2], 2],
+      "expected": [1, 2, -1, 0]
+    },
+    {
+      "args": [[1, 2, 3], 8],
+      "expected": [2, 3, 1]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function rotateArray(values          , k        )           {\nif(!values.length)return [];const shift=k%values.length;return values.slice(values.length-shift).concat(values.slice(0,values.length-shift));\n}\n",
+    "typescript": "export function rotateArray(values: number[], k: number): number[] {\nif(!values.length)return [];const shift=k%values.length;return values.slice(values.length-shift).concat(values.slice(0,values.length-shift));\n}\n"
+  },
+  "explanation": "Split at length minus the effective shift and concatenate the suffix before the prefix. O(n) time and output space."
+}

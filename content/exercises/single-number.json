@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "single-number",
+    "slug": "single-number",
+    "version": "1.0.0",
+    "title": "Single Number",
+    "description": "values contains an odd number of integers, from 1 to 3001 entries. Exactly one value appears once and every other distinct value appears exactly twice. Values lie between -1000000 and 1000000. Return the value that appears once.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "bits"],
+    "hints": [
+      "Equal values cancel under bitwise XOR.",
+      "The chosen integer range fits signed 32-bit arithmetic."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "singleNumber",
+        "signature": "singleNumber(values: number[]): number",
+        "starter": "export function singleNumber(values) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[8, 3, 8]],
+            "expected": 3
+          },
+          {
+            "args": [[-4, 7, 7]],
+            "expected": -4
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "singleNumber",
+        "signature": "singleNumber(values: number[]): number",
+        "starter": "export function singleNumber(values: number[]): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[8, 3, 8]],
+            "expected": 3
+          },
+          {
+            "args": [[-4, 7, 7]],
+            "expected": -4
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[0]],
+      "expected": 0
+    },
+    {
+      "args": [[2, 2, 0]],
+      "expected": 0
+    },
+    {
+      "args": [[9, 1, 9, 2, 2]],
+      "expected": 1
+    },
+    {
+      "args": [[-1, -1, -3]],
+      "expected": -3
+    },
+    {
+      "args": [[100, 5, 6, 5, 6]],
+      "expected": 100
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function singleNumber(values          )         {\n  let result = 0; for (const value of values) result ^= value; return result;\n}\n",
+    "typescript": "export function singleNumber(values: number[]): number {\n  let result = 0; for (const value of values) result ^= value; return result;\n}\n"
+  },
+  "explanation": "XOR all entries: paired values cancel and the unique value remains. O(n) time and O(1) space."
+}

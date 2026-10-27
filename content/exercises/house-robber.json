@@ -1,0 +1,90 @@
+{
+  "public": {
+    "id": "house-robber",
+    "slug": "house-robber",
+    "version": "1.0.0",
+    "title": "House Robber",
+    "description": "Choose nonadjacent elements of values to maximize their sum. Return the maximum sum; choosing none is allowed. There are 0 to 1000 integers between 0 and 10000.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": [
+      "At each value choose between skipping it and taking it after the prior nonadjacent prefix."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "rob",
+        "signature": "rob(values: number[]): number",
+        "starter": "export function rob(values) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 1, 1, 2]],
+            "expected": 4
+          },
+          {
+            "args": [[2, 7, 9, 3, 1]],
+            "expected": 12
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "rob",
+        "signature": "rob(values: number[]): number",
+        "starter": "export function rob(values: number[]): number {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 1, 1, 2]],
+            "expected": 4
+          },
+          {
+            "args": [[2, 7, 9, 3, 1]],
+            "expected": 12
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": 0
+    },
+    {
+      "args": [[8]],
+      "expected": 8
+    },
+    {
+      "args": [[0, 0, 0]],
+      "expected": 0
+    },
+    {
+      "args": [[1, 9, 1]],
+      "expected": 9
+    },
+    {
+      "args": [[5, 1, 5, 1, 5]],
+      "expected": 15
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function rob(values          )         {\nlet previous=0,current=0;for(const x of values){const next=Math.max(current,previous+x);previous=current;current=next;}return current;\n}\n",
+    "typescript": "export function rob(values: number[]): number {\nlet previous=0,current=0;for(const x of values){const next=Math.max(current,previous+x);previous=current;current=next;}return current;\n}\n"
+  },
+  "explanation": "Two rolling optimum values represent prefixes ending one and two positions earlier. O(n) time and O(1) auxiliary space."
+}

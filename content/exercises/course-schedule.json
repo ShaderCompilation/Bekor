@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "course-schedule",
+    "slug": "course-schedule",
+    "version": "1.0.0",
+    "title": "Course Schedule",
+    "description": "Courses are numbered 0 through courseCount-1. Each pair [course, prerequisite] means prerequisite must be completed before course. Return whether all courses can be completed, including disconnected courses. courseCount is 0 to 200; there are 0 to 2000 distinct valid pairs. Self-dependencies are allowed and make completion impossible.",
+    "difficulty": "medium",
+    "concepts": ["graphs", "topological-sort"],
+    "hints": [
+      "Courses with no unmet prerequisites can be processed immediately.",
+      "A remaining cycle prevents complete topological processing."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "canFinish",
+        "signature": "canFinish(courseCount: number, prerequisites: number[][]): boolean",
+        "starter": "export function canFinish(courseCount, prerequisites) {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": [3, [[1, 0], [2, 1]]],
+            "expected": true
+          },
+          {
+            "args": [2, [[1, 0], [0, 1]]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "canFinish",
+        "signature": "canFinish(courseCount: number, prerequisites: number[][]): boolean",
+        "starter": "export function canFinish(courseCount: number, prerequisites: number[][]): boolean {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": [3, [[1, 0], [2, 1]]],
+            "expected": true
+          },
+          {
+            "args": [2, [[1, 0], [0, 1]]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [0, []],
+      "expected": true
+    },
+    {
+      "args": [4, []],
+      "expected": true
+    },
+    {
+      "args": [1, [[0, 0]]],
+      "expected": false
+    },
+    {
+      "args": [4, [[1, 0], [3, 2]]],
+      "expected": true
+    },
+    {
+      "args": [5, [[1, 0], [3, 2], [2, 3]]],
+      "expected": false
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function canFinish(courseCount        , prerequisites            )          {\n  const edges            =Array.from({length:courseCount},()=>[]), indegree=Array        (courseCount).fill(0); for(const [course,pre] of prerequisites) { edges[pre].push(course); indegree[course]++; } const queue          =[]; for(let i=0;i<courseCount;i++) if(indegree[i]===0) queue.push(i); for(let i=0;i<queue.length;i++) for(const next of edges[queue[i]]) if(--indegree[next]===0) queue.push(next); return queue.length===courseCount;\n}\n",
+    "typescript": "export function canFinish(courseCount: number, prerequisites: number[][]): boolean {\n  const edges: number[][]=Array.from({length:courseCount},()=>[]), indegree=Array<number>(courseCount).fill(0); for(const [course,pre] of prerequisites) { edges[pre].push(course); indegree[course]++; } const queue: number[]=[]; for(let i=0;i<courseCount;i++) if(indegree[i]===0) queue.push(i); for(let i=0;i<queue.length;i++) for(const next of edges[queue[i]]) if(--indegree[next]===0) queue.push(next); return queue.length===courseCount;\n}\n"
+  },
+  "explanation": "Kahn topological traversal removes prerequisite edges. Every course is processed exactly when the graph is acyclic. O(V+E) time and space."
+}

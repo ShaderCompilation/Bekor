@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "backspace-string-compare",
+    "slug": "backspace-string-compare",
+    "version": "1.0.0",
+    "title": "Backspace String Compare",
+    "description": "Compare two editor histories containing lowercase English letters and #. A # deletes the immediately preceding surviving character, or does nothing when empty. Return whether both final strings match. Histories have length 0 to 10000.",
+    "difficulty": "easy",
+    "concepts": ["strings", "stacks"],
+    "hints": [
+      "A stack models surviving characters.",
+      "Deleting from an empty stack leaves it empty."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "backspaceCompare",
+        "signature": "backspaceCompare(left: string, right: string): boolean",
+        "starter": "export function backspaceCompare(left, right) {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": ["xy#z", "xz"],
+            "expected": true
+          },
+          {
+            "args": ["a#b", "a"],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "backspaceCompare",
+        "signature": "backspaceCompare(left: string, right: string): boolean",
+        "starter": "export function backspaceCompare(left: string, right: string): boolean {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": ["xy#z", "xz"],
+            "expected": true
+          },
+          {
+            "args": ["a#b", "a"],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["", "###"],
+      "expected": true
+    },
+    {
+      "args": ["ab##", ""],
+      "expected": true
+    },
+    {
+      "args": ["a##b", "#b"],
+      "expected": true
+    },
+    {
+      "args": ["abc#", "ab#"],
+      "expected": false
+    },
+    {
+      "args": ["#a", "a"],
+      "expected": true
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function backspaceCompare(left        , right        )          {\n  function apply(text        )         { const stack           = []; for (const c of text) { if (c === '#') stack.pop(); else stack.push(c); } return stack.join(''); } return apply(left) === apply(right);\n}\n",
+    "typescript": "export function backspaceCompare(left: string, right: string): boolean {\n  function apply(text: string): string { const stack: string[] = []; for (const c of text) { if (c === '#') stack.pop(); else stack.push(c); } return stack.join(''); } return apply(left) === apply(right);\n}\n"
+  },
+  "explanation": "Apply editor operations using a character stack and compare the final text. O(m+n) time and space."
+}

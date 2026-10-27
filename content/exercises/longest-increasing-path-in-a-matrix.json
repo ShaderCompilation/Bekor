@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "longest-increasing-path-in-a-matrix",
+    "slug": "longest-increasing-path-in-a-matrix",
+    "version": "1.0.0",
+    "title": "Longest Increasing Path in a Matrix",
+    "description": "Return the greatest number of cells in a path that moves up, down, left or right and strictly increases at every step. Rectangular dimensions are 0 to 50; integer values are between -10000 and 10000. Empty or zero-width matrices return zero.",
+    "difficulty": "hard",
+    "concepts": ["matrices", "memoization"],
+    "hints": ["Strict increases form a graph with no directed cycles."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "longestIncreasingPathInAMatrix",
+        "signature": "longestIncreasingPathInAMatrix(matrix: number[][]): number",
+        "starter": "export function longestIncreasingPathInAMatrix(matrix            )         {\n  throw new Error(\"Implement longestIncreasingPathInAMatrix\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[9, 9, 4], [6, 6, 8], [2, 1, 1]]],
+            "expected": 4
+          },
+          {
+            "args": [[[1, 2, 3]]],
+            "expected": 3
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "longestIncreasingPathInAMatrix",
+        "signature": "longestIncreasingPathInAMatrix(matrix: number[][]): number",
+        "starter": "export function longestIncreasingPathInAMatrix(matrix: number[][]): number {\n  throw new Error(\"Implement longestIncreasingPathInAMatrix\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[9, 9, 4], [6, 6, 8], [2, 1, 1]]],
+            "expected": 4
+          },
+          {
+            "args": [[[1, 2, 3]]],
+            "expected": 3
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": 0
+    },
+    {
+      "args": [[[]]],
+      "expected": 0
+    },
+    {
+      "args": [[[7]]],
+      "expected": 1
+    },
+    {
+      "args": [[[2, 2], [2, 2]]],
+      "expected": 1
+    },
+    {
+      "args": [[[1, 2], [4, 3]]],
+      "expected": 4
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function longestIncreasingPathInAMatrix(matrix            )         {\nif(!matrix.length||!matrix[0].length)return 0;const h=matrix.length,w=matrix[0].length,memo=Array.from({length:h},()=>Array(w).fill(0));function visit(r       ,c       )       {if(memo[r][c])return memo[r][c];let best=1;for(const [dr,dc]of [[1,0],[-1,0],[0,1],[0,-1]]){const nr=r+dr,nc=c+dc;if(nr>=0&&nr<h&&nc>=0&&nc<w&&matrix[nr][nc]>matrix[r][c])best=Math.max(best,1+visit(nr,nc));}return memo[r][c]=best;}let result=0;for(let r=0;r<h;r++)for(let c=0;c<w;c++)result=Math.max(result,visit(r,c));return result;\n}\n",
+    "typescript": "export function longestIncreasingPathInAMatrix(matrix: number[][]): number {\nif(!matrix.length||!matrix[0].length)return 0;const h=matrix.length,w=matrix[0].length,memo=Array.from({length:h},()=>Array(w).fill(0));function visit(r:number,c:number):number{if(memo[r][c])return memo[r][c];let best=1;for(const [dr,dc]of [[1,0],[-1,0],[0,1],[0,-1]]){const nr=r+dr,nc=c+dc;if(nr>=0&&nr<h&&nc>=0&&nc<w&&matrix[nr][nc]>matrix[r][c])best=Math.max(best,1+visit(nr,nc));}return memo[r][c]=best;}let result=0;for(let r=0;r<h;r++)for(let c=0;c<w;c++)result=Math.max(result,visit(r,c));return result;\n}\n"
+  },
+  "explanation": "Memoize the longest path starting at each cell. Each cell examines four neighbors once. O(rows times columns) time and space."
+}

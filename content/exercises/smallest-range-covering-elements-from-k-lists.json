@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "smallest-range-covering-elements-from-k-lists",
+    "slug": "smallest-range-covering-elements-from-k-lists",
+    "version": "1.0.0",
+    "title": "Smallest Range Covering Elements from K Lists",
+    "description": "Return [low,high], the smallest inclusive integer range containing at least one value from every sorted nonempty input list. Minimize high-low, then low on ties. There are 1 to 100 lists and at most 1000 total values between -1000000 and 1000000. Duplicates are allowed.",
+    "difficulty": "hard",
+    "concepts": ["sorting", "sliding-window"],
+    "hints": ["Sort all tagged values and find a window covering all list identifiers."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "smallestRangeCoveringElementsFromKLists",
+        "signature": "smallestRangeCoveringElementsFromKLists(lists: number[][]): number[]",
+        "starter": "export function smallestRangeCoveringElementsFromKLists(lists            )           {\n  throw new Error(\"Implement smallestRangeCoveringElementsFromKLists\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 5, 8], [4, 7], [6, 9]]],
+            "expected": [4, 6]
+          },
+          {
+            "args": [[[1, 4], [2, 5]]],
+            "expected": [1, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "smallestRangeCoveringElementsFromKLists",
+        "signature": "smallestRangeCoveringElementsFromKLists(lists: number[][]): number[]",
+        "starter": "export function smallestRangeCoveringElementsFromKLists(lists: number[][]): number[] {\n  throw new Error(\"Implement smallestRangeCoveringElementsFromKLists\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 5, 8], [4, 7], [6, 9]]],
+            "expected": [4, 6]
+          },
+          {
+            "args": [[[1, 4], [2, 5]]],
+            "expected": [1, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[[3, 7]]],
+      "expected": [3, 3]
+    },
+    {
+      "args": [[[1], [1], [1]]],
+      "expected": [1, 1]
+    },
+    {
+      "args": [[[-5, -1], [-3, 2]]],
+      "expected": [-5, -3]
+    },
+    {
+      "args": [[[1, 10], [9], [8]]],
+      "expected": [8, 10]
+    },
+    {
+      "args": [[[1, 2, 3], [2, 3], [3]]],
+      "expected": [3, 3]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function smallestRangeCoveringElementsFromKLists(lists            )           {\nconst events           =[];lists.forEach((row,i)=>row.forEach(v=>events.push([v,i])));events.sort((a,b)=>a[0]-b[0]);const counts=Array(lists.length).fill(0);let covered=0,l=0,best=[events[0][0],events[events.length-1][0]];for(let r=0;r<events.length;r++){if(counts[events[r][1]]++===0)covered++;while(covered===lists.length){const low=events[l][0],high=events[r][0];if(high-low<best[1]-best[0]||(high-low===best[1]-best[0]&&low<best[0]))best=[low,high];if(--counts[events[l++][1]]===0)covered--;}}return best;\n}\n",
+    "typescript": "export function smallestRangeCoveringElementsFromKLists(lists: number[][]): number[] {\nconst events:number[][]=[];lists.forEach((row,i)=>row.forEach(v=>events.push([v,i])));events.sort((a,b)=>a[0]-b[0]);const counts=Array(lists.length).fill(0);let covered=0,l=0,best=[events[0][0],events[events.length-1][0]];for(let r=0;r<events.length;r++){if(counts[events[r][1]]++===0)covered++;while(covered===lists.length){const low=events[l][0],high=events[r][0];if(high-low<best[1]-best[0]||(high-low===best[1]-best[0]&&low<best[0]))best=[low,high];if(--counts[events[l++][1]]===0)covered--;}}return best;\n}\n"
+  },
+  "explanation": "A sliding window tracks how many lists are represented; shrink while coverage holds and compare range width and low endpoint. O(total values times log total values) time."
+}

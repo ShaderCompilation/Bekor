@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "permutations",
+    "slug": "permutations",
+    "version": "1.0.0",
+    "title": "Permutations",
+    "description": "Return every permutation of values in lexicographic order by numeric values. values contains 0 to 6 distinct integers from -100 to 100. The empty input has one permutation, []. Do not depend on the original input order.",
+    "difficulty": "medium",
+    "concepts": ["backtracking", "permutations"],
+    "hints": ["Sort input before exploring choices.", "At each depth, choose only unused values."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "permute",
+        "signature": "permute(values: number[]): number[][]",
+        "starter": "export function permute(values) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 1]],
+            "expected": [[1, 2], [2, 1]]
+          },
+          {
+            "args": [[4]],
+            "expected": [[4]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "permute",
+        "signature": "permute(values: number[]): number[][]",
+        "starter": "export function permute(values: number[]): number[][] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 1]],
+            "expected": [[1, 2], [2, 1]]
+          },
+          {
+            "args": [[4]],
+            "expected": [[4]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": [[]]
+    },
+    {
+      "args": [[-1, 0]],
+      "expected": [[-1, 0], [0, -1]]
+    },
+    {
+      "args": [[3, 1, 2]],
+      "expected": [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]
+    },
+    {
+      "args": [[10, 2]],
+      "expected": [[2, 10], [10, 2]]
+    },
+    {
+      "args": [[-2, -5]],
+      "expected": [[-5, -2], [-2, -5]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function permute(values          )             {\n  const sorted=[...values].sort((a,b)=>a-b),result           =[],used=Array         (sorted.length).fill(false); function visit(path         )      { if(path.length===sorted.length) { result.push([...path]);return; } for(let i=0;i<sorted.length;i++)if(!used[i]) { used[i]=true;path.push(sorted[i]);visit(path);path.pop();used[i]=false; } } visit([]);return result;\n}\n",
+    "typescript": "export function permute(values: number[]): number[][] {\n  const sorted=[...values].sort((a,b)=>a-b),result:number[][]=[],used=Array<boolean>(sorted.length).fill(false); function visit(path:number[]):void { if(path.length===sorted.length) { result.push([...path]);return; } for(let i=0;i<sorted.length;i++)if(!used[i]) { used[i]=true;path.push(sorted[i]);visit(path);path.pop();used[i]=false; } } visit([]);return result;\n}\n"
+  },
+  "explanation": "Backtracking visits unused choices in increasing order, producing lexicographic permutations. O(n*n!) time and O(n) auxiliary space plus output."
+}

@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "decode-string",
+    "slug": "decode-string",
+    "version": "1.0.0",
+    "title": "Decode String",
+    "description": "Decode a valid expression containing lowercase ASCII letters and repetitions count[expression]. Counts are positive decimal integers; brackets may nest. Concatenation is implicit. encoded has 0 to 200 characters, nesting depth at most 20, and decoded output at most 2000 characters.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Parse a bracketed expression recursively, stopping at its closing bracket."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "decodeString",
+        "signature": "decodeString(encoded: string): string",
+        "starter": "export function decodeString(encoded) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["3[a]2[bc]"],
+            "expected": "aaabcbc"
+          },
+          {
+            "args": ["2[a2[b]]"],
+            "expected": "abbabb"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "decodeString",
+        "signature": "decodeString(encoded: string): string",
+        "starter": "export function decodeString(encoded: string): string {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["3[a]2[bc]"],
+            "expected": "aaabcbc"
+          },
+          {
+            "args": ["2[a2[b]]"],
+            "expected": "abbabb"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [""],
+      "expected": ""
+    },
+    {
+      "args": ["abc"],
+      "expected": "abc"
+    },
+    {
+      "args": ["10[x]"],
+      "expected": "xxxxxxxxxx"
+    },
+    {
+      "args": ["a2[b]c"],
+      "expected": "abbc"
+    },
+    {
+      "args": ["2[]"],
+      "expected": ""
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function decodeString(encoded        )         {\nlet i=0;function parse()       {let out=\"\";while(i<encoded.length&&encoded[i]!==\"]\"){if(encoded[i]>=\"0\"&&encoded[i]<=\"9\"){let n=0;while(encoded[i]>=\"0\"&&encoded[i]<=\"9\")n=n*10+Number(encoded[i++]);i++;const part=parse();i++;out+=part.repeat(n);}else out+=encoded[i++];}return out;}return parse();\n}\n",
+    "typescript": "export function decodeString(encoded: string): string {\nlet i=0;function parse():string{let out=\"\";while(i<encoded.length&&encoded[i]!==\"]\"){if(encoded[i]>=\"0\"&&encoded[i]<=\"9\"){let n=0;while(encoded[i]>=\"0\"&&encoded[i]<=\"9\")n=n*10+Number(encoded[i++]);i++;const part=parse();i++;out+=part.repeat(n);}else out+=encoded[i++];}return out;}return parse();\n}\n"
+  },
+  "explanation": "Accumulate literals and expand recursively parsed groups by their counts. Work is bounded by encoded input and expanded intermediate output."
+}

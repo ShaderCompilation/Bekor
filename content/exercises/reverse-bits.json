@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "reverse-bits",
+    "slug": "reverse-bits",
+    "version": "1.0.0",
+    "title": "Reverse Bits",
+    "description": "Reverse the order of all 32 bits of unsigned integer n and return the unsigned integer represented by those reversed bits. n lies between 0 and 4294967295. Leading zero bits participate in the reversal.",
+    "difficulty": "easy",
+    "concepts": ["bits"],
+    "hints": [
+      "Repeat exactly 32 times, even if the remaining input becomes zero.",
+      "Use unsigned coercion after bitwise operations."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "reverseBits",
+        "signature": "reverseBits(n: number): number",
+        "starter": "export function reverseBits(n) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [1],
+            "expected": 2147483648
+          },
+          {
+            "args": [3],
+            "expected": 3221225472
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "reverseBits",
+        "signature": "reverseBits(n: number): number",
+        "starter": "export function reverseBits(n: number): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [1],
+            "expected": 2147483648
+          },
+          {
+            "args": [3],
+            "expected": 3221225472
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [0],
+      "expected": 0
+    },
+    {
+      "args": [2147483648],
+      "expected": 1
+    },
+    {
+      "args": [4294967295],
+      "expected": 4294967295
+    },
+    {
+      "args": [2],
+      "expected": 1073741824
+    },
+    {
+      "args": [305419896],
+      "expected": 510274632
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function reverseBits(n        )         {\n  let input = n >>> 0, result = 0; for (let bit = 0; bit < 32; bit++) { result = ((result << 1) | (input & 1)) >>> 0; input >>>= 1; } return result;\n}\n",
+    "typescript": "export function reverseBits(n: number): number {\n  let input = n >>> 0, result = 0; for (let bit = 0; bit < 32; bit++) { result = ((result << 1) | (input & 1)) >>> 0; input >>>= 1; } return result;\n}\n"
+  },
+  "explanation": "Shift one low input bit into the result per iteration. Exactly 32 iterations use O(1) time and space."
+}

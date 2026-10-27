@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "number-of-one-bits",
+    "slug": "number-of-one-bits",
+    "version": "1.0.0",
+    "title": "Number of 1 Bits",
+    "description": "Return the count of 1 bits in the unsigned 32-bit representation of n. Input n is an integer from 0 to 4294967295, including values whose top bit is set.",
+    "difficulty": "easy",
+    "concepts": ["bits"],
+    "hints": [
+      "Clearing the least significant set bit removes one 1.",
+      "Unsigned coercion preserves the full 32-bit input range."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "hammingWeight",
+        "signature": "hammingWeight(n: number): number",
+        "starter": "export function hammingWeight(n) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [13],
+            "expected": 3
+          },
+          {
+            "args": [16],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "hammingWeight",
+        "signature": "hammingWeight(n: number): number",
+        "starter": "export function hammingWeight(n: number): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [13],
+            "expected": 3
+          },
+          {
+            "args": [16],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [0],
+      "expected": 0
+    },
+    {
+      "args": [1],
+      "expected": 1
+    },
+    {
+      "args": [2147483648],
+      "expected": 1
+    },
+    {
+      "args": [4294967295],
+      "expected": 32
+    },
+    {
+      "args": [2863311530],
+      "expected": 16
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function hammingWeight(n        )         {\n  let remaining = n >>> 0, count = 0; while (remaining !== 0) { remaining = (remaining & (remaining - 1)) >>> 0; count++; } return count;\n}\n",
+    "typescript": "export function hammingWeight(n: number): number {\n  let remaining = n >>> 0, count = 0; while (remaining !== 0) { remaining = (remaining & (remaining - 1)) >>> 0; count++; } return count;\n}\n"
+  },
+  "explanation": "Repeatedly clear the low set bit and increment a counter. O(k) time for k set bits, O(1) space."
+}

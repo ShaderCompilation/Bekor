@@ -1,0 +1,92 @@
+{
+  "public": {
+    "id": "binary-tree-maximum-path-sum",
+    "slug": "binary-tree-maximum-path-sum",
+    "version": "1.0.0",
+    "title": "Binary Tree Maximum Path Sum",
+    "description": "Trees use compact breadth-first arrays: the root comes first, then the left and right children of each non-null node in queue order; null means absent and trailing nulls may be omitted. Empty arrays mean no root. Return the greatest sum along any nonempty simple path between tree nodes; paths may turn once at a common ancestor. The tree has 1 to 500 nodes; values are integers from -1000 to 1000.",
+    "difficulty": "hard",
+    "concepts": ["trees", "dynamic-programming"],
+    "hints": ["Return the best downward gain while checking a path through both children."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "binaryTreeMaximumPathSum",
+        "signature": "binaryTreeMaximumPathSum(values: (number|null)[]): number",
+        "starter": "export function binaryTreeMaximumPathSum(values                 )         {\n  throw new Error(\"Implement binaryTreeMaximumPathSum\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3]],
+            "expected": 6
+          },
+          {
+            "args": [[-10, 9, 20, null, null, 15, 7]],
+            "expected": 42
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "binaryTreeMaximumPathSum",
+        "signature": "binaryTreeMaximumPathSum(values: (number|null)[]): number",
+        "starter": "export function binaryTreeMaximumPathSum(values: (number|null)[]): number {\n  throw new Error(\"Implement binaryTreeMaximumPathSum\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3]],
+            "expected": 6
+          },
+          {
+            "args": [[-10, 9, 20, null, null, 15, 7]],
+            "expected": 42
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[-3]],
+      "expected": -3
+    },
+    {
+      "args": [[-2, -1, -3]],
+      "expected": -1
+    },
+    {
+      "args": [[0]],
+      "expected": 0
+    },
+    {
+      "args": [[5, 4, null, 3]],
+      "expected": 12
+    },
+    {
+      "args": [[2, -1, -2]],
+      "expected": 2
+    },
+    {
+      "args": [[1, 2, 3]],
+      "expected": 6
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function binaryTreeMaximumPathSum(values                 )         {\n                                       function build(a                )        {if(!a.length||a[0]===null)return null;const root  ={v:a[0],l:null,r:null},q    =[root];let i=1;for(let j=0;j<q.length&&i<a.length;j++){for(const key of ['l','r']         ){const v=a[i++];if(v!==null&&v!==undefined){const n  ={v,l:null,r:null};q[j][key]=n;q.push(n);}}}return root;}let best=-Infinity;function gain(n       )       {if(!n)return 0;const l=Math.max(0,gain(n.l)),r=Math.max(0,gain(n.r));best=Math.max(best,n.v+l+r);return n.v+Math.max(l,r);}gain(build(values));return best;\n}\n",
+    "typescript": "export function binaryTreeMaximumPathSum(values: (number|null)[]): number {\ntype N = {v:number,l:N|null,r:N|null}; function build(a:(number|null)[]):N|null {if(!a.length||a[0]===null)return null;const root:N={v:a[0],l:null,r:null},q:N[]=[root];let i=1;for(let j=0;j<q.length&&i<a.length;j++){for(const key of ['l','r'] as const){const v=a[i++];if(v!==null&&v!==undefined){const n:N={v,l:null,r:null};q[j][key]=n;q.push(n);}}}return root;}let best=-Infinity;function gain(n:N|null):number{if(!n)return 0;const l=Math.max(0,gain(n.l)),r=Math.max(0,gain(n.r));best=Math.max(best,n.v+l+r);return n.v+Math.max(l,r);}gain(build(values));return best;\n}\n"
+  },
+  "explanation": "A parent can extend only one branch; the global best may combine two nonnegative child gains. O(n) time and O(height) recursion space."
+}

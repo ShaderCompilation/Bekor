@@ -1,0 +1,92 @@
+{
+  "public": {
+    "id": "largest-number",
+    "slug": "largest-number",
+    "version": "1.0.0",
+    "title": "Largest Number",
+    "description": "Arrange all nonnegative integers so their decimal concatenation is greatest, and return it as a string. There are 1 to 500 values, each at most 1000000. If all digits are zero return \"0\".",
+    "difficulty": "medium",
+    "concepts": ["strings", "sorting"],
+    "hints": ["Compare a+b with b+a as strings."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "largestNumber",
+        "signature": "largestNumber(values: number[]): string",
+        "starter": "export function largestNumber(values          )         {\n  throw new Error(\"Implement largestNumber\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[3, 30, 34, 5, 9]],
+            "expected": "9534330"
+          },
+          {
+            "args": [[12, 121]],
+            "expected": "12121"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "largestNumber",
+        "signature": "largestNumber(values: number[]): string",
+        "starter": "export function largestNumber(values: number[]): string {\n  throw new Error(\"Implement largestNumber\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[3, 30, 34, 5, 9]],
+            "expected": "9534330"
+          },
+          {
+            "args": [[12, 121]],
+            "expected": "12121"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[0]],
+      "expected": "0"
+    },
+    {
+      "args": [[0, 0, 0]],
+      "expected": "0"
+    },
+    {
+      "args": [[10, 2]],
+      "expected": "210"
+    },
+    {
+      "args": [[8308, 830]],
+      "expected": "8308830"
+    },
+    {
+      "args": [[1, 11, 111]],
+      "expected": "111111"
+    },
+    {
+      "args": [[12, 121]],
+      "expected": "12121"
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function largestNumber(values          )         {\nconst s=values.map(String).sort((a,b)=>(b+a).localeCompare(a+b));return s[0]==='0'?'0':s.join('');\n}\n",
+    "typescript": "export function largestNumber(values: number[]): string {\nconst s=values.map(String).sort((a,b)=>(b+a).localeCompare(a+b));return s[0]==='0'?'0':s.join('');\n}\n"
+  },
+  "explanation": "Pairwise concatenation order determines the best adjacent order; sorting by that comparator maximizes the entire concatenation. Normalize all-zero input. O(n log n) comparisons."
+}

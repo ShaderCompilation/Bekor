@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "powx-n",
+    "slug": "powx-n",
+    "version": "1.0.0",
+    "title": "Pow(x, n)",
+    "description": "Return base raised to exponent as a reduced exact fraction [numerator,denominator], both decimal strings, with positive denominator. This integer-base adaptation avoids floating-point tolerance. base is an integer from -10 to 10; exponent is an integer from -20 to 20; zero has no negative exponent. Define zero to the zeroth power as one.",
+    "difficulty": "medium",
+    "concepts": ["arithmetic", "binary-exponentiation"],
+    "hints": ["Use repeated squaring."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "powxN",
+        "signature": "powxN(base: number, exponent: number): string[]",
+        "starter": "export function powxN(base        , exponent        )           {\n  throw new Error(\"Implement powxN\");\n}\n",
+        "publicTests": [
+          {
+            "args": [2, 5],
+            "expected": ["32", "1"]
+          },
+          {
+            "args": [2, -3],
+            "expected": ["1", "8"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "powxN",
+        "signature": "powxN(base: number, exponent: number): string[]",
+        "starter": "export function powxN(base: number, exponent: number): string[] {\n  throw new Error(\"Implement powxN\");\n}\n",
+        "publicTests": [
+          {
+            "args": [2, 5],
+            "expected": ["32", "1"]
+          },
+          {
+            "args": [2, -3],
+            "expected": ["1", "8"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [-2, -3],
+      "expected": ["-1", "8"]
+    },
+    {
+      "args": [0, 0],
+      "expected": ["1", "1"]
+    },
+    {
+      "args": [0, 3],
+      "expected": ["0", "1"]
+    },
+    {
+      "args": [-3, 4],
+      "expected": ["81", "1"]
+    },
+    {
+      "args": [10, 20],
+      "expected": ["100000000000000000000", "1"]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function powxN(base        , exponent        )           {\nlet n=Math.abs(exponent),x=BigInt(base),result=1n;while(n){if(n%2)result*=x;x*=x;n=Math.floor(n/2);}if(exponent>=0)return [String(result),'1'];return result<0?['-1',String(-result)]:['1',String(result)];\n}\n",
+    "typescript": "export function powxN(base: number, exponent: number): string[] {\nlet n=Math.abs(exponent),x=BigInt(base),result=1n;while(n){if(n%2)result*=x;x*=x;n=Math.floor(n/2);}if(exponent>=0)return [String(result),'1'];return result<0?['-1',String(-result)]:['1',String(result)];\n}\n"
+  },
+  "explanation": "Binary exponentiation computes the integer magnitude exactly using internal BigInt arithmetic. Negative exponents invert the result and normalize the denominator sign. Output strings keep JSON arithmetic exact. O(log absolute exponent) multiplications."
+}

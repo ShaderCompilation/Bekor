@@ -1,0 +1,94 @@
+{
+  "public": {
+    "id": "minimum-knight-moves",
+    "slug": "minimum-knight-moves",
+    "version": "1.0.0",
+    "title": "Minimum Knight Moves",
+    "description": "On an unbounded chessboard, a knight starts at [0,0]. Each move changes one coordinate by 2 and the other by 1, in either sign. Return the fewest moves to [x,y]. Both coordinates are integers from -50 through 50.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": [
+      "Use board symmetry and breadth-first search, keeping a small margin around the target."
+    ],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "minKnightMoves",
+        "signature": "minKnightMoves(x: number, y: number): number",
+        "starter": "export function minKnightMoves(x, y) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [2, 1],
+            "expected": 1
+          },
+          {
+            "args": [5, 5],
+            "expected": 4
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "minKnightMoves",
+        "signature": "minKnightMoves(x: number, y: number): number",
+        "starter": "export function minKnightMoves(x: number, y: number): number {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [2, 1],
+            "expected": 1
+          },
+          {
+            "args": [5, 5],
+            "expected": 4
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [0, 0],
+      "expected": 0
+    },
+    {
+      "args": [1, 0],
+      "expected": 3
+    },
+    {
+      "args": [1, 1],
+      "expected": 2
+    },
+    {
+      "args": [2, 2],
+      "expected": 4
+    },
+    {
+      "args": [-2, -1],
+      "expected": 1
+    },
+    {
+      "args": [3, 3],
+      "expected": 2
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function minKnightMoves(x        , y        )         {\nx=Math.abs(x);y=Math.abs(y);const q           =[[0,0,0]],seen=new Set        ([\"0,0\"]),moves=[[1,2],[2,1],[-1,2],[-2,1],[1,-2],[2,-1],[-1,-2],[-2,-1]];for(let i=0;i<q.length;i++){const [a,b,d]=q[i];if(a===x&&b===y)return d;for(const [dx,dy] of moves){const nx=a+dx,ny=b+dy,key=nx+\",\"+ny;if(nx>=-2&&ny>=-2&&nx<=x+2&&ny<=y+2&&!seen.has(key)){seen.add(key);q.push([nx,ny,d+1]);}}}throw new Error(\"unreachable\");\n}\n",
+    "typescript": "export function minKnightMoves(x: number, y: number): number {\nx=Math.abs(x);y=Math.abs(y);const q:number[][]=[[0,0,0]],seen=new Set<string>([\"0,0\"]),moves=[[1,2],[2,1],[-1,2],[-2,1],[1,-2],[2,-1],[-1,-2],[-2,-1]];for(let i=0;i<q.length;i++){const [a,b,d]=q[i];if(a===x&&b===y)return d;for(const [dx,dy] of moves){const nx=a+dx,ny=b+dy,key=nx+\",\"+ny;if(nx>=-2&&ny>=-2&&nx<=x+2&&ny<=y+2&&!seen.has(key)){seen.add(key);q.push([nx,ny,d+1]);}}}throw new Error(\"unreachable\");\n}\n"
+  },
+  "explanation": "Reflection puts the target in the first quadrant. Shortest routes can be searched inside the rectangle enlarged by two cells on every side. BFS returns minimum move count."
+}

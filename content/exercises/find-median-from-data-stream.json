@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "find-median-from-data-stream",
+    "slug": "find-median-from-data-stream",
+    "version": "1.0.0",
+    "title": "Find Median from Data Stream",
+    "description": "Process [\"addNum\",integer] and [\"findMedian\"] on an initially empty stream. Return null for additions and TWICE the mathematical median for queries, keeping every result an integer. Queries occur only after an addition. At most 500 operations; inserted integers are between -1000000 and 1000000. For an even count the returned doubled median is the sum of the two middle values.",
+    "difficulty": "medium",
+    "concepts": ["sorting", "data-streams"],
+    "hints": ["Keep the stream in sorted order."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "findMedianFromDataStream",
+        "signature": "findMedianFromDataStream(operations: (string|number)[][]): (number|null)[]",
+        "starter": "export function findMedianFromDataStream(operations                     )                  {\n  throw new Error(\"Implement findMedianFromDataStream\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[["addNum", 2], ["addNum", 5], ["findMedian"]]],
+            "expected": [null, null, 7]
+          },
+          {
+            "args": [[["addNum", 3], ["findMedian"]]],
+            "expected": [null, 6]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "findMedianFromDataStream",
+        "signature": "findMedianFromDataStream(operations: (string|number)[][]): (number|null)[]",
+        "starter": "export function findMedianFromDataStream(operations: (string|number)[][]): (number|null)[] {\n  throw new Error(\"Implement findMedianFromDataStream\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[["addNum", 2], ["addNum", 5], ["findMedian"]]],
+            "expected": [null, null, 7]
+          },
+          {
+            "args": [[["addNum", 3], ["findMedian"]]],
+            "expected": [null, 6]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[["addNum", -3], ["addNum", 0], ["findMedian"]]],
+      "expected": [null, null, -3]
+    },
+    {
+      "args": [[["addNum", 4], ["addNum", 4], ["addNum", 4], ["findMedian"]]],
+      "expected": [null, null, null, 8]
+    },
+    {
+      "args": [[["addNum", 10], ["addNum", 1], ["addNum", 2], ["findMedian"]]],
+      "expected": [null, null, null, 4]
+    },
+    {
+      "args": [[["addNum", 0], ["findMedian"], ["addNum", 1], ["findMedian"]]],
+      "expected": [null, 0, null, 1]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function findMedianFromDataStream(operations                     )                  {\nconst a         =[];return operations.map(op=>{if(op[0]==='addNum'){const x=Number(op[1]);let l=0,r=a.length;while(l<r){const m=(l+r)>>1;if(a[m]<x)l=m+1;else r=m;}a.splice(l,0,x);return null;}const n=a.length;return n%2?2*a[n>>1]:a[n/2-1]+a[n/2];});\n}\n",
+    "typescript": "export function findMedianFromDataStream(operations: (string|number)[][]): (number|null)[] {\nconst a:number[]=[];return operations.map(op=>{if(op[0]==='addNum'){const x=Number(op[1]);let l=0,r=a.length;while(l<r){const m=(l+r)>>1;if(a[m]<x)l=m+1;else r=m;}a.splice(l,0,x);return null;}const n=a.length;return n%2?2*a[n>>1]:a[n/2-1]+a[n/2];});\n}\n"
+  },
+  "explanation": "Binary search finds each insertion position, and middle indices determine the doubled median. This straightforward reference uses O(n) insertion and O(1) median queries."
+}

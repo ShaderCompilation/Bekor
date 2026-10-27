@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "three-sum",
+    "slug": "three-sum",
+    "version": "1.0.0",
+    "title": "3Sum",
+    "description": "Return every distinct triplet of values from three distinct input indices whose sum is zero. Sort numbers within each triplet increasingly; sort the resulting triplets lexicographically by numeric values. Do not repeat duplicate triplets. values has 0 to 60 integers between -10000 and 10000.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "two-pointers"],
+    "hints": [
+      "Sort first, then fix one value and move two pointers.",
+      "Skip duplicate fixed values and duplicate endpoint values."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "threeSum",
+        "signature": "threeSum(values: number[]): number[][]",
+        "starter": "export function threeSum(values) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[-2, 0, 2, 1, -1]],
+            "expected": [[-2, 0, 2], [-1, 0, 1]]
+          },
+          {
+            "args": [[0, 0, 0, 0]],
+            "expected": [[0, 0, 0]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "threeSum",
+        "signature": "threeSum(values: number[]): number[][]",
+        "starter": "export function threeSum(values: number[]): number[][] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[-2, 0, 2, 1, -1]],
+            "expected": [[-2, 0, 2], [-1, 0, 1]]
+          },
+          {
+            "args": [[0, 0, 0, 0]],
+            "expected": [[0, 0, 0]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[1, 2]],
+      "expected": []
+    },
+    {
+      "args": [[1, 2, 3]],
+      "expected": []
+    },
+    {
+      "args": [[-1, -1, 2, 2]],
+      "expected": [[-1, -1, 2]]
+    },
+    {
+      "args": [[-4, -2, -2, 0, 2, 2, 4]],
+      "expected": [[-4, 0, 4], [-4, 2, 2], [-2, -2, 4], [-2, 0, 2]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function threeSum(values          )             {\n  const sorted=[...values].sort((a,b)=>a-b), result            =[]; for(let i=0;i<sorted.length-2;i++) { if(i>0&&sorted[i]===sorted[i-1]) continue; let left=i+1,right=sorted.length-1; while(left<right) { const sum=sorted[i]+sorted[left]+sorted[right]; if(sum<0) left++; else if(sum>0) right--; else { result.push([sorted[i],sorted[left],sorted[right]]); const a=sorted[left],b=sorted[right]; while(left<right&&sorted[left]===a) left++; while(left<right&&sorted[right]===b) right--; } } } return result;\n}\n",
+    "typescript": "export function threeSum(values: number[]): number[][] {\n  const sorted=[...values].sort((a,b)=>a-b), result: number[][]=[]; for(let i=0;i<sorted.length-2;i++) { if(i>0&&sorted[i]===sorted[i-1]) continue; let left=i+1,right=sorted.length-1; while(left<right) { const sum=sorted[i]+sorted[left]+sorted[right]; if(sum<0) left++; else if(sum>0) right--; else { result.push([sorted[i],sorted[left],sorted[right]]); const a=sorted[left],b=sorted[right]; while(left<right&&sorted[left]===a) left++; while(left<right&&sorted[right]===b) right--; } } } return result;\n}\n"
+  },
+  "explanation": "For each fixed value, two pointers exploit the sorted order to find complements without duplicate triplets. O(n²) time and O(n) auxiliary space plus output."
+}

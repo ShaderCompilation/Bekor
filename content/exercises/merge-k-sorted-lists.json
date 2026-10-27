@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "merge-k-sorted-lists",
+    "slug": "merge-k-sorted-lists",
+    "version": "1.0.0",
+    "title": "Merge k Sorted Lists",
+    "description": "Each inner array represents one sorted singly linked list in head-to-tail order. Return one ascending array containing every value, including duplicates. This value-only adaptation does not require node reuse. There are 0 to 100 lists with at most 1000 total integers, each between -10000 and 10000.",
+    "difficulty": "medium",
+    "concepts": ["linked-lists", "sorting"],
+    "hints": ["Combine all list values and preserve duplicate occurrences."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "mergeKSortedLists",
+        "signature": "mergeKSortedLists(lists: number[][]): number[]",
+        "starter": "export function mergeKSortedLists(lists            )           {\n  throw new Error(\"Implement mergeKSortedLists\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 4], [2, 3], [0, 8]]],
+            "expected": [0, 1, 2, 3, 4, 8]
+          },
+          {
+            "args": [[[], [2], []]],
+            "expected": [2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "mergeKSortedLists",
+        "signature": "mergeKSortedLists(lists: number[][]): number[]",
+        "starter": "export function mergeKSortedLists(lists: number[][]): number[] {\n  throw new Error(\"Implement mergeKSortedLists\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 4], [2, 3], [0, 8]]],
+            "expected": [0, 1, 2, 3, 4, 8]
+          },
+          {
+            "args": [[[], [2], []]],
+            "expected": [2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[[], []]],
+      "expected": []
+    },
+    {
+      "args": [[[1, 1], [1]]],
+      "expected": [1, 1, 1]
+    },
+    {
+      "args": [[[-4, -1], [-3, 0]]],
+      "expected": [-4, -3, -1, 0]
+    },
+    {
+      "args": [[[5]]],
+      "expected": [5]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function mergeKSortedLists(lists            )           {\nreturn lists.flat().sort((a,b)=>a-b);\n}\n",
+    "typescript": "export function mergeKSortedLists(lists: number[][]): number[] {\nreturn lists.flat().sort((a,b)=>a-b);\n}\n"
+  },
+  "explanation": "The direct reference flattens and sorts all values. Time O(total values times log total values), space O(total values)."
+}

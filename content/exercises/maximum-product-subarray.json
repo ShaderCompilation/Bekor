@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "maximum-product-subarray",
+    "slug": "maximum-product-subarray",
+    "version": "1.0.0",
+    "title": "Maximum Product Subarray",
+    "description": "Return the largest product of a nonempty contiguous subarray. values contains 1 to 20 integers from -5 to 5; every contiguous product is guaranteed to be a safe integer.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Keep both the largest and smallest product ending at each position."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "maxProduct",
+        "signature": "maxProduct(values: number[]): number",
+        "starter": "export function maxProduct(values) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 3, -2, 4]],
+            "expected": 6
+          },
+          {
+            "args": [[-2, 0, -1]],
+            "expected": 0
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "maxProduct",
+        "signature": "maxProduct(values: number[]): number",
+        "starter": "export function maxProduct(values: number[]): number {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 3, -2, 4]],
+            "expected": 6
+          },
+          {
+            "args": [[-2, 0, -1]],
+            "expected": 0
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[-3]],
+      "expected": -3
+    },
+    {
+      "args": [[-2, 3, -4]],
+      "expected": 24
+    },
+    {
+      "args": [[0, 0]],
+      "expected": 0
+    },
+    {
+      "args": [[-1, -1, -1]],
+      "expected": 1
+    },
+    {
+      "args": [[2, -5, -2, -4, 3]],
+      "expected": 24
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function maxProduct(values          )         {\nlet hi=values[0],lo=values[0],best=values[0];for(const x of values.slice(1)){const a=hi*x,b=lo*x;hi=Math.max(x,a,b);lo=Math.min(x,a,b);best=Math.max(best,hi);}return best;\n}\n",
+    "typescript": "export function maxProduct(values: number[]): number {\nlet hi=values[0],lo=values[0],best=values[0];for(const x of values.slice(1)){const a=hi*x,b=lo*x;hi=Math.max(x,a,b);lo=Math.min(x,a,b);best=Math.max(best,hi);}return best;\n}\n"
+  },
+  "explanation": "A negative value swaps the roles of extremes. Extend either prior extreme or restart at the current value, in O(n) time."
+}

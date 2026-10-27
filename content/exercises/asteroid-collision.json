@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "asteroid-collision",
+    "slug": "asteroid-collision",
+    "version": "1.0.0",
+    "title": "Asteroid Collision",
+    "description": "Each nonzero signed integer is an asteroid: magnitude is size, sign is direction on a line. Adjacent right-moving and left-moving asteroids collide; smaller disappears, equal sizes both disappear. Return survivors in their original order. There are 0 to 500 asteroids, magnitudes 1 to 1000.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "stack"],
+    "hints": [
+      "Use a stack of surviving asteroids.",
+      "Only a positive stack top and negative incoming value can collide."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "asteroidCollision",
+        "signature": "asteroidCollision(asteroids: number[]): number[]",
+        "starter": "export function asteroidCollision(asteroids          )           {\n  throw new Error(\"Implement asteroidCollision\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[4, 9, -6]],
+            "expected": [4, 9]
+          },
+          {
+            "args": [[7, -7]],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "asteroidCollision",
+        "signature": "asteroidCollision(asteroids: number[]): number[]",
+        "starter": "export function asteroidCollision(asteroids: number[]): number[] {\n  throw new Error(\"Implement asteroidCollision\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[4, 9, -6]],
+            "expected": [4, 9]
+          },
+          {
+            "args": [[7, -7]],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[-3, -2, 4, 6]],
+      "expected": [-3, -2, 4, 6]
+    },
+    {
+      "args": [[3, 4, -8]],
+      "expected": [-8]
+    },
+    {
+      "args": [[8, -3, -4]],
+      "expected": [8]
+    },
+    {
+      "args": [[-2, 3, -3, 2]],
+      "expected": [-2, 2]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function asteroidCollision(asteroids          )           {\nconst s         =[];for(const x of asteroids){let alive=true;while(alive&&x<0&&s.length&&s[s.length-1]>0){const y=s[s.length-1];if(y< -x)s.pop();else {if(y===-x)s.pop();alive=false;}}if(alive)s.push(x);}return s;\n}\n",
+    "typescript": "export function asteroidCollision(asteroids: number[]): number[] {\nconst s:number[]=[];for(const x of asteroids){let alive=true;while(alive&&x<0&&s.length&&s[s.length-1]>0){const y=s[s.length-1];if(y< -x)s.pop();else {if(y===-x)s.pop();alive=false;}}if(alive)s.push(x);}return s;\n}\n"
+  },
+  "explanation": "Each asteroid enters and leaves the stack at most once. Resolve collisions until the incoming asteroid is destroyed or cannot meet the top. Time and space are O(n)."
+}

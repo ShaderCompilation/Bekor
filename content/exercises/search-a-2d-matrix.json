@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "search-a-2d-matrix",
+    "slug": "search-a-2d-matrix",
+    "version": "1.0.0",
+    "title": "Search a 2D Matrix",
+    "description": "Rows form a rectangular integer matrix. Each row is increasing and each later row starts after the previous row ends. Return whether target occurs. Dimensions are 0 to 100; values and target are between -10000 and 10000.",
+    "difficulty": "medium",
+    "concepts": ["matrices", "binary-search"],
+    "hints": ["Treat the matrix as a sorted flat array."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "searchA2dMatrix",
+        "signature": "searchA2dMatrix(matrix: number[][], target: number): boolean",
+        "starter": "export function searchA2dMatrix(matrix            , target        )          {\n  throw new Error(\"Implement searchA2dMatrix\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 4, 7], [10, 13, 20]], 13],
+            "expected": true
+          },
+          {
+            "args": [[[1, 4], [7, 9]], 6],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "searchA2dMatrix",
+        "signature": "searchA2dMatrix(matrix: number[][], target: number): boolean",
+        "starter": "export function searchA2dMatrix(matrix: number[][], target: number): boolean {\n  throw new Error(\"Implement searchA2dMatrix\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 4, 7], [10, 13, 20]], 13],
+            "expected": true
+          },
+          {
+            "args": [[[1, 4], [7, 9]], 6],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 1],
+      "expected": false
+    },
+    {
+      "args": [[[]], 1],
+      "expected": false
+    },
+    {
+      "args": [[[3]], 3],
+      "expected": true
+    },
+    {
+      "args": [[[-5, -2], [0, 8]], -5],
+      "expected": true
+    },
+    {
+      "args": [[[1, 2], [3, 4]], 4],
+      "expected": true
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function searchA2dMatrix(matrix            , target        )          {\nif(!matrix.length||!matrix[0].length)return false;const w=matrix[0].length;let l=0,r=matrix.length*w-1;while(l<=r){const m=(l+r)>>1,x=matrix[Math.floor(m/w)][m%w];if(x===target)return true;if(x<target)l=m+1;else r=m-1;}return false;\n}\n",
+    "typescript": "export function searchA2dMatrix(matrix: number[][], target: number): boolean {\nif(!matrix.length||!matrix[0].length)return false;const w=matrix[0].length;let l=0,r=matrix.length*w-1;while(l<=r){const m=(l+r)>>1,x=matrix[Math.floor(m/w)][m%w];if(x===target)return true;if(x<target)l=m+1;else r=m-1;}return false;\n}\n"
+  },
+  "explanation": "Binary search maps a flat index to row and column. Time O(log(rows times columns)), extra space O(1)."
+}

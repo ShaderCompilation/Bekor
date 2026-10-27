@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "palindrome-number",
+    "slug": "palindrome-number",
+    "version": "1.0.0",
+    "title": "Palindrome Number",
+    "description": "Return whether the ordinary base-ten representation of integer n reads the same in both directions. Negative numbers are not palindromes. n is between -2147483648 and 2147483647. Zero is a palindrome; trailing zeros are significant.",
+    "difficulty": "easy",
+    "concepts": ["numbers", "palindromes"],
+    "hints": [
+      "A minus sign prevents symmetry.",
+      "Compare corresponding decimal digits from opposite ends."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "isPalindromeNumber",
+        "signature": "isPalindromeNumber(n: number): boolean",
+        "starter": "export function isPalindromeNumber(n) {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": [343],
+            "expected": true
+          },
+          {
+            "args": [123],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "isPalindromeNumber",
+        "signature": "isPalindromeNumber(n: number): boolean",
+        "starter": "export function isPalindromeNumber(n: number): boolean {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": [343],
+            "expected": true
+          },
+          {
+            "args": [123],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [0],
+      "expected": true
+    },
+    {
+      "args": [-121],
+      "expected": false
+    },
+    {
+      "args": [10],
+      "expected": false
+    },
+    {
+      "args": [1221],
+      "expected": true
+    },
+    {
+      "args": [1000000001],
+      "expected": true
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function isPalindromeNumber(n        )          {\n  if (n < 0) return false; const digits = String(n); for (let i = 0, j = digits.length - 1; i < j; i++, j--) if (digits[i] !== digits[j]) return false; return true;\n}\n",
+    "typescript": "export function isPalindromeNumber(n: number): boolean {\n  if (n < 0) return false; const digits = String(n); for (let i = 0, j = digits.length - 1; i < j; i++, j--) if (digits[i] !== digits[j]) return false; return true;\n}\n"
+  },
+  "explanation": "Reject negatives and compare digit pairs. O(log n) time and digit-string space."
+}

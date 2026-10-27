@@ -1,0 +1,97 @@
+{
+  "public": {
+    "id": "implement-trie",
+    "slug": "implement-trie",
+    "version": "1.0.0",
+    "title": "Implement Trie (Prefix Tree)",
+    "description": "Process a fresh prefix tree through operations. Each operation is [\"insert\",word], [\"search\",word], or [\"startsWith\",prefix]. Return one output per operation: null for insert, exact membership for search, and whether any stored word begins with the prefix for startsWith. Strings contain 1 to 40 lowercase English letters, with 0 to 500 operations. Duplicate inserts have no extra effect. There is no constructor operation; every call starts empty.",
+    "difficulty": "medium",
+    "concepts": ["tries", "strings"],
+    "hints": [
+      "Separate complete-word markers from traversable prefixes.",
+      "A prefix can exist without being an inserted word."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "trieOperations",
+        "signature": "trieOperations(operations: string[][]): (boolean | null)[]",
+        "starter": "export function trieOperations(operations) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[["insert", "stone"], ["search", "sto"], ["startsWith", "sto"]]],
+            "expected": [null, false, true]
+          },
+          {
+            "args": [[["search", "a"], ["insert", "a"], ["search", "a"]]],
+            "expected": [false, null, true]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "trieOperations",
+        "signature": "trieOperations(operations: string[][]): (boolean | null)[]",
+        "starter": "export function trieOperations(operations: string[][]): (boolean | null)[] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[["insert", "stone"], ["search", "sto"], ["startsWith", "sto"]]],
+            "expected": [null, false, true]
+          },
+          {
+            "args": [[["search", "a"], ["insert", "a"], ["search", "a"]]],
+            "expected": [false, null, true]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[["startsWith", "x"]]],
+      "expected": [false]
+    },
+    {
+      "args": [[["insert", "ab"], ["insert", "a"], ["search", "a"]]],
+      "expected": [null, null, true]
+    },
+    {
+      "args": [[["insert", "a"], ["insert", "a"], ["search", "a"], ["search", "aa"]]],
+      "expected": [null, null, true, false]
+    },
+    {
+      "args": [
+        [["insert", "bat"], ["startsWith", "bad"], ["search", "bat"], ["startsWith", "bat"]]
+      ],
+      "expected": [null, false, true, true]
+    },
+    {
+      "args": [[["insert", "stone"], ["search", "sto"]]],
+      "expected": [null, false]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function trieOperations(operations            )                     {\n                                                                   const root          ={children:new Map(),terminal:false}; const result                 =[]; for(const [operation,text] of operations) { let node                   =root; for(const c of text) { if(operation==='insert'&&!node.children.has(c)) node.children.set(c,{children:new Map(),terminal:false}); node=node.children.get(c); if(!node) break; } if(operation==='insert') { node .terminal=true; result.push(null); } else result.push(operation==='search'?!!node?.terminal:node!==undefined); } return result;\n}\n",
+    "typescript": "export function trieOperations(operations: string[][]): (boolean | null)[] {\n  type TrieNode={children:Map<string,TrieNode>; terminal:boolean}; const root: TrieNode={children:new Map(),terminal:false}; const result:(boolean|null)[]=[]; for(const [operation,text] of operations) { let node:TrieNode|undefined=root; for(const c of text) { if(operation==='insert'&&!node.children.has(c)) node.children.set(c,{children:new Map(),terminal:false}); node=node.children.get(c); if(!node) break; } if(operation==='insert') { node!.terminal=true; result.push(null); } else result.push(operation==='search'?!!node?.terminal:node!==undefined); } return result;\n}\n"
+  },
+  "explanation": "Walk or create character edges and mark word endings. Queries distinguish path existence from terminal membership. O(total characters) time and space."
+}

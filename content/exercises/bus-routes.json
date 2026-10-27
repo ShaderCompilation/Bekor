@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "bus-routes",
+    "slug": "bus-routes",
+    "version": "1.0.0",
+    "title": "Bus Routes",
+    "description": "Each route lists stops visited repeatedly by one bus in either direction of reachability: after boarding at any listed stop you can reach every other stop on that route. Return the minimum number of buses to board to travel from source to target, or -1 if impossible. Equal source and target needs zero buses. At most 100 routes with at most 1000 total distinct-per-route stops; stop identifiers are integers from 0 to 1000000.",
+    "difficulty": "hard",
+    "concepts": ["graphs", "breadth-first-search"],
+    "hints": ["Expand all stops reachable with one additional boarding."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "busRoutes",
+        "signature": "busRoutes(routes: number[][], source: number, target: number): number",
+        "starter": "export function busRoutes(routes            , source        , target        )         {\n  throw new Error(\"Implement busRoutes\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 2, 7], [3, 6, 7]], 1, 6],
+            "expected": 2
+          },
+          {
+            "args": [[[1, 2, 3]], 1, 3],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "busRoutes",
+        "signature": "busRoutes(routes: number[][], source: number, target: number): number",
+        "starter": "export function busRoutes(routes: number[][], source: number, target: number): number {\n  throw new Error(\"Implement busRoutes\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 2, 7], [3, 6, 7]], 1, 6],
+            "expected": 2
+          },
+          {
+            "args": [[[1, 2, 3]], 1, 3],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 4, 4],
+      "expected": 0
+    },
+    {
+      "args": [[], 1, 2],
+      "expected": -1
+    },
+    {
+      "args": [[[1, 2], [3, 4]], 1, 4],
+      "expected": -1
+    },
+    {
+      "args": [[[1, 2], [2, 3], [3, 4]], 1, 4],
+      "expected": 3
+    },
+    {
+      "args": [[[1, 2]], 9, 2],
+      "expected": -1
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function busRoutes(routes            , source        , target        )         {\nif(source===target)return 0;const byStop=new Map                 ();routes.forEach((route,i)=>route.forEach(s=>{if(!byStop.has(s))byStop.set(s,[]);byStop.get(s) .push(i);}));let q=[source],count=0;const stops=new Set(q),buses=new Set        ();while(q.length){const next         =[];count++;for(const stop of q)for(const i of byStop.get(stop)??[]){if(buses.has(i))continue;buses.add(i);for(const s of routes[i]){if(s===target)return count;if(!stops.has(s)){stops.add(s);next.push(s);}}}q=next;}return -1;\n}\n",
+    "typescript": "export function busRoutes(routes: number[][], source: number, target: number): number {\nif(source===target)return 0;const byStop=new Map<number,number[]>();routes.forEach((route,i)=>route.forEach(s=>{if(!byStop.has(s))byStop.set(s,[]);byStop.get(s)!.push(i);}));let q=[source],count=0;const stops=new Set(q),buses=new Set<number>();while(q.length){const next:number[]=[];count++;for(const stop of q)for(const i of byStop.get(stop)??[]){if(buses.has(i))continue;buses.add(i);for(const s of routes[i]){if(s===target)return count;if(!stops.has(s)){stops.add(s);next.push(s);}}}q=next;}return -1;\n}\n"
+  },
+  "explanation": "Breadth-first levels count buses. Marking each route once bounds total route expansion by the input size. O(total listed stops) time and space."
+}

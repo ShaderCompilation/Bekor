@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "majority-element",
+    "slug": "majority-element",
+    "version": "1.0.0",
+    "title": "Majority Element",
+    "description": "values contains 1 to 3000 integers from -1000000 to 1000000. One value occurs strictly more than half the array length. Return that value. The majority is guaranteed to exist.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "voting"],
+    "hints": [
+      "Cancel pairs of different values.",
+      "The guaranteed majority survives every cancellation."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "majorityElement",
+        "signature": "majorityElement(values: number[]): number",
+        "starter": "export function majorityElement(values) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[4, 2, 4]],
+            "expected": 4
+          },
+          {
+            "args": [[9, 9, 1, 9, 2]],
+            "expected": 9
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "majorityElement",
+        "signature": "majorityElement(values: number[]): number",
+        "starter": "export function majorityElement(values: number[]): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[4, 2, 4]],
+            "expected": 4
+          },
+          {
+            "args": [[9, 9, 1, 9, 2]],
+            "expected": 9
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[5]],
+      "expected": 5
+    },
+    {
+      "args": [[-1, -1, 2]],
+      "expected": -1
+    },
+    {
+      "args": [[0, 1, 0]],
+      "expected": 0
+    },
+    {
+      "args": [[3, 2, 2]],
+      "expected": 2
+    },
+    {
+      "args": [[7, 7, 7, 1, 1, 7, 2]],
+      "expected": 7
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function majorityElement(values          )         {\n  let candidate = 0, balance = 0; for (const value of values) { if (balance === 0) candidate = value; balance += value === candidate ? 1 : -1; } return candidate;\n}\n",
+    "typescript": "export function majorityElement(values: number[]): number {\n  let candidate = 0, balance = 0; for (const value of values) { if (balance === 0) candidate = value; balance += value === candidate ? 1 : -1; } return candidate;\n}\n"
+  },
+  "explanation": "Boyer-Moore voting tracks a candidate and cancellation balance. A strict majority remains after pair cancellation. O(n) time and O(1) space."
+}

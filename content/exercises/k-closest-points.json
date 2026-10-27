@@ -1,0 +1,95 @@
+{
+  "public": {
+    "id": "k-closest-points",
+    "slug": "k-closest-points",
+    "version": "1.0.0",
+    "title": "K Closest Points to Origin",
+    "description": "Return the k closest points to the origin. Sort output by increasing squared distance; break ties by x coordinate and then y coordinate, both increasing. Duplicate points remain duplicated. points has 0 to 1000 integer coordinate pairs in -10000 to 10000, and k ranges from 0 to its length. Deterministic tie and output ordering are required.",
+    "difficulty": "medium",
+    "concepts": ["sorting", "geometry"],
+    "hints": [
+      "Squared distance avoids square roots.",
+      "Apply all tie-breakers before taking the first k points."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "kClosest",
+        "signature": "kClosest(points: number[][], k: number): number[][]",
+        "starter": "export function kClosest(points, k) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[[3, 0], [1, 1], [-1, 0]], 2],
+            "expected": [[-1, 0], [1, 1]]
+          },
+          {
+            "args": [[[1, 0], [-1, 0], [0, -1], [0, 1]], 4],
+            "expected": [[-1, 0], [0, -1], [0, 1], [1, 0]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "kClosest",
+        "signature": "kClosest(points: number[][], k: number): number[][]",
+        "starter": "export function kClosest(points: number[][], k: number): number[][] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[[3, 0], [1, 1], [-1, 0]], 2],
+            "expected": [[-1, 0], [1, 1]]
+          },
+          {
+            "args": [[[1, 0], [-1, 0], [0, -1], [0, 1]], 4],
+            "expected": [[-1, 0], [0, -1], [0, 1], [1, 0]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 0],
+      "expected": []
+    },
+    {
+      "args": [[[4, 5]], 0],
+      "expected": []
+    },
+    {
+      "args": [[[0, 0]], 1],
+      "expected": [[0, 0]]
+    },
+    {
+      "args": [[[2, 2], [2, 2], [3, 0]], 2],
+      "expected": [[2, 2], [2, 2]]
+    },
+    {
+      "args": [[[10, 0], [2, 0]], 1],
+      "expected": [[2, 0]]
+    },
+    {
+      "args": [[[1, 0], [0, 1], [0, -1], [-1, 0]], 2],
+      "expected": [[-1, 0], [0, -1]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function kClosest(points            , k        )             {\n  return points.map(point => [...point]).sort((a,b) => (a[0]*a[0]+a[1]*a[1])-(b[0]*b[0]+b[1]*b[1]) || a[0]-b[0] || a[1]-b[1]).slice(0,k);\n}\n",
+    "typescript": "export function kClosest(points: number[][], k: number): number[][] {\n  return points.map(point => [...point]).sort((a,b) => (a[0]*a[0]+a[1]*a[1])-(b[0]*b[0]+b[1]*b[1]) || a[0]-b[0] || a[1]-b[1]).slice(0,k);\n}\n"
+  },
+  "explanation": "Sort by the required numeric comparison tuple and take the first k points. O(n log n) time and O(n) space."
+}

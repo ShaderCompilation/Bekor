@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "path-sum-iii",
+    "slug": "path-sum-iii",
+    "version": "1.0.0",
+    "title": "Path Sum III",
+    "description": "Trees use compact breadth-first arrays: the root comes first, then the left and right children of each non-null node in queue order; null means absent and trailing nulls may be omitted. Empty arrays mean no root. Count downward nonempty paths whose node values sum to target. Paths may start and end anywhere but only follow parent-to-child edges. At most 200 nodes; node values and target are integers between -1000 and 1000.",
+    "difficulty": "medium",
+    "concepts": ["trees", "depth-first-search"],
+    "hints": ["Try every start node, then extend only downward."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "pathSumIii",
+        "signature": "pathSumIii(values: (number|null)[], target: number): number",
+        "starter": "export function pathSumIii(values                 , target        )         {\n  throw new Error(\"Implement pathSumIii\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3], 3],
+            "expected": 2
+          },
+          {
+            "args": [[0, 0, 0], 0],
+            "expected": 5
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "pathSumIii",
+        "signature": "pathSumIii(values: (number|null)[], target: number): number",
+        "starter": "export function pathSumIii(values: (number|null)[], target: number): number {\n  throw new Error(\"Implement pathSumIii\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3], 3],
+            "expected": 2
+          },
+          {
+            "args": [[0, 0, 0], 0],
+            "expected": 5
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 0],
+      "expected": 0
+    },
+    {
+      "args": [[5], 5],
+      "expected": 1
+    },
+    {
+      "args": [[1, -1, -1], 0],
+      "expected": 2
+    },
+    {
+      "args": [[1, 2, null, 3], 3],
+      "expected": 2
+    },
+    {
+      "args": [[-2, null, -3], -5],
+      "expected": 1
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function pathSumIii(values                 , target        )         {\n                                       function build(a                )        {if(!a.length||a[0]===null)return null;const root  ={v:a[0],l:null,r:null},q    =[root];let i=1;for(let j=0;j<q.length&&i<a.length;j++){for(const key of ['l','r']         ){const v=a[i++];if(v!==null&&v!==undefined){const n  ={v,l:null,r:null};q[j][key]=n;q.push(n);}}}return root;}const root=build(values);function from(n       ,sum       )       {if(!n)return 0;const next=sum+n.v;return Number(next===target)+from(n.l,next)+from(n.r,next);}function visit(n       )       {return n?from(n,0)+visit(n.l)+visit(n.r):0;}return visit(root);\n}\n",
+    "typescript": "export function pathSumIii(values: (number|null)[], target: number): number {\ntype N = {v:number,l:N|null,r:N|null}; function build(a:(number|null)[]):N|null {if(!a.length||a[0]===null)return null;const root:N={v:a[0],l:null,r:null},q:N[]=[root];let i=1;for(let j=0;j<q.length&&i<a.length;j++){for(const key of ['l','r'] as const){const v=a[i++];if(v!==null&&v!==undefined){const n:N={v,l:null,r:null};q[j][key]=n;q.push(n);}}}return root;}const root=build(values);function from(n:N|null,sum:number):number{if(!n)return 0;const next=sum+n.v;return Number(next===target)+from(n.l,next)+from(n.r,next);}function visit(n:N|null):number{return n?from(n,0)+visit(n.l)+visit(n.r):0;}return visit(root);\n}\n"
+  },
+  "explanation": "For each node count matching paths starting there, then recurse over possible starts. This direct solution uses O(n squared) time and O(height) stack space."
+}

@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "maximum-depth-of-binary-tree",
+    "slug": "maximum-depth-of-binary-tree",
+    "version": "1.0.0",
+    "title": "Maximum Depth of Binary Tree",
+    "description": "Return the maximum number of nodes on a path from the root to a leaf. Empty trees have depth zero. Trees use compact breadth-first arrays: read the root, then left and right child slots for each non-null node in queue order. null marks a missing child; absent trailing slots are null. [] is empty. Values are integers from -10000 to 10000 and there are at most 200 nodes.",
+    "difficulty": "easy",
+    "concepts": ["trees", "depth-first-search"],
+    "hints": ["An empty subtree contributes depth zero.", "Add one to the deeper child subtree."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "maxDepth",
+        "signature": "maxDepth(values: (number | null)[]): number",
+        "starter": "export function maxDepth(values) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[4, 2, 7, 1]],
+            "expected": 3
+          },
+          {
+            "args": [[1, null, 2, null, 3]],
+            "expected": 3
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "maxDepth",
+        "signature": "maxDepth(values: (number | null)[]): number",
+        "starter": "export function maxDepth(values: (number | null)[]): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[4, 2, 7, 1]],
+            "expected": 3
+          },
+          {
+            "args": [[1, null, 2, null, 3]],
+            "expected": 3
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": 0
+    },
+    {
+      "args": [[0]],
+      "expected": 1
+    },
+    {
+      "args": [[1, 2, 3]],
+      "expected": 2
+    },
+    {
+      "args": [[5, 4, null, 3, null, 2]],
+      "expected": 4
+    },
+    {
+      "args": [[1, 2, 3, null, null, 4, 5]],
+      "expected": 3
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "                                                                     \nfunction readTree(values                   )              {\n  if (values.length === 0 || values[0] === null) return null;\n  const root       = { value: values[0], left: null, right: null };\n  const queue         = [root]; let index = 1;\n  for (let i = 0; i < queue.length && index < values.length; i++) {\n    const node = queue[i];\n    for (const side of ['left', 'right']         ) {\n      const value = values[index++];\n      if (value !== null && value !== undefined) { const child       = { value, left: null, right: null }; node[side] = child; queue.push(child); }\n    }\n  }\n  return root;\n}\nexport function maxDepth(values                   )         {\n  function depth(node             )         { return node ? 1 + Math.max(depth(node.left), depth(node.right)) : 0; } return depth(readTree(values));\n}\n",
+    "typescript": "type Tree = { value: number; left: Tree | null; right: Tree | null };\nfunction readTree(values: (number | null)[]): Tree | null {\n  if (values.length === 0 || values[0] === null) return null;\n  const root: Tree = { value: values[0], left: null, right: null };\n  const queue: Tree[] = [root]; let index = 1;\n  for (let i = 0; i < queue.length && index < values.length; i++) {\n    const node = queue[i];\n    for (const side of ['left', 'right'] as const) {\n      const value = values[index++];\n      if (value !== null && value !== undefined) { const child: Tree = { value, left: null, right: null }; node[side] = child; queue.push(child); }\n    }\n  }\n  return root;\n}\nexport function maxDepth(values: (number | null)[]): number {\n  function depth(node: Tree | null): number { return node ? 1 + Math.max(depth(node.left), depth(node.right)) : 0; } return depth(readTree(values));\n}\n"
+  },
+  "explanation": "Compute one plus the maximum child depth recursively. O(n) time and O(h) traversal stack."
+}

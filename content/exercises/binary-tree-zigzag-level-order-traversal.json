@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "binary-tree-zigzag-level-order-traversal",
+    "slug": "binary-tree-zigzag-level-order-traversal",
+    "version": "1.0.0",
+    "title": "Binary Tree Zigzag Level Order Traversal",
+    "description": "Trees use compact breadth-first arrays: the root comes first, then the left and right children of each non-null node in queue order; null means absent and trailing nulls may be omitted. Empty arrays mean no root. Return each tree level as an array, alternating left-to-right at depth zero and right-to-left at depth one. At most 500 nodes with values from -1000 to 1000.",
+    "difficulty": "medium",
+    "concepts": ["trees", "breadth-first-search"],
+    "hints": ["Use a breadth-first queue."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "binaryTreeZigzagLevelOrderTraversal",
+        "signature": "binaryTreeZigzagLevelOrderTraversal(values: (number|null)[]): number[][]",
+        "starter": "export function binaryTreeZigzagLevelOrderTraversal(values                 )             {\n  throw new Error(\"Implement binaryTreeZigzagLevelOrderTraversal\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[8, 4, 12, 2, 6, 10, 14]],
+            "expected": [[8], [12, 4], [2, 6, 10, 14]]
+          },
+          {
+            "args": [[1, null, 2, 3]],
+            "expected": [[1], [2], [3]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "binaryTreeZigzagLevelOrderTraversal",
+        "signature": "binaryTreeZigzagLevelOrderTraversal(values: (number|null)[]): number[][]",
+        "starter": "export function binaryTreeZigzagLevelOrderTraversal(values: (number|null)[]): number[][] {\n  throw new Error(\"Implement binaryTreeZigzagLevelOrderTraversal\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[8, 4, 12, 2, 6, 10, 14]],
+            "expected": [[8], [12, 4], [2, 6, 10, 14]]
+          },
+          {
+            "args": [[1, null, 2, 3]],
+            "expected": [[1], [2], [3]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[0]],
+      "expected": [[0]]
+    },
+    {
+      "args": [[1, 2, 3]],
+      "expected": [[1], [3, 2]]
+    },
+    {
+      "args": [[1, 2, null, 3, null, 4]],
+      "expected": [[1], [2], [3], [4]]
+    },
+    {
+      "args": [[-1, -2, -3]],
+      "expected": [[-1], [-3, -2]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function binaryTreeZigzagLevelOrderTraversal(values                 )             {\n                                       function build(a                )        {if(!a.length||a[0]===null)return null;const root  ={v:a[0],l:null,r:null},q    =[root];let i=1;for(let j=0;j<q.length&&i<a.length;j++){for(const key of ['l','r']         ){const v=a[i++];if(v!==null&&v!==undefined){const n  ={v,l:null,r:null};q[j][key]=n;q.push(n);}}}return root;}let q    =build(values)?[build(values) ]:[];const out           =[];while(q.length){const row=q.map(n=>n.v);out.push(out.length%2?row.reverse():row);const next    =[];for(const n of q){if(n.l)next.push(n.l);if(n.r)next.push(n.r);}q=next;}return out;\n}\n",
+    "typescript": "export function binaryTreeZigzagLevelOrderTraversal(values: (number|null)[]): number[][] {\ntype N = {v:number,l:N|null,r:N|null}; function build(a:(number|null)[]):N|null {if(!a.length||a[0]===null)return null;const root:N={v:a[0],l:null,r:null},q:N[]=[root];let i=1;for(let j=0;j<q.length&&i<a.length;j++){for(const key of ['l','r'] as const){const v=a[i++];if(v!==null&&v!==undefined){const n:N={v,l:null,r:null};q[j][key]=n;q.push(n);}}}return root;}let q:N[]=build(values)?[build(values)!]:[];const out:number[][]=[];while(q.length){const row=q.map(n=>n.v);out.push(out.length%2?row.reverse():row);const next:N[]=[];for(const n of q){if(n.l)next.push(n.l);if(n.r)next.push(n.r);}q=next;}return out;\n}\n"
+  },
+  "explanation": "Collect each level in structural order and reverse only the output for odd depths. O(n) time and space."
+}

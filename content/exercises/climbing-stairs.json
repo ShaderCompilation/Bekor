@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "climbing-stairs",
+    "slug": "climbing-stairs",
+    "version": "1.0.0",
+    "title": "Climbing Stairs",
+    "description": "Return the number of ordered ways to climb n steps using moves of one or two steps. n is an integer from 0 to 45. For n = 0 there is one way: taking no steps.",
+    "difficulty": "easy",
+    "concepts": ["dynamic-programming"],
+    "hints": [
+      "Consider whether the final move was one or two steps.",
+      "Keep only the previous two counts."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "climbStairs",
+        "signature": "climbStairs(n: number): number",
+        "starter": "export function climbStairs(n) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [4],
+            "expected": 5
+          },
+          {
+            "args": [5],
+            "expected": 8
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "climbStairs",
+        "signature": "climbStairs(n: number): number",
+        "starter": "export function climbStairs(n: number): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [4],
+            "expected": 5
+          },
+          {
+            "args": [5],
+            "expected": 8
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [0],
+      "expected": 1
+    },
+    {
+      "args": [1],
+      "expected": 1
+    },
+    {
+      "args": [2],
+      "expected": 2
+    },
+    {
+      "args": [10],
+      "expected": 89
+    },
+    {
+      "args": [45],
+      "expected": 1836311903
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function climbStairs(n        )         {\n  let previous = 1, current = 1; for (let step = 2; step <= n; step++) { const next = previous + current; previous = current; current = next; } return current;\n}\n",
+    "typescript": "export function climbStairs(n: number): number {\n  let previous = 1, current = 1; for (let step = 2; step <= n; step++) { const next = previous + current; previous = current; current = next; } return current;\n}\n"
+  },
+  "explanation": "For n greater than one, sum ways ending with a one-step and two-step move. Both base counts are one, including the empty climb. O(n) time and O(1) space."
+}

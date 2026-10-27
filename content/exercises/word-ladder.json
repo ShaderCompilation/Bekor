@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "word-ladder",
+    "slug": "word-ladder",
+    "version": "1.0.0",
+    "title": "Word Ladder",
+    "description": "Return the minimum number of words in a sequence from begin to end that changes exactly one character per step. Every word after begin must belong to words; return zero when impossible. If begin equals end return one. All words are lowercase ASCII of the same length, 1 to 8; dictionary has at most 500 distinct words.",
+    "difficulty": "medium",
+    "concepts": ["graphs", "breadth-first-search"],
+    "hints": ["Breadth-first search explores transformations by distance."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "wordLadder",
+        "signature": "wordLadder(begin: string, end: string, words: string[]): number",
+        "starter": "export function wordLadder(begin        , end        , words          )         {\n  throw new Error(\"Implement wordLadder\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["cat", "dog", ["cot", "cog", "dog"]],
+            "expected": 4
+          },
+          {
+            "args": ["cat", "dog", ["cot", "cog"]],
+            "expected": 0
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "wordLadder",
+        "signature": "wordLadder(begin: string, end: string, words: string[]): number",
+        "starter": "export function wordLadder(begin: string, end: string, words: string[]): number {\n  throw new Error(\"Implement wordLadder\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["cat", "dog", ["cot", "cog", "dog"]],
+            "expected": 4
+          },
+          {
+            "args": ["cat", "dog", ["cot", "cog"]],
+            "expected": 0
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["same", "same", []],
+      "expected": 1
+    },
+    {
+      "args": ["a", "c", ["c"]],
+      "expected": 2
+    },
+    {
+      "args": ["aaa", "bbb", ["aab", "abb", "bbb"]],
+      "expected": 4
+    },
+    {
+      "args": ["aaa", "bbb", ["bbb"]],
+      "expected": 0
+    },
+    {
+      "args": ["hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"]],
+      "expected": 5
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function wordLadder(begin        , end        , words          )         {\nif(begin===end)return 1;const remaining=new Set(words);if(!remaining.has(end))return 0;remaining.delete(begin);let q=[begin],length=1;while(q.length){const next         =[];for(const w of q)for(let i=0;i<w.length;i++)for(let c=97;c<=122;c++){const v=w.slice(0,i)+String.fromCharCode(c)+w.slice(i+1);if(!remaining.has(v))continue;if(v===end)return length+1;remaining.delete(v);next.push(v);}q=next;length++;}return 0;\n}\n",
+    "typescript": "export function wordLadder(begin: string, end: string, words: string[]): number {\nif(begin===end)return 1;const remaining=new Set(words);if(!remaining.has(end))return 0;remaining.delete(begin);let q=[begin],length=1;while(q.length){const next:string[]=[];for(const w of q)for(let i=0;i<w.length;i++)for(let c=97;c<=122;c++){const v=w.slice(0,i)+String.fromCharCode(c)+w.slice(i+1);if(!remaining.has(v))continue;if(v===end)return length+1;remaining.delete(v);next.push(v);}q=next;length++;}return 0;\n}\n"
+  },
+  "explanation": "Generate all one-letter neighbors and remove dictionary words as they are queued. The first arrival at end is shortest. O(dictionary size times length times alphabet) time."
+}

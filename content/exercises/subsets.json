@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "subsets",
+    "slug": "subsets",
+    "version": "1.0.0",
+    "title": "Subsets",
+    "description": "Return every subset of the distinct input integers. Within each subset sort ascending. Sort the result lexicographically by numeric elements, putting a shorter prefix before a longer one. There are 0 to 10 distinct integers between -100 and 100. Include the empty subset.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Sort first and emit each path before extending it."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "subsets",
+        "signature": "subsets(values: number[]): number[][]",
+        "starter": "export function subsets(values) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 1]],
+            "expected": [[], [1], [1, 2], [2]]
+          },
+          {
+            "args": [[]],
+            "expected": [[]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "subsets",
+        "signature": "subsets(values: number[]): number[][]",
+        "starter": "export function subsets(values: number[]): number[][] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 1]],
+            "expected": [[], [1], [1, 2], [2]]
+          },
+          {
+            "args": [[]],
+            "expected": [[]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[3]],
+      "expected": [[], [3]]
+    },
+    {
+      "args": [[-1, 0]],
+      "expected": [[], [-1], [-1, 0], [0]]
+    },
+    {
+      "args": [[5, -2]],
+      "expected": [[], [-2], [-2, 5], [5]]
+    },
+    {
+      "args": [[0]],
+      "expected": [[], [0]]
+    },
+    {
+      "args": [[3, 2, 1]],
+      "expected": [[], [1], [1, 2], [1, 2, 3], [1, 3], [2], [2, 3], [3]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function subsets(values          )             {\nconst sorted=[...values].sort((a,b)=>a-b),out           =[];function visit(i       ,path         ){out.push([...path]);for(let j=i;j<sorted.length;j++)visit(j+1,[...path,sorted[j]]);}visit(0,[]);return out;\n}\n",
+    "typescript": "export function subsets(values: number[]): number[][] {\nconst sorted=[...values].sort((a,b)=>a-b),out:number[][]=[];function visit(i:number,path:number[]){out.push([...path]);for(let j=i;j<sorted.length;j++)visit(j+1,[...path,sorted[j]]);}visit(0,[]);return out;\n}\n"
+  },
+  "explanation": "Preorder enumeration over sorted choices directly produces numeric lexicographic order. There are 2 to the n subsets and O(n times 2 to the n) output size."
+}

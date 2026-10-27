@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "task-scheduler",
+    "slug": "task-scheduler",
+    "version": "1.0.0",
+    "title": "Task Scheduler",
+    "description": "Each task is one uppercase ASCII letter and takes one time unit. Identical letters must have at least cooldown time units between executions. Tasks may be reordered and idle slots are allowed. Return the minimum total duration. There are 0 to 1000 tasks; cooldown is 0 to 100.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["The most frequent letters impose a lower bound on the schedule length."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "leastInterval",
+        "signature": "leastInterval(tasks: string[], cooldown: number): number",
+        "starter": "export function leastInterval(tasks, cooldown) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [["A", "A", "A", "B", "B", "B"], 2],
+            "expected": 8
+          },
+          {
+            "args": [["A", "A", "B"], 0],
+            "expected": 3
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "leastInterval",
+        "signature": "leastInterval(tasks: string[], cooldown: number): number",
+        "starter": "export function leastInterval(tasks: string[], cooldown: number): number {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [["A", "A", "A", "B", "B", "B"], 2],
+            "expected": 8
+          },
+          {
+            "args": [["A", "A", "B"], 0],
+            "expected": 3
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 5],
+      "expected": 0
+    },
+    {
+      "args": [["A"], 9],
+      "expected": 1
+    },
+    {
+      "args": [["A", "A"], 3],
+      "expected": 5
+    },
+    {
+      "args": [["A", "B", "C"], 2],
+      "expected": 3
+    },
+    {
+      "args": [["A", "A", "A", "B"], 1],
+      "expected": 5
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function leastInterval(tasks          , cooldown        )         {\nif(!tasks.length)return 0;const counts=new Map               ();for(const t of tasks)counts.set(t,(counts.get(t)??0)+1);const max=Math.max(...counts.values()),ties=[...counts.values()].filter(x=>x===max).length;return Math.max(tasks.length,(max-1)*(cooldown+1)+ties);\n}\n",
+    "typescript": "export function leastInterval(tasks: string[], cooldown: number): number {\nif(!tasks.length)return 0;const counts=new Map<string,number>();for(const t of tasks)counts.set(t,(counts.get(t)??0)+1);const max=Math.max(...counts.values()),ties=[...counts.values()].filter(x=>x===max).length;return Math.max(tasks.length,(max-1)*(cooldown+1)+ties);\n}\n"
+  },
+  "explanation": "Separate all but the final occurrences of the most frequent tasks into frames of cooldown plus one slots. Count tied maxima and compare with total tasks. O(n) time."
+}

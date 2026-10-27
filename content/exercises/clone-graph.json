@@ -1,0 +1,118 @@
+{
+  "public": {
+    "id": "clone-graph",
+    "slug": "clone-graph",
+    "version": "1.0.0",
+    "title": "Clone Graph",
+    "description": "adjacency serializes a connected undirected graph: row i lists the 1-based labels adjacent to node i+1. It has 0 to 50 nodes, no repeated edges or self-loops, and neighbor order is significant. First clone the graph. Then each edit [node,label] appends label to that node’s neighbor row in the clone only, in edit order. Edits are intentionally directed, may repeat labels or add self-loops, and have valid labels from 1 through the row count. There are at most 100 edits; an empty graph has none. Return {original,clone}: original must retain the input adjacency values and clone must reflect the edits. Preserve existing neighbor order. This JSON observation makes row independence testable through clone-only mutations.",
+    "difficulty": "medium",
+    "concepts": ["graphs", "cloning"],
+    "hints": [
+      "Copy every neighbor row, not only the outer array.",
+      "Apply each edit to the cloned row while retaining the original adjacency structure."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "cloneGraph",
+        "signature": "cloneGraph(adjacency: number[][], edits: number[][]): { original: number[][]; clone: number[][] }",
+        "starter": "export function cloneGraph(adjacency, edits) {\n  // Implement the function.\n  return { original: [], clone: [] };\n}\n",
+        "publicTests": [
+          {
+            "args": [[[2], [1]], [[1, 1]]],
+            "expected": {
+              "original": [[2], [1]],
+              "clone": [[2, 1], [1]]
+            }
+          },
+          {
+            "args": [[[2, 3], [1, 3], [1, 2]], [[2, 2], [2, 1]]],
+            "expected": {
+              "original": [[2, 3], [1, 3], [1, 2]],
+              "clone": [[2, 3], [1, 3, 2, 1], [1, 2]]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "cloneGraph",
+        "signature": "cloneGraph(adjacency: number[][], edits: number[][]): { original: number[][]; clone: number[][] }",
+        "starter": "export function cloneGraph(adjacency: number[][], edits: number[][]): { original: number[][]; clone: number[][] } {\n  // Implement the function.\n  return { original: [], clone: [] };\n}\n",
+        "publicTests": [
+          {
+            "args": [[[2], [1]], [[1, 1]]],
+            "expected": {
+              "original": [[2], [1]],
+              "clone": [[2, 1], [1]]
+            }
+          },
+          {
+            "args": [[[2, 3], [1, 3], [1, 2]], [[2, 2], [2, 1]]],
+            "expected": {
+              "original": [[2, 3], [1, 3], [1, 2]],
+              "clone": [[2, 3], [1, 3, 2, 1], [1, 2]]
+            }
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], []],
+      "expected": {
+        "original": [],
+        "clone": []
+      }
+    },
+    {
+      "args": [[[]], [[1, 1]]],
+      "expected": {
+        "original": [[]],
+        "clone": [[1]]
+      }
+    },
+    {
+      "args": [[[3, 2], [1], [1]], []],
+      "expected": {
+        "original": [[3, 2], [1], [1]],
+        "clone": [[3, 2], [1], [1]]
+      }
+    },
+    {
+      "args": [[[2], [1, 3], [2]], [[3, 1], [1, 3]]],
+      "expected": {
+        "original": [[2], [1, 3], [2]],
+        "clone": [[2, 3], [1, 3], [2, 1]]
+      }
+    },
+    {
+      "args": [[[2], [1]], [[1, 2], [1, 2]]],
+      "expected": {
+        "original": [[2], [1]],
+        "clone": [[2, 2, 2], [1]]
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function cloneGraph(adjacency            , edits            )                                              {\n  const copies            =[]; for(const neighbors of adjacency)copies.push(neighbors.map(label=>label)); for(const [node,label] of edits)copies[node-1].push(label); return {original:adjacency,clone:copies};\n}\n",
+    "typescript": "export function cloneGraph(adjacency: number[][], edits: number[][]): { original: number[][]; clone: number[][] } {\n  const copies: number[][]=[]; for(const neighbors of adjacency)copies.push(neighbors.map(label=>label)); for(const [node,label] of edits)copies[node-1].push(label); return {original:adjacency,clone:copies};\n}\n"
+  },
+  "explanation": "Copy every adjacency row to obtain independent neighbor arrays, then append each edit to the clone. Returning both structures makes aliasing failures visible as changed original values. O(V+E+edits) time and space."
+}

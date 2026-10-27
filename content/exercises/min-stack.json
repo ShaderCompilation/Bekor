@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "min-stack",
+    "slug": "min-stack",
+    "version": "1.0.0",
+    "title": "Min Stack",
+    "description": "Process a fresh stack using [\"push\",integer], [\"pop\"], [\"top\"], and [\"getMin\"]. Return one output per operation: null for push or pop, the top value for top, and the smallest stored value for getMin. Pop and queries occur only when nonempty. Values are -1000000 to 1000000; there are 0 to 1000 operations. There is no constructor operation. Aim for O(1) time per operation.",
+    "difficulty": "medium",
+    "concepts": ["stacks"],
+    "hints": [
+      "Store the minimum alongside every stack depth.",
+      "Duplicate minimum values need separate depth entries."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "minStackOperations",
+        "signature": "minStackOperations(operations: (string | number)[][]): (number | null)[]",
+        "starter": "export function minStackOperations(operations) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[["push", 4], ["push", -2], ["getMin"], ["pop"], ["top"]]],
+            "expected": [null, null, -2, null, 4]
+          },
+          {
+            "args": [[["push", 3], ["push", 3], ["pop"], ["getMin"]]],
+            "expected": [null, null, null, 3]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "minStackOperations",
+        "signature": "minStackOperations(operations: (string | number)[][]): (number | null)[]",
+        "starter": "export function minStackOperations(operations: (string | number)[][]): (number | null)[] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[["push", 4], ["push", -2], ["getMin"], ["pop"], ["top"]]],
+            "expected": [null, null, -2, null, 4]
+          },
+          {
+            "args": [[["push", 3], ["push", 3], ["pop"], ["getMin"]]],
+            "expected": [null, null, null, 3]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[["push", 0], ["top"], ["getMin"]]],
+      "expected": [null, 0, 0]
+    },
+    {
+      "args": [[["push", -5], ["push", 2], ["getMin"]]],
+      "expected": [null, null, -5]
+    },
+    {
+      "args": [[["push", 2], ["push", 1], ["pop"], ["getMin"]]],
+      "expected": [null, null, null, 2]
+    },
+    {
+      "args": [[["push", -1], ["pop"], ["push", 9], ["getMin"]]],
+      "expected": [null, null, null, 9]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function minStackOperations(operations                       )                    {\n  const values         =[], minimums         =[], result                =[]; for(const operation of operations) { const name=operation[0]; if(name==='push') { const value=operation[1]          ; values.push(value); minimums.push(Math.min(value,minimums[minimums.length-1]??Infinity)); result.push(null); } else if(name==='pop') { values.pop(); minimums.pop(); result.push(null); } else result.push(name==='top'?values[values.length-1]:minimums[minimums.length-1]); } return result;\n}\n",
+    "typescript": "export function minStackOperations(operations: (string | number)[][]): (number | null)[] {\n  const values:number[]=[], minimums:number[]=[], result:(number|null)[]=[]; for(const operation of operations) { const name=operation[0]; if(name==='push') { const value=operation[1] as number; values.push(value); minimums.push(Math.min(value,minimums[minimums.length-1]??Infinity)); result.push(null); } else if(name==='pop') { values.pop(); minimums.pop(); result.push(null); } else result.push(name==='top'?values[values.length-1]:minimums[minimums.length-1]); } return result;\n}\n"
+  },
+  "explanation": "A parallel minimum stack records the minimum at each depth and restores it after pop. O(1) per operation and O(n) space."
+}

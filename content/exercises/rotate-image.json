@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "rotate-image",
+    "slug": "rotate-image",
+    "version": "1.0.0",
+    "title": "Rotate Image",
+    "description": "Return an n by n integer matrix rotated clockwise by 90 degrees. This function returns the rotated value rather than requiring in-place mutation. n is 0 to 50; entries are between -1000 and 1000.",
+    "difficulty": "medium",
+    "concepts": ["matrices"],
+    "hints": ["Map each output row and column back to the input."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "rotateImage",
+        "signature": "rotateImage(matrix: number[][]): number[][]",
+        "starter": "export function rotateImage(matrix            )             {\n  throw new Error(\"Implement rotateImage\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 2], [3, 4]]],
+            "expected": [[3, 1], [4, 2]]
+          },
+          {
+            "args": [[[1]]],
+            "expected": [[1]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "rotateImage",
+        "signature": "rotateImage(matrix: number[][]): number[][]",
+        "starter": "export function rotateImage(matrix: number[][]): number[][] {\n  throw new Error(\"Implement rotateImage\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 2], [3, 4]]],
+            "expected": [[3, 1], [4, 2]]
+          },
+          {
+            "args": [[[1]]],
+            "expected": [[1]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]],
+      "expected": [[7, 4, 1], [8, 5, 2], [9, 6, 3]]
+    },
+    {
+      "args": [[[0, 0], [0, 0]]],
+      "expected": [[0, 0], [0, 0]]
+    },
+    {
+      "args": [[[-1, 2], [3, -4]]],
+      "expected": [[3, -1], [-4, 2]]
+    },
+    {
+      "args": [[[9, 8], [7, 6]]],
+      "expected": [[7, 9], [6, 8]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function rotateImage(matrix            )             {\nconst n=matrix.length;return Array.from({length:n},(_,r)=>Array.from({length:n},(_,c)=>matrix[n-1-c][r]));\n}\n",
+    "typescript": "export function rotateImage(matrix: number[][]): number[][] {\nconst n=matrix.length;return Array.from({length:n},(_,r)=>Array.from({length:n},(_,c)=>matrix[n-1-c][r]));\n}\n"
+  },
+  "explanation": "Output position (r,c) reads input position (n-1-c,r). O(n squared) time and output space."
+}

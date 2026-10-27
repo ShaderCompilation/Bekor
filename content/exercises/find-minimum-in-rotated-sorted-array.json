@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "find-minimum-in-rotated-sorted-array",
+    "slug": "find-minimum-in-rotated-sorted-array",
+    "version": "1.0.0",
+    "title": "Find Minimum in Rotated Sorted Array",
+    "description": "A nonempty strictly increasing array of distinct integers was rotated by any number of positions, including zero. Return its smallest value. Length is 1 to 1000; integers are between -10000 and 10000.",
+    "difficulty": "medium",
+    "concepts": ["binary-search", "arrays"],
+    "hints": ["Compare the middle value with the right endpoint."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "findMinimumInRotatedSortedArray",
+        "signature": "findMinimumInRotatedSortedArray(values: number[]): number",
+        "starter": "export function findMinimumInRotatedSortedArray(values          )         {\n  throw new Error(\"Implement findMinimumInRotatedSortedArray\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[4, 7, 9, 1, 2]],
+            "expected": 1
+          },
+          {
+            "args": [[1, 2, 3]],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "findMinimumInRotatedSortedArray",
+        "signature": "findMinimumInRotatedSortedArray(values: number[]): number",
+        "starter": "export function findMinimumInRotatedSortedArray(values: number[]): number {\n  throw new Error(\"Implement findMinimumInRotatedSortedArray\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[4, 7, 9, 1, 2]],
+            "expected": 1
+          },
+          {
+            "args": [[1, 2, 3]],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[5]],
+      "expected": 5
+    },
+    {
+      "args": [[2, 1]],
+      "expected": 1
+    },
+    {
+      "args": [[-2, 0, 3, -8]],
+      "expected": -8
+    },
+    {
+      "args": [[2, 3, 4, 5, 1]],
+      "expected": 1
+    },
+    {
+      "args": [[5, 1, 2, 3, 4]],
+      "expected": 1
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function findMinimumInRotatedSortedArray(values          )         {\nlet l=0,r=values.length-1;while(l<r){const m=(l+r)>>1;if(values[m]>values[r])l=m+1;else r=m;}return values[l];\n}\n",
+    "typescript": "export function findMinimumInRotatedSortedArray(values: number[]): number {\nlet l=0,r=values.length-1;while(l<r){const m=(l+r)>>1;if(values[m]>values[r])l=m+1;else r=m;}return values[l];\n}\n"
+  },
+  "explanation": "The minimum remains inside the selected half, including the middle when it is no larger than the right endpoint. O(log n) time and O(1) space."
+}

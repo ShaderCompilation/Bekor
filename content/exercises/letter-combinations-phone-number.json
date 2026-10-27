@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "letter-combinations-phone-number",
+    "slug": "letter-combinations-phone-number",
+    "version": "1.0.0",
+    "title": "Letter Combinations of a Phone Number",
+    "description": "Return all letter strings represented by digits using 2=abc, 3=def, 4=ghi, 5=jkl, 6=mno, 7=pqrs, 8=tuv, 9=wxyz. Sort strings lexicographically. Input has 0 to 4 digits from 2 through 9. Empty input returns [].",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Extend every partial result with each letter for the next digit."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "letterCombinations",
+        "signature": "letterCombinations(digits: string): string[]",
+        "starter": "export function letterCombinations(digits) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["2"],
+            "expected": ["a", "b", "c"]
+          },
+          {
+            "args": ["23"],
+            "expected": ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "letterCombinations",
+        "signature": "letterCombinations(digits: string): string[]",
+        "starter": "export function letterCombinations(digits: string): string[] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["2"],
+            "expected": ["a", "b", "c"]
+          },
+          {
+            "args": ["23"],
+            "expected": ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [""],
+      "expected": []
+    },
+    {
+      "args": ["7"],
+      "expected": ["p", "q", "r", "s"]
+    },
+    {
+      "args": ["9"],
+      "expected": ["w", "x", "y", "z"]
+    },
+    {
+      "args": ["22"],
+      "expected": ["aa", "ab", "ac", "ba", "bb", "bc", "ca", "cb", "cc"]
+    },
+    {
+      "args": ["8"],
+      "expected": ["t", "u", "v"]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function letterCombinations(digits        )           {\nif(!digits)return [];const keys                      ={2:\"abc\",3:\"def\",4:\"ghi\",5:\"jkl\",6:\"mno\",7:\"pqrs\",8:\"tuv\",9:\"wxyz\"};let out=[\"\"];for(const d of digits)out=out.flatMap(p=>[...keys[d]].map(c=>p+c));return out;\n}\n",
+    "typescript": "export function letterCombinations(digits: string): string[] {\nif(!digits)return [];const keys:Record<string,string>={2:\"abc\",3:\"def\",4:\"ghi\",5:\"jkl\",6:\"mno\",7:\"pqrs\",8:\"tuv\",9:\"wxyz\"};let out=[\"\"];for(const d of digits)out=out.flatMap(p=>[...keys[d]].map(c=>p+c));return out;\n}\n"
+  },
+  "explanation": "Repeated Cartesian products preserve lexicographic order. Time and space are proportional to the total output characters."
+}

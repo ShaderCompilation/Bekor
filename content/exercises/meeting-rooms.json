@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "meeting-rooms",
+    "slug": "meeting-rooms",
+    "version": "1.0.0",
+    "title": "Meeting Rooms",
+    "description": "Each interval is a half-open meeting [start,end), with integer start strictly less than end. Return whether one person can attend every meeting. Touching endpoints do not overlap. Input order is arbitrary, count is 0 to 1000, and endpoints are between -1000000 and 1000000.",
+    "difficulty": "easy",
+    "concepts": ["intervals", "sorting"],
+    "hints": [
+      "Sort meetings by start time.",
+      "Compare each start with the previous end using strict overlap."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "canAttendMeetings",
+        "signature": "canAttendMeetings(intervals: number[][]): boolean",
+        "starter": "export function canAttendMeetings(intervals) {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": [[[8, 10], [1, 4], [4, 7]]],
+            "expected": true
+          },
+          {
+            "args": [[[1, 6], [3, 4]]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "canAttendMeetings",
+        "signature": "canAttendMeetings(intervals: number[][]): boolean",
+        "starter": "export function canAttendMeetings(intervals: number[][]): boolean {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": [[[8, 10], [1, 4], [4, 7]]],
+            "expected": true
+          },
+          {
+            "args": [[[1, 6], [3, 4]]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": true
+    },
+    {
+      "args": [[[0, 1]]],
+      "expected": true
+    },
+    {
+      "args": [[[2, 5], [2, 5]]],
+      "expected": false
+    },
+    {
+      "args": [[[-4, -1], [-1, 2]]],
+      "expected": true
+    },
+    {
+      "args": [[[10, 11], [1, 3], [2, 4]]],
+      "expected": false
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function canAttendMeetings(intervals            )          {\n  const sorted = intervals.map(pair => [...pair]).sort((a,b) => a[0] - b[0]); for (let i = 1; i < sorted.length; i++) if (sorted[i][0] < sorted[i-1][1]) return false; return true;\n}\n",
+    "typescript": "export function canAttendMeetings(intervals: number[][]): boolean {\n  const sorted = intervals.map(pair => [...pair]).sort((a,b) => a[0] - b[0]); for (let i = 1; i < sorted.length; i++) if (sorted[i][0] < sorted[i-1][1]) return false; return true;\n}\n"
+  },
+  "explanation": "Sorted adjacent intervals suffice: any overlap is revealed by an adjacent pair. O(n log n) time and O(n) copied space."
+}

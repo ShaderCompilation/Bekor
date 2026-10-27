@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "jump-game",
+    "slug": "jump-game",
+    "version": "1.0.0",
+    "title": "Jump Game",
+    "description": "Starting at index 0, values[i] is the maximum forward jump length from i. Return whether the last index can be reached. values contains 1 to 1000 integers from 0 to 1000. A single-element array is already reached.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Keep the farthest reachable index while scanning reachable positions."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "canJump",
+        "signature": "canJump(values: number[]): boolean",
+        "starter": "export function canJump(values) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 3, 1, 1, 4]],
+            "expected": true
+          },
+          {
+            "args": [[3, 2, 1, 0, 4]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "canJump",
+        "signature": "canJump(values: number[]): boolean",
+        "starter": "export function canJump(values: number[]): boolean {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 3, 1, 1, 4]],
+            "expected": true
+          },
+          {
+            "args": [[3, 2, 1, 0, 4]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[0]],
+      "expected": true
+    },
+    {
+      "args": [[0, 1]],
+      "expected": false
+    },
+    {
+      "args": [[1, 0]],
+      "expected": true
+    },
+    {
+      "args": [[2, 0, 0]],
+      "expected": true
+    },
+    {
+      "args": [[1, 1, 1, 0]],
+      "expected": true
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function canJump(values          )          {\nlet farthest=0;for(let i=0;i<values.length&&i<=farthest;i++){farthest=Math.max(farthest,i+values[i]);if(farthest>=values.length-1)return true;}return false;\n}\n",
+    "typescript": "export function canJump(values: number[]): boolean {\nlet farthest=0;for(let i=0;i<values.length&&i<=farthest;i++){farthest=Math.max(farthest,i+values[i]);if(farthest>=values.length-1)return true;}return false;\n}\n"
+  },
+  "explanation": "Every reachable position may extend the frontier. A gap before the final index proves failure. O(n) time and O(1) space."
+}

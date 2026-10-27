@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "contiguous-array",
+    "slug": "contiguous-array",
+    "version": "1.0.0",
+    "title": "Contiguous Array",
+    "description": "Return the maximum length of a contiguous subarray containing equally many 0s and 1s. Return 0 if none exists. There are 0 to 1000 values, each 0 or 1.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Treat 0 as -1 and find the farthest equal prefix balances."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "findMaxLength",
+        "signature": "findMaxLength(values: number[]): number",
+        "starter": "export function findMaxLength(values) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[0, 1]],
+            "expected": 2
+          },
+          {
+            "args": [[0, 1, 0]],
+            "expected": 2
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "findMaxLength",
+        "signature": "findMaxLength(values: number[]): number",
+        "starter": "export function findMaxLength(values: number[]): number {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[0, 1]],
+            "expected": 2
+          },
+          {
+            "args": [[0, 1, 0]],
+            "expected": 2
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": 0
+    },
+    {
+      "args": [[1]],
+      "expected": 0
+    },
+    {
+      "args": [[0, 0, 0]],
+      "expected": 0
+    },
+    {
+      "args": [[0, 0, 1, 1]],
+      "expected": 4
+    },
+    {
+      "args": [[1, 0, 1, 1, 1, 0, 0]],
+      "expected": 6
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function findMaxLength(values          )         {\nconst first=new Map               ([[0,-1]]);let balance=0,best=0;for(let i=0;i<values.length;i++){balance+=values[i]===1?1:-1;if(first.has(balance))best=Math.max(best,i-first.get(balance) );else first.set(balance,i);}return best;\n}\n",
+    "typescript": "export function findMaxLength(values: number[]): number {\nconst first=new Map<number,number>([[0,-1]]);let balance=0,best=0;for(let i=0;i<values.length;i++){balance+=values[i]===1?1:-1;if(first.has(balance))best=Math.max(best,i-first.get(balance)!);else first.set(balance,i);}return best;\n}\n"
+  },
+  "explanation": "Equal prefix balances enclose a balanced subarray. Store the earliest index for each balance to maximize length. Expected O(n) time."
+}

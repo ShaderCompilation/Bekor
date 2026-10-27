@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "gas-station",
+    "slug": "gas-station",
+    "version": "1.0.0",
+    "title": "Gas Station",
+    "description": "Stations form a clockwise cycle. At station i add gas[i] and spend cost[i] to reach the next station, starting with an empty tank. Return the smallest starting index that permits a full circuit, or -1 if none does. Both arrays have equal length from 1 to 500, with entries from 0 to 1000.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["If a candidate fails at a station, every intermediate candidate also fails."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "canCompleteCircuit",
+        "signature": "canCompleteCircuit(gas: number[], cost: number[]): number",
+        "starter": "export function canCompleteCircuit(gas, cost) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3], [2, 2, 1]],
+            "expected": 1
+          },
+          {
+            "args": [[1, 1], [2, 2]],
+            "expected": -1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "canCompleteCircuit",
+        "signature": "canCompleteCircuit(gas: number[], cost: number[]): number",
+        "starter": "export function canCompleteCircuit(gas: number[], cost: number[]): number {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3], [2, 2, 1]],
+            "expected": 1
+          },
+          {
+            "args": [[1, 1], [2, 2]],
+            "expected": -1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[3], [3]],
+      "expected": 0
+    },
+    {
+      "args": [[0], [1]],
+      "expected": -1
+    },
+    {
+      "args": [[0, 0], [0, 0]],
+      "expected": 0
+    },
+    {
+      "args": [[2, 2, 2], [1, 1, 1]],
+      "expected": 0
+    },
+    {
+      "args": [[1, 0, 3], [2, 1, 1]],
+      "expected": 2
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function canCompleteCircuit(gas          , cost          )         {\nif(gas.reduce((a,b)=>a+b,0)<cost.reduce((a,b)=>a+b,0))return -1;let start=0,tank=0;for(let i=0;i<gas.length;i++){tank+=gas[i]-cost[i];if(tank<0){start=i+1;tank=0;}}return start;\n}\n",
+    "typescript": "export function canCompleteCircuit(gas: number[], cost: number[]): number {\nif(gas.reduce((a,b)=>a+b,0)<cost.reduce((a,b)=>a+b,0))return -1;let start=0,tank=0;for(let i=0;i<gas.length;i++){tank+=gas[i]-cost[i];if(tank<0){start=i+1;tank=0;}}return start;\n}\n"
+  },
+  "explanation": "Track the running surplus and restart after a negative prefix. Total surplus determines feasibility; the first surviving candidate is the smallest valid start. O(n) time."
+}

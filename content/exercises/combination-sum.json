@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "combination-sum",
+    "slug": "combination-sum",
+    "version": "1.0.0",
+    "title": "Combination Sum",
+    "description": "candidates contains 0 to 12 distinct integers from 1 to 40. Return all combinations that sum to integer target from 0 to 20, using each candidate any number of times. Sort each combination increasingly and sort the result lexicographically by numeric values; a proper prefix comes first. Do not duplicate combinations. target zero returns [[]].",
+    "difficulty": "medium",
+    "concepts": ["backtracking", "combinations"],
+    "hints": [
+      "Choose candidates in nondecreasing order.",
+      "Reusing the same candidate means recursing from its current index."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "combinationSum",
+        "signature": "combinationSum(candidates: number[], target: number): number[][]",
+        "starter": "export function combinationSum(candidates, target) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 3, 5], 7],
+            "expected": [[2, 2, 3], [2, 5]]
+          },
+          {
+            "args": [[4, 6], 5],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "combinationSum",
+        "signature": "combinationSum(candidates: number[], target: number): number[][]",
+        "starter": "export function combinationSum(candidates: number[], target: number): number[][] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 3, 5], 7],
+            "expected": [[2, 2, 3], [2, 5]]
+          },
+          {
+            "args": [[4, 6], 5],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 0],
+      "expected": [[]]
+    },
+    {
+      "args": [[], 3],
+      "expected": []
+    },
+    {
+      "args": [[3], 9],
+      "expected": [[3, 3, 3]]
+    },
+    {
+      "args": [[5, 2], 4],
+      "expected": [[2, 2]]
+    },
+    {
+      "args": [[2, 3], 0],
+      "expected": [[]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function combinationSum(candidates          , target        )             {\n  const choices=[...candidates].sort((a,b)=>a-b), result           =[]; function visit(start       ,remaining       ,path         )      { if(remaining===0) { result.push([...path]);return; } for(let i=start;i<choices.length&&choices[i]<=remaining;i++) { path.push(choices[i]);visit(i,remaining-choices[i],path);path.pop(); } } visit(0,target,[]);return result;\n}\n",
+    "typescript": "export function combinationSum(candidates: number[], target: number): number[][] {\n  const choices=[...candidates].sort((a,b)=>a-b), result:number[][]=[]; function visit(start:number,remaining:number,path:number[]):void { if(remaining===0) { result.push([...path]);return; } for(let i=start;i<choices.length&&choices[i]<=remaining;i++) { path.push(choices[i]);visit(i,remaining-choices[i],path);path.pop(); } } visit(0,target,[]);return result;\n}\n"
+  },
+  "explanation": "Backtracking selects nondecreasing candidate sequences and stops at target zero. Time is output-sensitive and exponential in target/minimum candidate; O(target/minimum candidate) path space plus output."
+}

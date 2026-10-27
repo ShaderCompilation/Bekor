@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "middle-of-the-linked-list",
+    "slug": "middle-of-the-linked-list",
+    "version": "1.0.0",
+    "title": "Middle of the Linked List",
+    "description": "values serializes a nonempty singly linked list from head to tail. Return the suffix beginning at its middle node. For even length, select the second of the two middle nodes. There are 1 to 1000 integers from -10000 to 10000. This JSON form returns node values and does not test pointer identity.",
+    "difficulty": "easy",
+    "concepts": ["linked-lists", "arrays"],
+    "hints": [
+      "The second middle has zero-based index floor(length / 2).",
+      "Return the full suffix rather than one value."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "middleNode",
+        "signature": "middleNode(values: number[]): number[]",
+        "starter": "export function middleNode(values) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[8, 6, 4]],
+            "expected": [6, 4]
+          },
+          {
+            "args": [[1, 3, 5, 7]],
+            "expected": [5, 7]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "middleNode",
+        "signature": "middleNode(values: number[]): number[]",
+        "starter": "export function middleNode(values: number[]): number[] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[8, 6, 4]],
+            "expected": [6, 4]
+          },
+          {
+            "args": [[1, 3, 5, 7]],
+            "expected": [5, 7]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[9]],
+      "expected": [9]
+    },
+    {
+      "args": [[0, 2]],
+      "expected": [2]
+    },
+    {
+      "args": [[-1, -2, -3, -4, -5]],
+      "expected": [-3, -4, -5]
+    },
+    {
+      "args": [[1, 1, 1, 1, 1, 1]],
+      "expected": [1, 1, 1]
+    },
+    {
+      "args": [[10, 20, 30, 40, 50, 60, 70]],
+      "expected": [40, 50, 60, 70]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function middleNode(values          )           {\n  return values.slice(Math.floor(values.length / 2));\n}\n",
+    "typescript": "export function middleNode(values: number[]): number[] {\n  return values.slice(Math.floor(values.length / 2));\n}\n"
+  },
+  "explanation": "The serialized middle index directly identifies the requested suffix. O(n) output copying time and space; linked-node variants can use slow and fast pointers."
+}

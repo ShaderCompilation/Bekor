@@ -1,0 +1,92 @@
+{
+  "public": {
+    "id": "pacific-atlantic-water-flow",
+    "slug": "pacific-atlantic-water-flow",
+    "version": "1.0.0",
+    "title": "Pacific Atlantic Water Flow",
+    "description": "Water flows from a cell to horizontally or vertically adjacent cells of equal or lower height. The top and left borders touch the Pacific; the bottom and right borders touch the Atlantic. Return coordinates [row,column] that can reach both oceans, sorted by row then column. heights is rectangular, with 0 to 30 rows and columns and integer heights from 0 to 10000.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Reverse the flow and search uphill from each ocean border."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "pacificAtlantic",
+        "signature": "pacificAtlantic(heights: number[][]): number[][]",
+        "starter": "export function pacificAtlantic(heights) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 2], [4, 3]]],
+            "expected": [[0, 1], [1, 0], [1, 1]]
+          },
+          {
+            "args": [[[1, 1], [1, 1]]],
+            "expected": [[0, 0], [0, 1], [1, 0], [1, 1]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "pacificAtlantic",
+        "signature": "pacificAtlantic(heights: number[][]): number[][]",
+        "starter": "export function pacificAtlantic(heights: number[][]): number[][] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 2], [4, 3]]],
+            "expected": [[0, 1], [1, 0], [1, 1]]
+          },
+          {
+            "args": [[[1, 1], [1, 1]]],
+            "expected": [[0, 0], [0, 1], [1, 0], [1, 1]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[[]]],
+      "expected": []
+    },
+    {
+      "args": [[[9]]],
+      "expected": [[0, 0]]
+    },
+    {
+      "args": [[[1, 5, 2]]],
+      "expected": [[0, 0], [0, 1], [0, 2]]
+    },
+    {
+      "args": [[[3, 2], [2, 1]]],
+      "expected": [[0, 0], [0, 1], [1, 0]]
+    },
+    {
+      "args": [[[2, 2, 2], [2, 2, 2], [2, 2, 2]]],
+      "expected": [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function pacificAtlantic(heights            )             {\nconst rows=heights.length,cols=heights[0]?.length??0;if(!rows||!cols)return [];function reach(starts           ){const seen=new Set        (),q=starts;for(const [r,c] of q)seen.add(r+\",\"+c);for(let i=0;i<q.length;i++){const [r,c]=q[i];for(const [nr,nc] of [[r-1,c],[r+1,c],[r,c-1],[r,c+1]]){const key=nr+\",\"+nc;if(nr>=0&&nc>=0&&nr<rows&&nc<cols&&!seen.has(key)&&heights[nr][nc]>=heights[r][c]){seen.add(key);q.push([nr,nc]);}}}return seen;}const p           =[],a           =[];for(let r=0;r<rows;r++){p.push([r,0]);a.push([r,cols-1]);}for(let c=0;c<cols;c++){p.push([0,c]);a.push([rows-1,c]);}const ps=reach(p),as=reach(a),out           =[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)if(ps.has(r+\",\"+c)&&as.has(r+\",\"+c))out.push([r,c]);return out;\n}\n",
+    "typescript": "export function pacificAtlantic(heights: number[][]): number[][] {\nconst rows=heights.length,cols=heights[0]?.length??0;if(!rows||!cols)return [];function reach(starts:number[][]){const seen=new Set<string>(),q=starts;for(const [r,c] of q)seen.add(r+\",\"+c);for(let i=0;i<q.length;i++){const [r,c]=q[i];for(const [nr,nc] of [[r-1,c],[r+1,c],[r,c-1],[r,c+1]]){const key=nr+\",\"+nc;if(nr>=0&&nc>=0&&nr<rows&&nc<cols&&!seen.has(key)&&heights[nr][nc]>=heights[r][c]){seen.add(key);q.push([nr,nc]);}}}return seen;}const p:number[][]=[],a:number[][]=[];for(let r=0;r<rows;r++){p.push([r,0]);a.push([r,cols-1]);}for(let c=0;c<cols;c++){p.push([0,c]);a.push([rows-1,c]);}const ps=reach(p),as=reach(a),out:number[][]=[];for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)if(ps.has(r+\",\"+c)&&as.has(r+\",\"+c))out.push([r,c]);return out;\n}\n"
+  },
+  "explanation": "Reverse reachability from each ocean identifies cells that drain to it. Intersect the two sets and emit row-major coordinates. O(rows times columns) time."
+}

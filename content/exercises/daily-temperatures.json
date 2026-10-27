@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "daily-temperatures",
+    "slug": "daily-temperatures",
+    "version": "1.0.0",
+    "title": "Daily Temperatures",
+    "description": "For each day return the number of days until a strictly warmer temperature. Return 0 if no warmer future day exists. There are 0 to 1000 integer temperatures from -100 through 150.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Store unresolved indices in a decreasing temperature stack."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "dailyTemperatures",
+        "signature": "dailyTemperatures(temperatures: number[]): number[]",
+        "starter": "export function dailyTemperatures(temperatures) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[70, 71, 69, 74]],
+            "expected": [1, 2, 1, 0]
+          },
+          {
+            "args": [[30, 30, 31]],
+            "expected": [2, 1, 0]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "dailyTemperatures",
+        "signature": "dailyTemperatures(temperatures: number[]): number[]",
+        "starter": "export function dailyTemperatures(temperatures: number[]): number[] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[70, 71, 69, 74]],
+            "expected": [1, 2, 1, 0]
+          },
+          {
+            "args": [[30, 30, 31]],
+            "expected": [2, 1, 0]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[9]],
+      "expected": [0]
+    },
+    {
+      "args": [[3, 2, 1]],
+      "expected": [0, 0, 0]
+    },
+    {
+      "args": [[1, 2, 3]],
+      "expected": [1, 1, 0]
+    },
+    {
+      "args": [[-2, -2, -1]],
+      "expected": [2, 1, 0]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function dailyTemperatures(temperatures          )           {\nconst out         =Array(temperatures.length).fill(0),stack         =[];for(let i=0;i<temperatures.length;i++){while(stack.length&&temperatures[i]>temperatures[stack[stack.length-1]]){const j=stack.pop() ;out[j]=i-j;}stack.push(i);}return out;\n}\n",
+    "typescript": "export function dailyTemperatures(temperatures: number[]): number[] {\nconst out:number[]=Array(temperatures.length).fill(0),stack:number[]=[];for(let i=0;i<temperatures.length;i++){while(stack.length&&temperatures[i]>temperatures[stack[stack.length-1]]){const j=stack.pop()!;out[j]=i-j;}stack.push(i);}return out;\n}\n"
+  },
+  "explanation": "A warmer day resolves all smaller temperatures at the stack top. Each index enters and leaves the stack once, for O(n) time."
+}

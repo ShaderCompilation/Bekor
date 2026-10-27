@@ -1,0 +1,92 @@
+{
+  "public": {
+    "id": "meeting-rooms-ii",
+    "slug": "meeting-rooms-ii",
+    "version": "1.0.0",
+    "title": "Meeting Rooms II",
+    "description": "Each interval [start,end] is a meeting occupying start through just before end, with start strictly less than end. Return the minimum rooms needed. Meetings ending at a start time release rooms first. There are 0 to 500 intervals with integer endpoints between 0 and 1000000.",
+    "difficulty": "medium",
+    "concepts": ["intervals", "sorting"],
+    "hints": ["Sort start and end events together."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "meetingRoomsIi",
+        "signature": "meetingRoomsIi(intervals: number[][]): number",
+        "starter": "export function meetingRoomsIi(intervals            )         {\n  throw new Error(\"Implement meetingRoomsIi\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 5], [2, 4], [6, 9]]],
+            "expected": 2
+          },
+          {
+            "args": [[[1, 2], [2, 3]]],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "meetingRoomsIi",
+        "signature": "meetingRoomsIi(intervals: number[][]): number",
+        "starter": "export function meetingRoomsIi(intervals: number[][]): number {\n  throw new Error(\"Implement meetingRoomsIi\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 5], [2, 4], [6, 9]]],
+            "expected": 2
+          },
+          {
+            "args": [[[1, 2], [2, 3]]],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": 0
+    },
+    {
+      "args": [[[0, 9]]],
+      "expected": 1
+    },
+    {
+      "args": [[[1, 4], [1, 4], [1, 4]]],
+      "expected": 3
+    },
+    {
+      "args": [[[1, 10], [2, 3], [4, 5]]],
+      "expected": 2
+    },
+    {
+      "args": [[[4, 7], [1, 3]]],
+      "expected": 1
+    },
+    {
+      "args": [[[1, 2], [2, 3]]],
+      "expected": 1
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function meetingRoomsIi(intervals            )         {\nconst events           =[];for(const [s,e] of intervals){events.push([s,1],[e,-1]);}events.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);let active=0,best=0;for(const [,d]of events){active+=d;best=Math.max(best,active);}return best;\n}\n",
+    "typescript": "export function meetingRoomsIi(intervals: number[][]): number {\nconst events:number[][]=[];for(const [s,e] of intervals){events.push([s,1],[e,-1]);}events.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);let active=0,best=0;for(const [,d]of events){active+=d;best=Math.max(best,active);}return best;\n}\n"
+  },
+  "explanation": "The peak number of active half-open intervals is the required number of rooms. Process ends before starts at equal times. O(n log n) time and O(n) space."
+}

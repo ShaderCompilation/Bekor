@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "graph-valid-tree",
+    "slug": "graph-valid-tree",
+    "version": "1.0.0",
+    "title": "Graph Valid Tree",
+    "description": "Return whether edges form a connected undirected tree on vertices 0 through n-1. n is 1 to 500; there are at most 1000 pairs of distinct vertices, with no duplicate undirected edges.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["A tree needs n-1 edges and no cycle."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "validTree",
+        "signature": "validTree(n: number, edges: number[][]): boolean",
+        "starter": "export function validTree(n, edges) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [4, [[0, 1], [1, 2], [1, 3]]],
+            "expected": true
+          },
+          {
+            "args": [3, [[0, 1], [1, 2], [2, 0]]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "validTree",
+        "signature": "validTree(n: number, edges: number[][]): boolean",
+        "starter": "export function validTree(n: number, edges: number[][]): boolean {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [4, [[0, 1], [1, 2], [1, 3]]],
+            "expected": true
+          },
+          {
+            "args": [3, [[0, 1], [1, 2], [2, 0]]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [1, []],
+      "expected": true
+    },
+    {
+      "args": [2, []],
+      "expected": false
+    },
+    {
+      "args": [4, [[0, 1], [2, 3]]],
+      "expected": false
+    },
+    {
+      "args": [4, [[0, 1], [1, 2], [2, 0]]],
+      "expected": false
+    },
+    {
+      "args": [2, [[1, 0]]],
+      "expected": true
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function validTree(n        , edges            )          {\nif(edges.length!==n-1)return false;const parent=Array.from({length:n},(_,i)=>i);function find(x       )       {while(parent[x]!==x){parent[x]=parent[parent[x]];x=parent[x];}return x;}for(const [a,b] of edges){const x=find(a),y=find(b);if(x===y)return false;parent[x]=y;}return true;\n}\n",
+    "typescript": "export function validTree(n: number, edges: number[][]): boolean {\nif(edges.length!==n-1)return false;const parent=Array.from({length:n},(_,i)=>i);function find(x:number):number{while(parent[x]!==x){parent[x]=parent[parent[x]];x=parent[x];}return x;}for(const [a,b] of edges){const x=find(a),y=find(b);if(x===y)return false;parent[x]=y;}return true;\n}\n"
+  },
+  "explanation": "Union-find rejects an edge whose endpoints are already connected. With n-1 acyclic edges all vertices are connected. Near-linear time."
+}

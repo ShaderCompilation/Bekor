@@ -1,0 +1,97 @@
+{
+  "public": {
+    "id": "path-sum-ii",
+    "slug": "path-sum-ii",
+    "version": "1.0.0",
+    "title": "Path Sum II",
+    "description": "Return all root-to-leaf paths whose values sum to target. Emit paths in left-child-before-right-child traversal order, preserving duplicate value paths. target is an integer from -1000000 to 1000000. Trees use compact breadth-first arrays: the first value is the root; each non-null node consumes the next two entries as left and right children. Null marks a missing child; trailing nulls may be omitted. Empty arrays mean no tree. Values are integers from -10000 to 10000, with at most 100 nodes.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Carry the running sum and path down to leaves."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "pathSum",
+        "signature": "pathSum(values: (number|null)[], target: number): number[][]",
+        "starter": "export function pathSum(values, target) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3], 3],
+            "expected": [[1, 2]]
+          },
+          {
+            "args": [[1, 2, 2], 3],
+            "expected": [[1, 2], [1, 2]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "pathSum",
+        "signature": "pathSum(values: (number|null)[], target: number): number[][]",
+        "starter": "export function pathSum(values: (number|null)[], target: number): number[][] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 2, 3], 3],
+            "expected": [[1, 2]]
+          },
+          {
+            "args": [[1, 2, 2], 3],
+            "expected": [[1, 2], [1, 2]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 0],
+      "expected": []
+    },
+    {
+      "args": [[7], 7],
+      "expected": [[7]]
+    },
+    {
+      "args": [[1, 2], 1],
+      "expected": []
+    },
+    {
+      "args": [[0, -1, 1], -1],
+      "expected": [[0, -1]]
+    },
+    {
+      "args": [[1, 2, 3], 9],
+      "expected": []
+    },
+    {
+      "args": [[0, 10000, 0, -10000, -10000, null, null, 10000, 0, null, null, null, -10000], 0],
+      "expected": [
+        [0, 10000, -10000, 10000, -10000],
+        [0, 10000, -10000, 0],
+        [0, 10000, -10000],
+        [0, 0]
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "                                      \nfunction tree(a                )        { if(!a.length||a[0]===null)return null; const root  ={v:a[0],l:null,r:null};const q    =[root];let j=1;for(let i=0;i<q.length&&j<a.length;i++){for(const side of ['l','r']         ){const v=a[j++];if(v!==null&&v!==undefined){const n  ={v,l:null,r:null};q[i][side]=n;q.push(n);}}}return root;}\nexport function pathSum(values                 , target        )             {\nconst out           =[];function dfs(n       ,sum       ,path         ){if(!n)return;const next=[...path,n.v],total=sum+n.v;if(!n.l&&!n.r&&total===target)out.push(next);dfs(n.l,total,next);dfs(n.r,total,next);}dfs(tree(values),0,[]);return out;\n}\n",
+    "typescript": "type N = {v:number,l:N|null,r:N|null};\nfunction tree(a:(number|null)[]):N|null { if(!a.length||a[0]===null)return null; const root:N={v:a[0],l:null,r:null};const q:N[]=[root];let j=1;for(let i=0;i<q.length&&j<a.length;i++){for(const side of ['l','r'] as const){const v=a[j++];if(v!==null&&v!==undefined){const n:N={v,l:null,r:null};q[i][side]=n;q.push(n);}}}return root;}\nexport function pathSum(values: (number|null)[], target: number): number[][] {\nconst out:number[][]=[];function dfs(n:N|null,sum:number,path:number[]){if(!n)return;const next=[...path,n.v],total=sum+n.v;if(!n.l&&!n.r&&total===target)out.push(next);dfs(n.l,total,next);dfs(n.r,total,next);}dfs(tree(values),0,[]);return out;\n}\n"
+  },
+  "explanation": "Depth-first traversal records only matching leaf paths, with left children visited first. Time is O(nodes plus output size)."
+}

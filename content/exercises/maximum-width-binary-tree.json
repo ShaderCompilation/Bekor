@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "maximum-width-binary-tree",
+    "slug": "maximum-width-binary-tree",
+    "version": "1.0.0",
+    "title": "Maximum Width of Binary Tree",
+    "description": "Return the maximum width of any tree level, counting missing positions between its first and last non-null node as if the tree were complete. Empty trees have width 0. Tree depth is at most 40; the resulting width is a safe integer. Trees use compact breadth-first arrays: the first value is the root; each non-null node consumes the next two entries as left and right children. Null marks a missing child; trailing nulls may be omitted. Empty arrays mean no tree. Values are integers from -10000 to 10000, with at most 200 nodes.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Track complete-tree position indices at each level."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "widthOfBinaryTree",
+        "signature": "widthOfBinaryTree(values: (number|null)[]): number",
+        "starter": "export function widthOfBinaryTree(values) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 3, 2, 5, 3, null, 9]],
+            "expected": 4
+          },
+          {
+            "args": [[1, 2, 3, 4, null, null, 5]],
+            "expected": 4
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "widthOfBinaryTree",
+        "signature": "widthOfBinaryTree(values: (number|null)[]): number",
+        "starter": "export function widthOfBinaryTree(values: (number|null)[]): number {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 3, 2, 5, 3, null, 9]],
+            "expected": 4
+          },
+          {
+            "args": [[1, 2, 3, 4, null, null, 5]],
+            "expected": 4
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": 0
+    },
+    {
+      "args": [[1]],
+      "expected": 1
+    },
+    {
+      "args": [[1, 2, null, 3]],
+      "expected": 1
+    },
+    {
+      "args": [[1, 2, 3]],
+      "expected": 2
+    },
+    {
+      "args": [[1, 2, 3, 4, null, null, 5, 6, null, null, 7]],
+      "expected": 8
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "                                      \nfunction tree(a                )        { if(!a.length||a[0]===null)return null; const root  ={v:a[0],l:null,r:null};const q    =[root];let j=1;for(let i=0;i<q.length&&j<a.length;i++){for(const side of ['l','r']         ){const v=a[j++];if(v!==null&&v!==undefined){const n  ={v,l:null,r:null};q[i][side]=n;q.push(n);}}}return root;}\nexport function widthOfBinaryTree(values                 )         {\nconst root=tree(values);if(!root)return 0;let q                        =[{node:root,index:0}],best=0;while(q.length){best=Math.max(best,q[q.length-1].index-q[0].index+1);const base=q[0].index,next                        =[];for(const {node,index} of q){const p=index-base;if(node.l)next.push({node:node.l,index:2*p});if(node.r)next.push({node:node.r,index:2*p+1});}q=next;}return best;\n}\n",
+    "typescript": "type N = {v:number,l:N|null,r:N|null};\nfunction tree(a:(number|null)[]):N|null { if(!a.length||a[0]===null)return null; const root:N={v:a[0],l:null,r:null};const q:N[]=[root];let j=1;for(let i=0;i<q.length&&j<a.length;i++){for(const side of ['l','r'] as const){const v=a[j++];if(v!==null&&v!==undefined){const n:N={v,l:null,r:null};q[i][side]=n;q.push(n);}}}return root;}\nexport function widthOfBinaryTree(values: (number|null)[]): number {\nconst root=tree(values);if(!root)return 0;let q:{node:N,index:number}[]=[{node:root,index:0}],best=0;while(q.length){best=Math.max(best,q[q.length-1].index-q[0].index+1);const base=q[0].index,next:{node:N,index:number}[]=[];for(const {node,index} of q){const p=index-base;if(node.l)next.push({node:node.l,index:2*p});if(node.r)next.push({node:node.r,index:2*p+1});}q=next;}return best;\n}\n"
+  },
+  "explanation": "Normalize positions by the first index of each level to avoid needless growth, then propagate doubled positions to children. O(n) time."
+}

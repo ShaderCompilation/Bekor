@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "minimum-window-substring",
+    "slug": "minimum-window-substring",
+    "version": "1.0.0",
+    "title": "Minimum Window Substring",
+    "description": "Return the shortest contiguous substring of text containing every character of required with its multiplicity. Break equal-length ties by earliest start. Return an empty string if impossible or required is empty. Both strings contain only ASCII letters; text length is 0 to 1000 and required length is 0 to 100.",
+    "difficulty": "medium",
+    "concepts": ["strings", "sliding-window"],
+    "hints": ["Maintain required-character deficits in a sliding window."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "minimumWindowSubstring",
+        "signature": "minimumWindowSubstring(text: string, required: string): string",
+        "starter": "export function minimumWindowSubstring(text        , required        )         {\n  throw new Error(\"Implement minimumWindowSubstring\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["zABBCAC", "ABC"],
+            "expected": "BCA"
+          },
+          {
+            "args": ["ab", "aa"],
+            "expected": ""
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "minimumWindowSubstring",
+        "signature": "minimumWindowSubstring(text: string, required: string): string",
+        "starter": "export function minimumWindowSubstring(text: string, required: string): string {\n  throw new Error(\"Implement minimumWindowSubstring\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["zABBCAC", "ABC"],
+            "expected": "BCA"
+          },
+          {
+            "args": ["ab", "aa"],
+            "expected": ""
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["", "a"],
+      "expected": ""
+    },
+    {
+      "args": ["abc", ""],
+      "expected": ""
+    },
+    {
+      "args": ["aaab", "aab"],
+      "expected": "aab"
+    },
+    {
+      "args": ["abxxba", "ab"],
+      "expected": "ab"
+    },
+    {
+      "args": ["aA", "A"],
+      "expected": "A"
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function minimumWindowSubstring(text        , required        )         {\nif(!required)return '';const need=new Map               ();for(const c of required)need.set(c,(need.get(c)??0)+1);let remaining=required.length,l=0,start=0,length=Infinity;for(let r=0;r<text.length;r++){const c=text[r];if((need.get(c)??0)>0)remaining--;need.set(c,(need.get(c)??0)-1);while(remaining===0){if(r-l+1<length){start=l;length=r-l+1;}const left=text[l++];need.set(left,(need.get(left)??0)+1);if(need.get(left) >0)remaining++;}}return length===Infinity?'':text.slice(start,start+length);\n}\n",
+    "typescript": "export function minimumWindowSubstring(text: string, required: string): string {\nif(!required)return '';const need=new Map<string,number>();for(const c of required)need.set(c,(need.get(c)??0)+1);let remaining=required.length,l=0,start=0,length=Infinity;for(let r=0;r<text.length;r++){const c=text[r];if((need.get(c)??0)>0)remaining--;need.set(c,(need.get(c)??0)-1);while(remaining===0){if(r-l+1<length){start=l;length=r-l+1;}const left=text[l++];need.set(left,(need.get(left)??0)+1);if(need.get(left)!>0)remaining++;}}return length===Infinity?'':text.slice(start,start+length);\n}\n"
+  },
+  "explanation": "Extend until every occurrence is covered, then shrink while still valid. Each boundary moves forward at most n times. O(n plus required length) time."
+}

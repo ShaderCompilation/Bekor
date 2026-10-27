@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "longest-palindrome",
+    "slug": "longest-palindrome",
+    "version": "1.0.0",
+    "title": "Longest Palindrome",
+    "description": "Return the largest possible length of a palindrome that can be built by rearranging some or all characters of text. Characters are case-sensitive ASCII letters; length is 0 to 10000. Return a length, not a substring.",
+    "difficulty": "easy",
+    "concepts": ["strings", "frequency-counting", "palindromes"],
+    "hints": [
+      "Every noncentral character needs a matching copy.",
+      "At most one unmatched occurrence can occupy the center."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "longestPalindromeLength",
+        "signature": "longestPalindromeLength(text: string): number",
+        "starter": "export function longestPalindromeLength(text) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": ["aaabbbcc"],
+            "expected": 7
+          },
+          {
+            "args": ["Aa"],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "longestPalindromeLength",
+        "signature": "longestPalindromeLength(text: string): number",
+        "starter": "export function longestPalindromeLength(text: string): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": ["aaabbbcc"],
+            "expected": 7
+          },
+          {
+            "args": ["Aa"],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [""],
+      "expected": 0
+    },
+    {
+      "args": ["a"],
+      "expected": 1
+    },
+    {
+      "args": ["aaaa"],
+      "expected": 4
+    },
+    {
+      "args": ["abcde"],
+      "expected": 1
+    },
+    {
+      "args": ["aaBBccD"],
+      "expected": 7
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function longestPalindromeLength(text        )         {\n  const counts = new Map                (); for (const c of text) counts.set(c, (counts.get(c) ?? 0) + 1); let result = 0, odd = false; for (const count of counts.values()) { result += count - count % 2; if (count % 2) odd = true; } return result + (odd ? 1 : 0);\n}\n",
+    "typescript": "export function longestPalindromeLength(text: string): number {\n  const counts = new Map<string, number>(); for (const c of text) counts.set(c, (counts.get(c) ?? 0) + 1); let result = 0, odd = false; for (const count of counts.values()) { result += count - count % 2; if (count % 2) odd = true; } return result + (odd ? 1 : 0);\n}\n"
+  },
+  "explanation": "Use every available pair and optionally one remaining odd character. O(n) time and O(1) alphabet space."
+}

@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "counting-bits",
+    "slug": "counting-bits",
+    "version": "1.0.0",
+    "title": "Counting Bits",
+    "description": "Return an array of length n+1 whose entry at index i counts the set bits in the nonnegative integer i. n ranges from 0 to 2000. Include the count for zero.",
+    "difficulty": "easy",
+    "concepts": ["bits", "dynamic-programming"],
+    "hints": ["Removing the low bit leaves floor(i/2).", "The removed bit contributes i modulo 2."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "countBits",
+        "signature": "countBits(n: number): number[]",
+        "starter": "export function countBits(n) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [3],
+            "expected": [0, 1, 1, 2]
+          },
+          {
+            "args": [6],
+            "expected": [0, 1, 1, 2, 1, 2, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "countBits",
+        "signature": "countBits(n: number): number[]",
+        "starter": "export function countBits(n: number): number[] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [3],
+            "expected": [0, 1, 1, 2]
+          },
+          {
+            "args": [6],
+            "expected": [0, 1, 1, 2, 1, 2, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [0],
+      "expected": [0]
+    },
+    {
+      "args": [1],
+      "expected": [0, 1]
+    },
+    {
+      "args": [2],
+      "expected": [0, 1, 1]
+    },
+    {
+      "args": [4],
+      "expected": [0, 1, 1, 2, 1]
+    },
+    {
+      "args": [8],
+      "expected": [0, 1, 1, 2, 1, 2, 2, 3, 1]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function countBits(n        )           {\n  const counts = Array        (n+1).fill(0); for (let i = 1; i <= n; i++) counts[i] = counts[Math.floor(i/2)] + i % 2; return counts;\n}\n",
+    "typescript": "export function countBits(n: number): number[] {\n  const counts = Array<number>(n+1).fill(0); for (let i = 1; i <= n; i++) counts[i] = counts[Math.floor(i/2)] + i % 2; return counts;\n}\n"
+  },
+  "explanation": "Reuse the count of the integer shifted right by one and add its low bit. O(n) time and output space."
+}

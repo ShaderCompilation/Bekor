@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "add-two-numbers",
+    "slug": "add-two-numbers",
+    "version": "1.0.0",
+    "title": "Add Two Numbers",
+    "description": "The arrays encode nonnegative integers as singly linked lists of decimal digits in reverse order, least significant digit first. Return their sum in the same encoding. Each array contains 1 to 100 digits from 0 through 9, with no redundant most-significant zero except [0].",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Add aligned digits with a carry; avoid converting the full number."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "addTwoNumbers",
+        "signature": "addTwoNumbers(left: number[], right: number[]): number[]",
+        "starter": "export function addTwoNumbers(left, right) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 4, 3], [5, 6, 4]],
+            "expected": [7, 0, 8]
+          },
+          {
+            "args": [[9, 9], [1]],
+            "expected": [0, 0, 1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "addTwoNumbers",
+        "signature": "addTwoNumbers(left: number[], right: number[]): number[]",
+        "starter": "export function addTwoNumbers(left: number[], right: number[]): number[] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 4, 3], [5, 6, 4]],
+            "expected": [7, 0, 8]
+          },
+          {
+            "args": [[9, 9], [1]],
+            "expected": [0, 0, 1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[0], [0]],
+      "expected": [0]
+    },
+    {
+      "args": [[1], [2]],
+      "expected": [3]
+    },
+    {
+      "args": [[9], [9]],
+      "expected": [8, 1]
+    },
+    {
+      "args": [[1, 0, 1], [9]],
+      "expected": [0, 1, 1]
+    },
+    {
+      "args": [[0], [3, 2, 1]],
+      "expected": [3, 2, 1]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function addTwoNumbers(left          , right          )           {\nconst out         =[];let carry=0;for(let i=0;i<Math.max(left.length,right.length)||carry;i++){const sum=(left[i]??0)+(right[i]??0)+carry;out.push(sum%10);carry=Math.floor(sum/10);}return out;\n}\n",
+    "typescript": "export function addTwoNumbers(left: number[], right: number[]): number[] {\nconst out:number[]=[];let carry=0;for(let i=0;i<Math.max(left.length,right.length)||carry;i++){const sum=(left[i]??0)+(right[i]??0)+carry;out.push(sum%10);carry=Math.floor(sum/10);}return out;\n}\n"
+  },
+  "explanation": "Digit-wise addition supports integers longer than the safe-number range. O(maximum input length) time and output space; node identity is not checked."
+}

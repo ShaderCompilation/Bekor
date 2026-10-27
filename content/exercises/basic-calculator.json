@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "basic-calculator",
+    "slug": "basic-calculator",
+    "version": "1.0.0",
+    "title": "Basic Calculator",
+    "description": "Evaluate a valid expression containing decimal nonnegative integer literals, +, -, parentheses and ASCII spaces. Unary + or - is allowed wherever an operand is expected, including repeated signs. There is no multiplication or division. Expression length is 1 to 500; nesting is at most 100; all intermediate values have magnitude at most 1000000000.",
+    "difficulty": "medium",
+    "concepts": ["strings", "parsing"],
+    "hints": ["Parse a signed atom as a literal or parenthesized sum."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "basicCalculator",
+        "signature": "basicCalculator(expression: string): number",
+        "starter": "export function basicCalculator(expression        )         {\n  throw new Error(\"Implement basicCalculator\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["2-(3-5)"],
+            "expected": 4
+          },
+          {
+            "args": [" -(2 + 4) "],
+            "expected": -6
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "basicCalculator",
+        "signature": "basicCalculator(expression: string): number",
+        "starter": "export function basicCalculator(expression: string): number {\n  throw new Error(\"Implement basicCalculator\");\n}\n",
+        "publicTests": [
+          {
+            "args": ["2-(3-5)"],
+            "expected": 4
+          },
+          {
+            "args": [" -(2 + 4) "],
+            "expected": -6
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["0"],
+      "expected": 0
+    },
+    {
+      "args": ["1--2"],
+      "expected": 3
+    },
+    {
+      "args": ["--3"],
+      "expected": 3
+    },
+    {
+      "args": ["(1+(2-3))+4"],
+      "expected": 4
+    },
+    {
+      "args": ["10-2-3"],
+      "expected": 5
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function basicCalculator(expression        )         {\nconst s=expression.replace(/ /g,'');let i=0;function atom()       {let sign=1;while(s[i]==='+'||s[i]==='-'){if(s[i]==='-')sign=-sign;i++;}let value=0;if(s[i]==='('){i++;value=sum();i++;}else while(i<s.length&&/\\d/.test(s[i]))value=value*10+Number(s[i++]);return sign*value;}function sum()       {let value=atom();while(i<s.length&&s[i]!==')'){const op=s[i++],x=atom();value+=op==='+'?x:-x;}return value;}return sum();\n}\n",
+    "typescript": "export function basicCalculator(expression: string): number {\nconst s=expression.replace(/ /g,'');let i=0;function atom():number{let sign=1;while(s[i]==='+'||s[i]==='-'){if(s[i]==='-')sign=-sign;i++;}let value=0;if(s[i]==='('){i++;value=sum();i++;}else while(i<s.length&&/\\d/.test(s[i]))value=value*10+Number(s[i++]);return sign*value;}function sum():number{let value=atom();while(i<s.length&&s[i]!==')'){const op=s[i++],x=atom();value+=op==='+'?x:-x;}return value;}return sum();\n}\n"
+  },
+  "explanation": "Recursive descent follows the addition/subtraction grammar and applies unary signs before combining terms. O(n) time and O(nesting) stack."
+}

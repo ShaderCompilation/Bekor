@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "connected-components-undirected-graph",
+    "slug": "connected-components-undirected-graph",
+    "version": "1.0.0",
+    "title": "Number of Connected Components in an Undirected Graph",
+    "description": "Count connected components in an undirected graph with vertices 0 through n-1, including isolated vertices. n is 0 to 1000; edges contains at most 2000 distinct pairs of different valid vertices.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Start one graph traversal for each unseen vertex."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "countComponents",
+        "signature": "countComponents(n: number, edges: number[][]): number",
+        "starter": "export function countComponents(n, edges) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [5, [[0, 1], [1, 2], [3, 4]]],
+            "expected": 2
+          },
+          {
+            "args": [3, []],
+            "expected": 3
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "countComponents",
+        "signature": "countComponents(n: number, edges: number[][]): number",
+        "starter": "export function countComponents(n: number, edges: number[][]): number {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [5, [[0, 1], [1, 2], [3, 4]]],
+            "expected": 2
+          },
+          {
+            "args": [3, []],
+            "expected": 3
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [0, []],
+      "expected": 0
+    },
+    {
+      "args": [1, []],
+      "expected": 1
+    },
+    {
+      "args": [3, [[0, 1], [1, 2], [2, 0]]],
+      "expected": 1
+    },
+    {
+      "args": [4, [[0, 3]]],
+      "expected": 3
+    },
+    {
+      "args": [4, [[0, 1], [2, 3], [1, 2]]],
+      "expected": 1
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function countComponents(n        , edges            )         {\nconst adj           =Array.from({length:n},()=>[]);for(const [a,b] of edges){adj[a].push(b);adj[b].push(a);}const seen=new Set        ();let count=0;for(let i=0;i<n;i++)if(!seen.has(i)){count++;seen.add(i);const stack=[i];while(stack.length){const x=stack.pop() ;for(const y of adj[x])if(!seen.has(y)){seen.add(y);stack.push(y);}}}return count;\n}\n",
+    "typescript": "export function countComponents(n: number, edges: number[][]): number {\nconst adj:number[][]=Array.from({length:n},()=>[]);for(const [a,b] of edges){adj[a].push(b);adj[b].push(a);}const seen=new Set<number>();let count=0;for(let i=0;i<n;i++)if(!seen.has(i)){count++;seen.add(i);const stack=[i];while(stack.length){const x=stack.pop()!;for(const y of adj[x])if(!seen.has(y)){seen.add(y);stack.push(y);}}}return count;\n}\n"
+  },
+  "explanation": "Every traversal marks one whole component, so counting traversal roots gives the answer. O(vertices plus edges) time."
+}

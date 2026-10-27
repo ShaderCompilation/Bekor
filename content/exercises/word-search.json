@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "word-search",
+    "slug": "word-search",
+    "version": "1.0.0",
+    "title": "Word Search",
+    "description": "Return whether word can be formed by a path of horizontally or vertically adjacent board cells, without using a cell twice. Board is rectangular with 0 to 6 rows and columns, each cell one uppercase ASCII letter. Word has 0 to 12 uppercase letters. An empty word returns true.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Backtrack from each matching cell and undo visited marks when returning."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "wordSearch",
+        "signature": "wordSearch(board: string[][], word: string): boolean",
+        "starter": "export function wordSearch(board, word) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[["A", "B"], ["C", "D"]], "ABD"],
+            "expected": true
+          },
+          {
+            "args": [[["A", "B"], ["C", "D"]], "ABA"],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "wordSearch",
+        "signature": "wordSearch(board: string[][], word: string): boolean",
+        "starter": "export function wordSearch(board: string[][], word: string): boolean {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[["A", "B"], ["C", "D"]], "ABD"],
+            "expected": true
+          },
+          {
+            "args": [[["A", "B"], ["C", "D"]], "ABA"],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], ""],
+      "expected": true
+    },
+    {
+      "args": [[], "A"],
+      "expected": false
+    },
+    {
+      "args": [[["A"]], "A"],
+      "expected": true
+    },
+    {
+      "args": [[["A", "B"], ["C", "D"]], "AD"],
+      "expected": false
+    },
+    {
+      "args": [[["A", "A"], ["A", "B"]], "AAAAB"],
+      "expected": false
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function wordSearch(board            , word        )          {\nif(!word)return true;const rows=board.length,cols=board[0]?.length??0;const seen=new Set        ();function dfs(r       ,c       ,i       )        {if(i===word.length)return true;const key=r+\",\"+c;if(r<0||c<0||r>=rows||c>=cols||seen.has(key)||board[r][c]!==word[i])return false;seen.add(key);const ok=dfs(r+1,c,i+1)||dfs(r-1,c,i+1)||dfs(r,c+1,i+1)||dfs(r,c-1,i+1);seen.delete(key);return ok;}for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)if(dfs(r,c,0))return true;return false;\n}\n",
+    "typescript": "export function wordSearch(board: string[][], word: string): boolean {\nif(!word)return true;const rows=board.length,cols=board[0]?.length??0;const seen=new Set<string>();function dfs(r:number,c:number,i:number):boolean{if(i===word.length)return true;const key=r+\",\"+c;if(r<0||c<0||r>=rows||c>=cols||seen.has(key)||board[r][c]!==word[i])return false;seen.add(key);const ok=dfs(r+1,c,i+1)||dfs(r-1,c,i+1)||dfs(r,c+1,i+1)||dfs(r,c-1,i+1);seen.delete(key);return ok;}for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)if(dfs(r,c,0))return true;return false;\n}\n"
+  },
+  "explanation": "Depth-first search explores paths with a path-local visited set. The worst-case time is O(cells times 4 to the word length)."
+}

@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "squares-of-sorted-array",
+    "slug": "squares-of-sorted-array",
+    "version": "1.0.0",
+    "title": "Squares of a Sorted Array",
+    "description": "values is a nondecreasing array of 0 to 1000 integers between -10000 and 10000. Return all squared values in nondecreasing order. Duplicates are retained. Aim for linear time.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "two-pointers"],
+    "hints": [
+      "The largest square lies at one of the two ends.",
+      "Fill the output from largest to smallest."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "sortedSquares",
+        "signature": "sortedSquares(values: number[]): number[]",
+        "starter": "export function sortedSquares(values) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[-4, -1, 2, 5]],
+            "expected": [1, 4, 16, 25]
+          },
+          {
+            "args": [[-3, -2, -1]],
+            "expected": [1, 4, 9]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "sortedSquares",
+        "signature": "sortedSquares(values: number[]): number[]",
+        "starter": "export function sortedSquares(values: number[]): number[] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[-4, -1, 2, 5]],
+            "expected": [1, 4, 16, 25]
+          },
+          {
+            "args": [[-3, -2, -1]],
+            "expected": [1, 4, 9]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[0]],
+      "expected": [0]
+    },
+    {
+      "args": [[-2, 0, 2]],
+      "expected": [0, 4, 4]
+    },
+    {
+      "args": [[1, 2, 3]],
+      "expected": [1, 4, 9]
+    },
+    {
+      "args": [[-10000, 10000]],
+      "expected": [100000000, 100000000]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function sortedSquares(values          )           {\n  const result = Array        (values.length); let left = 0, right = values.length-1; for (let i = values.length-1; i >= 0; i--) { if (Math.abs(values[left]) > Math.abs(values[right])) result[i] = values[left++] ** 2; else result[i] = values[right--] ** 2; } return result;\n}\n",
+    "typescript": "export function sortedSquares(values: number[]): number[] {\n  const result = Array<number>(values.length); let left = 0, right = values.length-1; for (let i = values.length-1; i >= 0; i--) { if (Math.abs(values[left]) > Math.abs(values[right])) result[i] = values[left++] ** 2; else result[i] = values[right--] ** 2; } return result;\n}\n"
+  },
+  "explanation": "Compare endpoint magnitudes and place the larger square at the next free position from the right. O(n) time and O(n) output space."
+}

@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "sort-colors",
+    "slug": "sort-colors",
+    "version": "1.0.0",
+    "title": "Sort Colors",
+    "description": "Return the values sorted in ascending order. Each value is 0, 1, or 2. There are 0 to 1000 values. Return the resulting array; mutation is optional. Aim for linear time.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Count the occurrences of each of the three possible values."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "sortColors",
+        "signature": "sortColors(values: number[]): number[]",
+        "starter": "export function sortColors(values) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 0, 1, 2, 0]],
+            "expected": [0, 0, 1, 2, 2]
+          },
+          {
+            "args": [[1, 0]],
+            "expected": [0, 1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "sortColors",
+        "signature": "sortColors(values: number[]): number[]",
+        "starter": "export function sortColors(values: number[]): number[] {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 0, 1, 2, 0]],
+            "expected": [0, 0, 1, 2, 2]
+          },
+          {
+            "args": [[1, 0]],
+            "expected": [0, 1]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[2]],
+      "expected": [2]
+    },
+    {
+      "args": [[0, 0]],
+      "expected": [0, 0]
+    },
+    {
+      "args": [[1, 1, 1]],
+      "expected": [1, 1, 1]
+    },
+    {
+      "args": [[2, 1, 0]],
+      "expected": [0, 1, 2]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function sortColors(values          )           {\nconst counts=[0,0,0];for(const x of values)counts[x]++;return counts.flatMap((n,x)=>Array(n).fill(x));\n}\n",
+    "typescript": "export function sortColors(values: number[]): number[] {\nconst counts=[0,0,0];for(const x of values)counts[x]++;return counts.flatMap((n,x)=>Array(n).fill(x));\n}\n"
+  },
+  "explanation": "Three counters followed by ordered expansion take O(n) time and O(n) output space."
+}

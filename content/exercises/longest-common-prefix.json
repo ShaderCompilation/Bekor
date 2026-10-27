@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "longest-common-prefix",
+    "slug": "longest-common-prefix",
+    "version": "1.0.0",
+    "title": "Longest Common Prefix",
+    "description": "Return the longest prefix shared by every word. An empty array has prefix \"\". There are 0 to 200 lowercase English strings, each of length 0 to 200, with at most 10000 characters in total. Prefix matching is exact.",
+    "difficulty": "easy",
+    "concepts": ["strings", "prefixes"],
+    "hints": [
+      "Begin with the first word as a candidate.",
+      "Shorten the candidate until each word starts with it."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "longestCommonPrefix",
+        "signature": "longestCommonPrefix(words: string[]): string",
+        "starter": "export function longestCommonPrefix(words) {\n  // Implement the function.\n  return '';\n}\n",
+        "publicTests": [
+          {
+            "args": [["star", "stand", "stack"]],
+            "expected": "sta"
+          },
+          {
+            "args": [["red", "blue"]],
+            "expected": ""
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "longestCommonPrefix",
+        "signature": "longestCommonPrefix(words: string[]): string",
+        "starter": "export function longestCommonPrefix(words: string[]): string {\n  // Implement the function.\n  return '';\n}\n",
+        "publicTests": [
+          {
+            "args": [["star", "stand", "stack"]],
+            "expected": "sta"
+          },
+          {
+            "args": [["red", "blue"]],
+            "expected": ""
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": ""
+    },
+    {
+      "args": [["solo"]],
+      "expected": "solo"
+    },
+    {
+      "args": [["abc", "ab", "abcd"]],
+      "expected": "ab"
+    },
+    {
+      "args": [["", "abc"]],
+      "expected": ""
+    },
+    {
+      "args": [["same", "same"]],
+      "expected": "same"
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function longestCommonPrefix(words          )         {\n  if (words.length === 0) return ''; let prefix = words[0]; for (const word of words.slice(1)) while (!word.startsWith(prefix)) prefix = prefix.slice(0,-1); return prefix;\n}\n",
+    "typescript": "export function longestCommonPrefix(words: string[]): string {\n  if (words.length === 0) return ''; let prefix = words[0]; for (const word of words.slice(1)) while (!word.startsWith(prefix)) prefix = prefix.slice(0,-1); return prefix;\n}\n"
+  },
+  "explanation": "The candidate only shrinks, eventually becoming the longest prefix common to all processed words. For n words of maximum length L, O(n*L + L²) worst-case time and O(L) working space."
+}

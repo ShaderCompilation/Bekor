@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "ransom-note",
+    "slug": "ransom-note",
+    "version": "1.0.0",
+    "title": "Ransom Note",
+    "description": "Return whether note can be assembled using letters from magazine. Each occurrence can be used once, and unused magazine letters are allowed. Both strings contain only lowercase English letters and have length 0 to 10000.",
+    "difficulty": "easy",
+    "concepts": ["strings", "frequency-counting"],
+    "hints": [
+      "Count available occurrences of each letter.",
+      "Consume one occurrence for every letter in the note."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "canConstruct",
+        "signature": "canConstruct(note: string, magazine: string): boolean",
+        "starter": "export function canConstruct(note, magazine) {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": ["cab", "abcc"],
+            "expected": true
+          },
+          {
+            "args": ["aab", "ab"],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "canConstruct",
+        "signature": "canConstruct(note: string, magazine: string): boolean",
+        "starter": "export function canConstruct(note: string, magazine: string): boolean {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": ["cab", "abcc"],
+            "expected": true
+          },
+          {
+            "args": ["aab", "ab"],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["", "abc"],
+      "expected": true
+    },
+    {
+      "args": ["a", ""],
+      "expected": false
+    },
+    {
+      "args": ["zzz", "zz"],
+      "expected": false
+    },
+    {
+      "args": ["abca", "aacb"],
+      "expected": true
+    },
+    {
+      "args": ["x", "yyyy"],
+      "expected": false
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function canConstruct(note        , magazine        )          {\n  const counts = new Map                (); for (const c of magazine) counts.set(c, (counts.get(c) ?? 0) + 1); for (const c of note) { const available = counts.get(c) ?? 0; if (available === 0) return false; counts.set(c, available - 1); } return true;\n}\n",
+    "typescript": "export function canConstruct(note: string, magazine: string): boolean {\n  const counts = new Map<string, number>(); for (const c of magazine) counts.set(c, (counts.get(c) ?? 0) + 1); for (const c of note) { const available = counts.get(c) ?? 0; if (available === 0) return false; counts.set(c, available - 1); } return true;\n}\n"
+  },
+  "explanation": "Count magazine letters, then decrement counts while reading the note. A zero count before consumption means failure. O(note.length + magazine.length) time and O(1) alphabet space."
+}

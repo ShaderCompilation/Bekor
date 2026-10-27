@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "unique-paths",
+    "slug": "unique-paths",
+    "version": "1.0.0",
+    "title": "Unique Paths",
+    "description": "Count paths from the top-left to bottom-right cell of a rows by columns grid, moving only right or down. Both dimensions are integers from 1 through 15. The count fits a safe integer.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "algorithms"],
+    "hints": ["Each cell receives paths from above and from its left."],
+    "attribution": "Original Bekor statement, examples, tests and solutions, 2026. Adapted from a standard algorithmic problem; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "uniquePaths",
+        "signature": "uniquePaths(rows: number, columns: number): number",
+        "starter": "export function uniquePaths(rows, columns) {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [2, 3],
+            "expected": 3
+          },
+          {
+            "args": [3, 3],
+            "expected": 6
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "uniquePaths",
+        "signature": "uniquePaths(rows: number, columns: number): number",
+        "starter": "export function uniquePaths(rows: number, columns: number): number {\n  // Implement the function.\n  throw new Error(\"Not implemented\");\n}\n",
+        "publicTests": [
+          {
+            "args": [2, 3],
+            "expected": 3
+          },
+          {
+            "args": [3, 3],
+            "expected": 6
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [1, 1],
+      "expected": 1
+    },
+    {
+      "args": [1, 9],
+      "expected": 1
+    },
+    {
+      "args": [8, 1],
+      "expected": 1
+    },
+    {
+      "args": [3, 4],
+      "expected": 10
+    },
+    {
+      "args": [4, 4],
+      "expected": 20
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function uniquePaths(rows        , columns        )         {\nconst dp         =Array(columns).fill(1);for(let r=1;r<rows;r++)for(let c=1;c<columns;c++)dp[c]+=dp[c-1];return dp[columns-1];\n}\n",
+    "typescript": "export function uniquePaths(rows: number, columns: number): number {\nconst dp:number[]=Array(columns).fill(1);for(let r=1;r<rows;r++)for(let c=1;c<columns;c++)dp[c]+=dp[c-1];return dp[columns-1];\n}\n"
+  },
+  "explanation": "One row of counts suffices: update from left to right to combine the prior row and current left neighbor. O(rows times columns) time."
+}

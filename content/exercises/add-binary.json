@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "add-binary",
+    "slug": "add-binary",
+    "version": "1.0.0",
+    "title": "Add Binary",
+    "description": "Add two nonempty binary strings and return their sum as a binary string. Inputs have length 1 to 1000 and contain only 0 and 1. Leading zeros are allowed; output has no leading zeros unless the sum is zero. Avoid converting the entire input to a JavaScript number.",
+    "difficulty": "easy",
+    "concepts": ["strings", "binary-arithmetic"],
+    "hints": ["Add from the least significant digits.", "Carry at most one into the next column."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026, for a standard algorithmic problem. No third-party exercise text or solution code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "addBinary",
+        "signature": "addBinary(left: string, right: string): string",
+        "starter": "export function addBinary(left, right) {\n  // Implement the function.\n  return '';\n}\n",
+        "publicTests": [
+          {
+            "args": ["101", "11"],
+            "expected": "1000"
+          },
+          {
+            "args": ["0", "0"],
+            "expected": "0"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "addBinary",
+        "signature": "addBinary(left: string, right: string): string",
+        "starter": "export function addBinary(left: string, right: string): string {\n  // Implement the function.\n  return '';\n}\n",
+        "publicTests": [
+          {
+            "args": ["101", "11"],
+            "expected": "1000"
+          },
+          {
+            "args": ["0", "0"],
+            "expected": "0"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["1", "1"],
+      "expected": "10"
+    },
+    {
+      "args": ["0001", "001"],
+      "expected": "10"
+    },
+    {
+      "args": ["1111", "1"],
+      "expected": "10000"
+    },
+    {
+      "args": ["101010", "0"],
+      "expected": "101010"
+    },
+    {
+      "args": [
+        "11111111111111111111111111111111111111111111111111111111111111111111111111111111",
+        "1"
+      ],
+      "expected": "100000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function addBinary(left        , right        )         {\n  let i = left.length - 1, j = right.length - 1, carry = 0; const digits           = []; while (i >= 0 || j >= 0 || carry) { const sum = (i >= 0 ? Number(left[i--]) : 0) + (j >= 0 ? Number(right[j--]) : 0) + carry; digits.push(String(sum % 2)); carry = Math.floor(sum / 2); } return digits.reverse().join('').replace(/^0+(?=.)/, '');\n}\n",
+    "typescript": "export function addBinary(left: string, right: string): string {\n  let i = left.length - 1, j = right.length - 1, carry = 0; const digits: string[] = []; while (i >= 0 || j >= 0 || carry) { const sum = (i >= 0 ? Number(left[i--]) : 0) + (j >= 0 ? Number(right[j--]) : 0) + carry; digits.push(String(sum % 2)); carry = Math.floor(sum / 2); } return digits.reverse().join('').replace(/^0+(?=.)/, '');\n}\n"
+  },
+  "explanation": "Column addition emits each low bit and propagates carry, preserving long-input precision. O(max(m,n)) time and space."
+}
