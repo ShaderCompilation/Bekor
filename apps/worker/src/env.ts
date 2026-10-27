@@ -27,9 +27,12 @@ const schema = z.object({
       return false;
     }
   }, "DATABASE_URL must be a postgres:// or postgresql:// URL"),
+  RUNNER: z.enum(["judge0", "podman"], "RUNNER must be judge0 or podman").default("judge0"),
   JUDGE0_URL: z
-    .string(`${required("JUDGE0_URL")} (a private, isolated Judge0 service; see infra/compose)`)
+    .string()
+    .optional()
     .refine((value) => {
+      if (value === undefined) return true;
       try {
         const url = new URL(value);
         return (
@@ -44,6 +47,7 @@ const schema = z.object({
       }
     }, "JUDGE0_URL must be an http(s) URL without credentials, query or fragment"),
   JUDGE0_AUTH_TOKEN: z.string().optional(),
+  PODMAN_RUNNER_IMAGE: z.string().optional(),
   WORKER_HEALTH_PORT: z.coerce
     .number(portMessage)
     .int(portMessage)
@@ -53,11 +57,15 @@ const schema = z.object({
   WORKER_HEALTH_HOST: z.string().default("127.0.0.1"),
 });
 
+export type RunnerEnv =
+  | { kind: "judge0"; url: string; authToken?: string }
+  /** Development-only local Podman runner (plan F05). Never allowed in production. */
+  | { kind: "podman"; image?: string };
+
 export interface WorkerEnv {
   nodeEnv: "development" | "test" | "production";
   databaseUrl: string;
-  judge0Url: string;
-  judge0AuthToken?: string;
+  runner: RunnerEnv;
   healthPort?: number;
   healthHost: string;
 }
@@ -69,22 +77,35 @@ export function loadWorkerEnv(source: NodeJS.ProcessEnv = process.env): WorkerEn
     ),
   );
   const result = schema.safeParse(present);
-  if (!result.success)
-    throw new EnvironmentError("worker", [
-      ...new Set(
-        result.error.issues.map((issue) => {
-          const name = issue.path.join(".") || "environment";
-          return issue.message.startsWith(name) ? issue.message : `${name}: ${issue.message}`;
-        }),
-      ),
-    ]);
+  const problems = result.success
+    ? []
+    : result.error.issues.map((issue) => {
+        const name = issue.path.join(".") || "environment";
+        return issue.message.startsWith(name) ? issue.message : `${name}: ${issue.message}`;
+      });
+  // Cross-field rules, checked even when other variables are invalid so one error lists everything.
+  const runner = present.RUNNER ?? "judge0";
+  if (runner === "judge0" && !present.JUDGE0_URL)
+    problems.push(
+      `${required("JUDGE0_URL")} when RUNNER=judge0 (a private, isolated Judge0 service; see infra/compose)`,
+    );
+  if (runner === "podman" && present.NODE_ENV === "production")
+    problems.push("RUNNER=podman is development-only and not allowed when NODE_ENV=production");
+  if (!result.success || problems.length)
+    throw new EnvironmentError("worker", [...new Set(problems)]);
   const env = result.data;
   return {
     nodeEnv: env.NODE_ENV,
     databaseUrl: env.DATABASE_URL,
-    judge0Url: env.JUDGE0_URL,
+    runner:
+      env.RUNNER === "podman"
+        ? { kind: "podman", ...(env.PODMAN_RUNNER_IMAGE ? { image: env.PODMAN_RUNNER_IMAGE } : {}) }
+        : {
+            kind: "judge0",
+            url: env.JUDGE0_URL as string,
+            ...(env.JUDGE0_AUTH_TOKEN ? { authToken: env.JUDGE0_AUTH_TOKEN } : {}),
+          },
     healthHost: env.WORKER_HEALTH_HOST,
-    ...(env.JUDGE0_AUTH_TOKEN ? { judge0AuthToken: env.JUDGE0_AUTH_TOKEN } : {}),
     ...(env.WORKER_HEALTH_PORT ? { healthPort: env.WORKER_HEALTH_PORT } : {}),
   };
 }

@@ -1,3 +1,4 @@
+import { stripVTControlCharacters } from "node:util";
 import { isJsonValue, type JsonValue } from "@bekor/contracts";
 
 export { isJsonValue } from "@bekor/contracts";
@@ -10,6 +11,17 @@ export const MAX_DEBUG_BYTES = 8_192;
 export const MAX_RESPONSE_BYTES = 262_144;
 export const RUNTIME_VERSION = "node-24.22.1-ts-7.0.2";
 export const RESULT_PREFIX = "BEKOR_RESULT_V1:";
+
+/** Strips terminal escapes and control characters and bounds the length. */
+export function sanitizeDiagnostic(value: string): string {
+  return [...stripVTControlCharacters(value)]
+    .filter((char) => {
+      const code = char.codePointAt(0) ?? 0;
+      return code === 9 || code === 10 || code === 13 || (code >= 32 && code !== 127);
+    })
+    .join("")
+    .slice(0, MAX_DEBUG_BYTES);
+}
 
 export function compareJson(actual: JsonValue, expected: JsonValue): boolean {
   if (actual === expected) return true;

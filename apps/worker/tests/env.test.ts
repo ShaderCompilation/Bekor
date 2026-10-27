@@ -88,12 +88,30 @@ describe("worker environment validation", () => {
     expect(loadWorkerEnv(worker)).toEqual({
       nodeEnv: "development",
       databaseUrl: api.DATABASE_URL,
-      judge0Url: worker.JUDGE0_URL,
+      runner: { kind: "judge0", url: worker.JUDGE0_URL },
       healthHost: "127.0.0.1",
     });
     expect(
       loadWorkerEnv({ ...worker, JUDGE0_AUTH_TOKEN: "t", WORKER_HEALTH_PORT: "3001" }),
-    ).toMatchObject({ judge0AuthToken: "t", healthPort: 3001 });
+    ).toMatchObject({ runner: { authToken: "t" }, healthPort: 3001 });
+  });
+
+  it("selects the development Podman runner without JUDGE0_URL, never in production", () => {
+    expect(loadWorkerEnv({ DATABASE_URL: api.DATABASE_URL, RUNNER: "podman" }).runner).toEqual({
+      kind: "podman",
+    });
+    expect(
+      loadWorkerEnv({ DATABASE_URL: api.DATABASE_URL, RUNNER: "podman", PODMAN_RUNNER_IMAGE: "x" })
+        .runner,
+    ).toEqual({ kind: "podman", image: "x" });
+    expect(
+      problems(() =>
+        loadWorkerEnv({ DATABASE_URL: api.DATABASE_URL, RUNNER: "podman", NODE_ENV: "production" }),
+      ),
+    ).toEqual(["RUNNER=podman is development-only and not allowed when NODE_ENV=production"]);
+    expect(problems(() => loadWorkerEnv({ ...worker, RUNNER: "docker" }))).toEqual([
+      "RUNNER must be judge0 or podman",
+    ]);
   });
 
   it("fails clearly when the runner or database is missing", () => {

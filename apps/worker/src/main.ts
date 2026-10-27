@@ -1,7 +1,7 @@
 import { createServer, type Server } from "node:http";
 import { createQueue, JUDGE_QUEUE } from "@bekor/core";
 import { createDatabase } from "@bekor/db";
-import { Judge0Adapter } from "@bekor/runner";
+import { Judge0Adapter, PODMAN_RUNNER_IMAGE, PodmanAdapter } from "@bekor/runner";
 import { EnvironmentError, loadWorkerEnv } from "./env.js";
 import { createProcessor } from "./processor.js";
 import { createWorkerRepository } from "./repository.js";
@@ -17,10 +17,17 @@ try {
 
 const database = createDatabase(env.databaseUrl);
 const repository = createWorkerRepository(database);
-const runner = new Judge0Adapter({
-  url: env.judge0Url,
-  ...(env.judge0AuthToken ? { authToken: env.judge0AuthToken } : {}),
-});
+const runner =
+  env.runner.kind === "podman"
+    ? new PodmanAdapter(env.runner.image ? { image: env.runner.image } : {})
+    : new Judge0Adapter({
+        url: env.runner.url,
+        ...(env.runner.authToken ? { authToken: env.runner.authToken } : {}),
+      });
+const runnerSummary =
+  env.runner.kind === "podman"
+    ? `podman(dev-only) image=${env.runner.image ?? PODMAN_RUNNER_IMAGE}`
+    : `${new URL(env.runner.url).origin} runnerToken=${env.runner.authToken ? "set" : "unset"}`;
 const boss = await createQueue(env.databaseUrl);
 const processSubmission = createProcessor({ repository, runner });
 await boss.work<{ submissionId: string }>(
@@ -92,5 +99,5 @@ process.on("SIGINT", () => void shutdown());
 
 // Only non-secret facts: the runner origin (credentials are rejected by env validation) and whether a token is set.
 process.stdout.write(
-  `Judging worker started: queue=${JUDGE_QUEUE} runner=${new URL(env.judge0Url).origin} runnerToken=${env.judge0AuthToken ? "set" : "unset"} health=${env.healthPort ? `${env.healthHost}:${env.healthPort}` : "disabled"}\n`,
+  `Judging worker started: queue=${JUDGE_QUEUE} runner=${runnerSummary} health=${env.healthPort ? `${env.healthHost}:${env.healthPort}` : "disabled"}\n`,
 );

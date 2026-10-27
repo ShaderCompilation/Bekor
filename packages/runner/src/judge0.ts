@@ -1,6 +1,10 @@
-import { stripVTControlCharacters } from "node:util";
 import { createArchive } from "./harness.js";
-import { MAX_DEBUG_BYTES, MAX_RESPONSE_BYTES, parseResult } from "./protocol.js";
+import {
+  sanitizeDiagnostic as diagnostic,
+  MAX_DEBUG_BYTES,
+  MAX_RESPONSE_BYTES,
+  parseResult,
+} from "./protocol.js";
 import {
   type RunnerAdapter,
   RunnerInfrastructureError,
@@ -29,15 +33,6 @@ function decode(value: unknown): string {
   )
     throw new RunnerInfrastructureError("Invalid runner output encoding.");
   return Buffer.from(value, "base64").toString("utf8");
-}
-function diagnostic(value: string): string {
-  return [...stripVTControlCharacters(value)]
-    .filter((char) => {
-      const code = char.codePointAt(0) ?? 0;
-      return code === 9 || code === 10 || code === 13 || (code >= 32 && code !== 127);
-    })
-    .join("")
-    .slice(0, MAX_DEBUG_BYTES);
 }
 export class Judge0Adapter implements RunnerAdapter {
   private readonly base: URL;

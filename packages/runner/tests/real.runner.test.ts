@@ -1,14 +1,20 @@
-// REAL Judge0 suite. Runs only when JUDGE0_URL points at a private, isolated Judge0 deployment built
-// from infra/compose/judge0 (Node 24.22.1 + TypeScript 7.0.2 under /usr/local/bekor). Never point it
-// at a public Judge0 endpoint. Without JUDGE0_URL every test is skipped and nothing is verified.
+// REAL runner suite. Runs against one real sandbox, chosen by environment:
+//   JUDGE0_URL=…              a private, isolated Judge0 built from infra/compose/judge0 (production path).
+//                             Never point it at a public Judge0 endpoint.
+//   BEKOR_PODMAN_RUNNER=1     the development-only Podman runner (image from infra/runner, plan F05).
+//                             Passing here does NOT verify Judge0 or production isolation (F03).
+// With neither set every test is skipped and nothing is verified.
 import { randomUUID } from "node:crypto";
 import type { JsonValue, Language } from "@bekor/contracts";
 import { describe, expect, it } from "vitest";
 import { Judge0Adapter } from "../src/judge0.js";
+import { PodmanAdapter } from "../src/podman.js";
 import { judgeCase, RESULT_PREFIX } from "../src/protocol.js";
 import type { CompletedExecution, RunnerRequest } from "../src/types.js";
 
 const url = process.env.JUDGE0_URL;
+const podman = process.env.BEKOR_PODMAN_RUNNER === "1";
+const runnerName = url ? "Judge0 (JUDGE0_URL)" : "development Podman runner";
 const limits = { timeMs: 1000, memoryKb: 262144, outputBytes: 8192 };
 
 async function execute(
@@ -17,10 +23,12 @@ async function execute(
   args: JsonValue[] = [2, 3],
   entrypoint = "add",
 ): Promise<CompletedExecution> {
-  const adapter = new Judge0Adapter({
-    url: url as string,
-    ...(process.env.JUDGE0_AUTH_TOKEN ? { authToken: process.env.JUDGE0_AUTH_TOKEN } : {}),
-  });
+  const adapter = url
+    ? new Judge0Adapter({
+        url,
+        ...(process.env.JUDGE0_AUTH_TOKEN ? { authToken: process.env.JUDGE0_AUTH_TOKEN } : {}),
+      })
+    : new PodmanAdapter();
   // The sandbox compiles with `types: []`, so TypeScript fixtures declare the Node global they use.
   const code =
     language === "typescript" && source.includes("process.")
@@ -41,7 +49,7 @@ async function execute(
     if (result.status === "completed") return result;
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
-  throw new Error(`Judge0 did not complete token ${token} within 90 s`);
+  throw new Error(`${runnerName} did not complete token ${token} within 90 s`);
 }
 
 const verdict = async (
@@ -71,7 +79,7 @@ const sources = {
   },
 } as const;
 
-describe.skipIf(!url)("REAL Judge0 runner (requires private JUDGE0_URL)", () => {
+describe.skipIf(!url && !podman)(`REAL runner: ${runnerName}`, () => {
   for (const language of ["javascript", "typescript"] as const) {
     const source = sources[language];
     describe(language, () => {

@@ -73,7 +73,7 @@ const SANDBOX_JSON_VALIDATOR = `(value) => {
   return visit(value, 0);
 }`;
 
-// This text is sent to Judge0. It is NEVER evaluated by the API or worker.
+// This text is sent to the isolated runner. It is NEVER evaluated by the API or worker.
 // Forgery defenses: the result envelope carries a nonce that is read from stdin and the stream
 // closed before learner code loads, and only the harness can exit with status 0.
 export function makeHarness(entrypoint: string, outputBytes: number): string {
@@ -118,25 +118,36 @@ try {
 `;
 }
 
-export function createArchive(request: RunnerRequest): string {
+/** Files shared by every adapter: the solution, module marker, harness and (TS) compiler config. */
+export function createWorkspace(request: RunnerRequest): Record<string, string> {
   validateRequest(request);
-  const filename = request.language === "typescript" ? "solution.ts" : "solution.js";
+  const files: Record<string, string> = {
+    [request.language === "typescript" ? "solution.ts" : "solution.js"]: request.source,
+    "package.json": '{"type":"module"}',
+    "harness.mjs": makeHarness(request.entrypoint, request.limits.outputBytes),
+  };
+  if (request.language === "typescript")
+    files["tsconfig.json"] = JSON.stringify({
+      compilerOptions: COMPILER_OPTIONS,
+      files: ["solution.ts"],
+      exclude: [],
+    });
+  return files;
+}
+
+export function createArchive(request: RunnerRequest): string {
   const compile =
     request.language === "typescript"
       ? `#!/bin/bash\nset -eu\nexport PATH=/usr/local/bekor/bin:$PATH\ntest "$(node --version)" = v24.22.1\ntest "$(/usr/local/bekor/node_modules/.bin/tsc --version)" = 'Version 7.0.2'\nexec /usr/local/bekor/node_modules/.bin/tsc --project tsconfig.json\n`
       : '#!/bin/bash\nset -eu\ntest "$(/usr/local/bekor/bin/node --version)" = v24.22.1\nexec /usr/local/bekor/bin/node --check solution.js\n';
   const files: Record<string, Uint8Array> = {
-    [filename]: strToU8(request.source),
-    "package.json": strToU8('{"type":"module"}'),
-    "harness.mjs": strToU8(makeHarness(request.entrypoint, request.limits.outputBytes)),
+    ...Object.fromEntries(
+      Object.entries(createWorkspace(request)).map(([name, text]) => [name, strToU8(text)]),
+    ),
     compile: strToU8(compile),
     run: strToU8(
       "#!/bin/bash\nset -eu\nexec /usr/local/bekor/bin/node --max-old-space-size=128 harness.mjs\n",
     ),
   };
-  if (request.language === "typescript")
-    files["tsconfig.json"] = strToU8(
-      JSON.stringify({ compilerOptions: COMPILER_OPTIONS, files: ["solution.ts"], exclude: [] }),
-    );
   return Buffer.from(zipSync(files, { level: 0 })).toString("base64");
 }

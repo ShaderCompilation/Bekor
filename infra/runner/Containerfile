@@ -1,0 +1,12 @@
+# Development-only runner image for the Podman adapter (packages/runner/src/podman.ts).
+# Pinned Node 24.22.1 (same digest as the dev image) + TypeScript 7.0.2 under /opt/bekor.
+# Build: podman build -t localhost/bekor-runner:node24.22.1-ts7.0.2 infra/runner
+FROM docker.io/library/node:24.22.1-bookworm-slim@sha256:55fb5f5a527ea2c5c4a95f963e48ef90aa38c7b346054fdc8ee9957a2b55d205
+ARG TYPESCRIPT_VERSION=7.0.2
+RUN set -eux; \
+    npm install --prefix /opt/bekor --no-audit --no-fund --save-exact "typescript@${TYPESCRIPT_VERSION}"; \
+    npm cache clean --force; \
+    test "$(/opt/bekor/node_modules/.bin/tsc --version)" = "Version ${TYPESCRIPT_VERSION}"; \
+    chmod -R a+rX,go-w /opt/bekor
+USER node
+WORKDIR /work
