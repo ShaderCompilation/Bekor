@@ -25,6 +25,7 @@
     "db:migrate": "pnpm --filter @bekor/db migrate",
     "content:validate": "pnpm --filter @bekor/exercises validate",
     "dev:web": "pnpm --filter @bekor/web dev",
+    "dev:backend": "pnpm --parallel --filter @bekor/api --filter @bekor/worker exec tsx --env-file=../../.env src/main.ts",
     "test:e2e": "playwright test",
     "check:web-bundle": "node scripts/check-web-bundle.mjs"
   },
