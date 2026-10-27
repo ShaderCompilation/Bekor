@@ -1,0 +1,110 @@
+{
+  "public": {
+    "id": "edit-distance",
+    "slug": "edit-distance",
+    "version": "1.0.0",
+    "title": "Edit Distance",
+    "description": "Two labels source and target contain only lowercase English letters, with each length from 0 through 120. Return the fewest single-character edits that turn source into target. One edit inserts one letter at any position, deletes one letter, or replaces one letter with another; each costs one. Exchanging adjacent letters is not a single edit. Return only the minimum cost, so no edit-script tie rule is needed. Empty strings are valid. Aim for O(m times n) time for lengths m and n.",
+    "difficulty": "medium",
+    "concepts": ["strings", "dynamic-programming"],
+    "hints": [
+      "Compare prefixes of the two labels; remember the answer for each pair of prefix lengths.",
+      "When the final letters differ, consider an insertion, deletion or replacement. Only the preceding row and current row are needed."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text or code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "editDistance",
+        "signature": "editDistance(source: string, target: string): number",
+        "starter": "export function editDistance(source, target) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": ["frame", "flame"],
+            "expected": 1
+          },
+          {
+            "args": ["abc", "yabd"],
+            "expected": 2
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "editDistance",
+        "signature": "editDistance(source: string, target: string): number",
+        "starter": "export function editDistance(source: string, target: string): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": ["frame", "flame"],
+            "expected": 1
+          },
+          {
+            "args": ["abc", "yabd"],
+            "expected": 2
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["", ""],
+      "expected": 0
+    },
+    {
+      "args": ["", "sprout"],
+      "expected": 6
+    },
+    {
+      "args": ["branch", ""],
+      "expected": 6
+    },
+    {
+      "args": ["mirror", "mirror"],
+      "expected": 0
+    },
+    {
+      "args": ["ab", "ba"],
+      "expected": 2
+    },
+    {
+      "args": ["aaaa", "aa"],
+      "expected": 2
+    },
+    {
+      "args": ["abc", "xyz"],
+      "expected": 3
+    },
+    {
+      "args": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "expected": 120
+    },
+    {
+      "args": ["trail", "trial"],
+      "expected": 2
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function editDistance(source, target) {\n  let previous = Array.from({ length: target.length + 1 }, (_, j) => j);\n  for (let i = 1; i <= source.length; i++) {\n    const current = [i];\n    for (let j = 1; j <= target.length; j++) {\n      current[j] = source[i - 1] === target[j - 1]\n        ? previous[j - 1]\n        : 1 + Math.min(previous[j], current[j - 1], previous[j - 1]);\n    }\n    previous = current;\n  }\n  return previous[target.length];\n}\n",
+    "typescript": "export function editDistance(source: string, target: string): number {\n  let previous = Array.from({ length: target.length + 1 }, (_, j) => j);\n  for (let i = 1; i <= source.length; i++) {\n    const current: number[] = [i];\n    for (let j = 1; j <= target.length; j++) {\n      current[j] = source[i - 1] === target[j - 1]\n        ? previous[j - 1]\n        : 1 + Math.min(previous[j], current[j - 1], previous[j - 1]);\n    }\n    previous = current;\n  }\n  return previous[target.length];\n}\n"
+  },
+  "explanation": "Let dp(i,j) be the minimum cost for the first i source letters and first j target letters. Empty-prefix costs are i and j. Equal final letters extend the diagonal answer for free; otherwise take one plus the minimum of the deletion, insertion and replacement predecessors. Keep one previous row and build the next row. For lengths m and n, time is O(m times n + m + n) including empty inputs; auxiliary space is O(n + 1)."
+}

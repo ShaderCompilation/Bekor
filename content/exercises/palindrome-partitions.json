@@ -1,0 +1,232 @@
+{
+  "public": {
+    "id": "palindrome-partitions",
+    "slug": "palindrome-partitions",
+    "version": "1.0.0",
+    "title": "Palindrome Partitions",
+    "description": "A label text contains 0 through 8 lowercase English letters. Return every way to split the entire label into nonempty consecutive pieces such that each piece reads the same forward and backward. Preserve all letters in their original order and include each partition exactly once. Order partitions lexicographically by their sequences of piece lengths: at the first differing length, the shorter piece comes first. A proper prefix sequence would come first, although two complete partitions cannot have that relation. For the empty label return [[]], the one partition with no pieces. There are at most 128 partitions under this length bound; the bound applies even to repeated letters.",
+    "difficulty": "medium",
+    "concepts": ["strings", "backtracking", "dynamic-programming"],
+    "hints": [
+      "Precompute which substrings are palindromes, beginning with short inner substrings.",
+      "Build a partition from left to right. Try the next piece in increasing length order to produce the required ordering without sorting."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text or code used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "palindromePartitions",
+        "signature": "palindromePartitions(text: string): string[][]",
+        "starter": "export function palindromePartitions(text) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": ["noon"],
+            "expected": [["n", "o", "o", "n"], ["n", "oo", "n"], ["noon"]]
+          },
+          {
+            "args": ["abc"],
+            "expected": [["a", "b", "c"]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "palindromePartitions",
+        "signature": "palindromePartitions(text: string): string[][]",
+        "starter": "export function palindromePartitions(text: string): string[][] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": ["noon"],
+            "expected": [["n", "o", "o", "n"], ["n", "oo", "n"], ["noon"]]
+          },
+          {
+            "args": ["abc"],
+            "expected": [["a", "b", "c"]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [""],
+      "expected": [[]]
+    },
+    {
+      "args": ["a"],
+      "expected": [["a"]]
+    },
+    {
+      "args": ["aa"],
+      "expected": [["a", "a"], ["aa"]]
+    },
+    {
+      "args": ["aba"],
+      "expected": [["a", "b", "a"], ["aba"]]
+    },
+    {
+      "args": ["aab"],
+      "expected": [["a", "a", "b"], ["aa", "b"]]
+    },
+    {
+      "args": ["abba"],
+      "expected": [["a", "b", "b", "a"], ["a", "bb", "a"], ["abba"]]
+    },
+    {
+      "args": ["abcdefgh"],
+      "expected": [["a", "b", "c", "d", "e", "f", "g", "h"]]
+    },
+    {
+      "args": ["aaaaaaaa"],
+      "expected": [
+        ["a", "a", "a", "a", "a", "a", "a", "a"],
+        ["a", "a", "a", "a", "a", "a", "aa"],
+        ["a", "a", "a", "a", "a", "aa", "a"],
+        ["a", "a", "a", "a", "a", "aaa"],
+        ["a", "a", "a", "a", "aa", "a", "a"],
+        ["a", "a", "a", "a", "aa", "aa"],
+        ["a", "a", "a", "a", "aaa", "a"],
+        ["a", "a", "a", "a", "aaaa"],
+        ["a", "a", "a", "aa", "a", "a", "a"],
+        ["a", "a", "a", "aa", "a", "aa"],
+        ["a", "a", "a", "aa", "aa", "a"],
+        ["a", "a", "a", "aa", "aaa"],
+        ["a", "a", "a", "aaa", "a", "a"],
+        ["a", "a", "a", "aaa", "aa"],
+        ["a", "a", "a", "aaaa", "a"],
+        ["a", "a", "a", "aaaaa"],
+        ["a", "a", "aa", "a", "a", "a", "a"],
+        ["a", "a", "aa", "a", "a", "aa"],
+        ["a", "a", "aa", "a", "aa", "a"],
+        ["a", "a", "aa", "a", "aaa"],
+        ["a", "a", "aa", "aa", "a", "a"],
+        ["a", "a", "aa", "aa", "aa"],
+        ["a", "a", "aa", "aaa", "a"],
+        ["a", "a", "aa", "aaaa"],
+        ["a", "a", "aaa", "a", "a", "a"],
+        ["a", "a", "aaa", "a", "aa"],
+        ["a", "a", "aaa", "aa", "a"],
+        ["a", "a", "aaa", "aaa"],
+        ["a", "a", "aaaa", "a", "a"],
+        ["a", "a", "aaaa", "aa"],
+        ["a", "a", "aaaaa", "a"],
+        ["a", "a", "aaaaaa"],
+        ["a", "aa", "a", "a", "a", "a", "a"],
+        ["a", "aa", "a", "a", "a", "aa"],
+        ["a", "aa", "a", "a", "aa", "a"],
+        ["a", "aa", "a", "a", "aaa"],
+        ["a", "aa", "a", "aa", "a", "a"],
+        ["a", "aa", "a", "aa", "aa"],
+        ["a", "aa", "a", "aaa", "a"],
+        ["a", "aa", "a", "aaaa"],
+        ["a", "aa", "aa", "a", "a", "a"],
+        ["a", "aa", "aa", "a", "aa"],
+        ["a", "aa", "aa", "aa", "a"],
+        ["a", "aa", "aa", "aaa"],
+        ["a", "aa", "aaa", "a", "a"],
+        ["a", "aa", "aaa", "aa"],
+        ["a", "aa", "aaaa", "a"],
+        ["a", "aa", "aaaaa"],
+        ["a", "aaa", "a", "a", "a", "a"],
+        ["a", "aaa", "a", "a", "aa"],
+        ["a", "aaa", "a", "aa", "a"],
+        ["a", "aaa", "a", "aaa"],
+        ["a", "aaa", "aa", "a", "a"],
+        ["a", "aaa", "aa", "aa"],
+        ["a", "aaa", "aaa", "a"],
+        ["a", "aaa", "aaaa"],
+        ["a", "aaaa", "a", "a", "a"],
+        ["a", "aaaa", "a", "aa"],
+        ["a", "aaaa", "aa", "a"],
+        ["a", "aaaa", "aaa"],
+        ["a", "aaaaa", "a", "a"],
+        ["a", "aaaaa", "aa"],
+        ["a", "aaaaaa", "a"],
+        ["a", "aaaaaaa"],
+        ["aa", "a", "a", "a", "a", "a", "a"],
+        ["aa", "a", "a", "a", "a", "aa"],
+        ["aa", "a", "a", "a", "aa", "a"],
+        ["aa", "a", "a", "a", "aaa"],
+        ["aa", "a", "a", "aa", "a", "a"],
+        ["aa", "a", "a", "aa", "aa"],
+        ["aa", "a", "a", "aaa", "a"],
+        ["aa", "a", "a", "aaaa"],
+        ["aa", "a", "aa", "a", "a", "a"],
+        ["aa", "a", "aa", "a", "aa"],
+        ["aa", "a", "aa", "aa", "a"],
+        ["aa", "a", "aa", "aaa"],
+        ["aa", "a", "aaa", "a", "a"],
+        ["aa", "a", "aaa", "aa"],
+        ["aa", "a", "aaaa", "a"],
+        ["aa", "a", "aaaaa"],
+        ["aa", "aa", "a", "a", "a", "a"],
+        ["aa", "aa", "a", "a", "aa"],
+        ["aa", "aa", "a", "aa", "a"],
+        ["aa", "aa", "a", "aaa"],
+        ["aa", "aa", "aa", "a", "a"],
+        ["aa", "aa", "aa", "aa"],
+        ["aa", "aa", "aaa", "a"],
+        ["aa", "aa", "aaaa"],
+        ["aa", "aaa", "a", "a", "a"],
+        ["aa", "aaa", "a", "aa"],
+        ["aa", "aaa", "aa", "a"],
+        ["aa", "aaa", "aaa"],
+        ["aa", "aaaa", "a", "a"],
+        ["aa", "aaaa", "aa"],
+        ["aa", "aaaaa", "a"],
+        ["aa", "aaaaaa"],
+        ["aaa", "a", "a", "a", "a", "a"],
+        ["aaa", "a", "a", "a", "aa"],
+        ["aaa", "a", "a", "aa", "a"],
+        ["aaa", "a", "a", "aaa"],
+        ["aaa", "a", "aa", "a", "a"],
+        ["aaa", "a", "aa", "aa"],
+        ["aaa", "a", "aaa", "a"],
+        ["aaa", "a", "aaaa"],
+        ["aaa", "aa", "a", "a", "a"],
+        ["aaa", "aa", "a", "aa"],
+        ["aaa", "aa", "aa", "a"],
+        ["aaa", "aa", "aaa"],
+        ["aaa", "aaa", "a", "a"],
+        ["aaa", "aaa", "aa"],
+        ["aaa", "aaaa", "a"],
+        ["aaa", "aaaaa"],
+        ["aaaa", "a", "a", "a", "a"],
+        ["aaaa", "a", "a", "aa"],
+        ["aaaa", "a", "aa", "a"],
+        ["aaaa", "a", "aaa"],
+        ["aaaa", "aa", "a", "a"],
+        ["aaaa", "aa", "aa"],
+        ["aaaa", "aaa", "a"],
+        ["aaaa", "aaaa"],
+        ["aaaaa", "a", "a", "a"],
+        ["aaaaa", "a", "aa"],
+        ["aaaaa", "aa", "a"],
+        ["aaaaa", "aaa"],
+        ["aaaaaa", "a", "a"],
+        ["aaaaaa", "aa"],
+        ["aaaaaaa", "a"],
+        ["aaaaaaaa"]
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function palindromePartitions(text) {\n  const n = text.length;\n  const palindrome = Array.from({ length: n }, () => Array(n).fill(false));\n  for (let left = n - 1; left >= 0; left--) {\n    for (let right = left; right < n; right++) {\n      palindrome[left][right] = text[left] === text[right]\n        && (right - left < 2 || palindrome[left + 1][right - 1]);\n    }\n  }\n  const result = [];\n  const path = [];\n  function visit(start) {\n    if (start === n) {\n      result.push([...path]);\n      return;\n    }\n    for (let end = start; end < n; end++) {\n      if (!palindrome[start][end]) continue;\n      path.push(text.slice(start, end + 1));\n      visit(end + 1);\n      path.pop();\n    }\n  }\n  visit(0);\n  return result;\n}\n",
+    "typescript": "export function palindromePartitions(text: string): string[][] {\n  const n = text.length;\n  const palindrome = Array.from({ length: n }, () => Array(n).fill(false));\n  for (let left = n - 1; left >= 0; left--) {\n    for (let right = left; right < n; right++) {\n      palindrome[left][right] = text[left] === text[right]\n        && (right - left < 2 || palindrome[left + 1][right - 1]);\n    }\n  }\n  const result: string[][] = [];\n  const path: string[] = [];\n  function visit(start: number): void {\n    if (start === n) {\n      result.push([...path]);\n      return;\n    }\n    for (let end = start; end < n; end++) {\n      if (!palindrome[start][end]) continue;\n      path.push(text.slice(start, end + 1));\n      visit(end + 1);\n      path.pop();\n    }\n  }\n  visit(0);\n  return result;\n}\n"
+  },
+  "explanation": "Precompute palindromes using equal endpoints and the inner substring. Backtrack from the first unused letter, considering palindromic next pieces in increasing length order. Copy a completed path; backtracking removes the most recent choice. This traversal gives the specified lexicographic length ordering. For n letters, time is O(n squared + (n + 1) times 2 to the n), a worst-case bound including output copying. Auxiliary space excluding returned partitions is O(n squared + n + 1); returned data needs O((n + 1) times 2 to the n) space in the worst case. The n at most 8 bound limits outputs to 128 partitions and less than 5000 serialized bytes because letters require no JSON escaping."
+}
