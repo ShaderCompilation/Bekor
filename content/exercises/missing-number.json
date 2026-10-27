@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "missing-number",
+    "slug": "missing-number",
+    "version": "1.0.0",
+    "title": "Missing Number",
+    "description": "The array values contains n distinct integers drawn from 0 through n inclusive. Exactly one integer from that range is missing. Return it. The array may be unsorted and n is between 0 and 1000. Aim for linear time and constant extra space.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "arithmetic"],
+    "hints": ["Compare the expected sum of the full range with the actual sum."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "missingNumber",
+        "signature": "missingNumber(values: number[]): number",
+        "starter": "export function missingNumber(values) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[4, 0, 1, 3]],
+            "expected": 2
+          },
+          {
+            "args": [[1, 2]],
+            "expected": 0
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "missingNumber",
+        "signature": "missingNumber(values: number[]): number",
+        "starter": "export function missingNumber(values: number[]): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[4, 0, 1, 3]],
+            "expected": 2
+          },
+          {
+            "args": [[1, 2]],
+            "expected": 0
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": 0
+    },
+    {
+      "args": [[0]],
+      "expected": 1
+    },
+    {
+      "args": [[1]],
+      "expected": 0
+    },
+    {
+      "args": [[2, 0, 1]],
+      "expected": 3
+    },
+    {
+      "args": [[5, 2, 0, 4, 1]],
+      "expected": 3
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function missingNumber(values) {\n  const n = values.length;\n  return n * (n + 1) / 2 - values.reduce((sum, value) => sum + value, 0);\n}\n",
+    "typescript": "export function missingNumber(values: number[]): number {\n  const n = values.length;\n  return n * (n + 1) / 2 - values.reduce((sum, value) => sum + value, 0);\n}\n"
+  },
+  "explanation": "The sum from 0 through n is n times (n + 1) divided by 2. Subtracting the input sum leaves the missing value. All intermediate sums are safe integers under the constraints. Time is O(n), extra space O(1)."
+}

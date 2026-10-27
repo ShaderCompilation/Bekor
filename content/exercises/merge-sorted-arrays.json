@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "merge-sorted-arrays",
+    "slug": "merge-sorted-arrays",
+    "version": "1.0.0",
+    "title": "Merge Sorted Arrays",
+    "description": "Return one nondecreasing array containing every element of the nondecreasing integer arrays left and right, including duplicates. Each input has at most 500 elements with values between -1000000 and 1000000. Empty arrays are allowed. Aim for O(n + m) time.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "two-pointers"],
+    "hints": ["Compare the next unmerged element in each array."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "mergeSortedArrays",
+        "signature": "mergeSortedArrays(left: number[], right: number[]): number[]",
+        "starter": "export function mergeSortedArrays(left, right) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 4, 4], [2, 4, 8]],
+            "expected": [1, 2, 4, 4, 4, 8]
+          },
+          {
+            "args": [[], [3]],
+            "expected": [3]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "mergeSortedArrays",
+        "signature": "mergeSortedArrays(left: number[], right: number[]): number[]",
+        "starter": "export function mergeSortedArrays(left: number[], right: number[]): number[] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 4, 4], [2, 4, 8]],
+            "expected": [1, 2, 4, 4, 4, 8]
+          },
+          {
+            "args": [[], [3]],
+            "expected": [3]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], []],
+      "expected": []
+    },
+    {
+      "args": [[-7, 2], []],
+      "expected": [-7, 2]
+    },
+    {
+      "args": [[0, 0], [0]],
+      "expected": [0, 0, 0]
+    },
+    {
+      "args": [[-10, 9], [-3, 4]],
+      "expected": [-10, -3, 4, 9]
+    },
+    {
+      "args": [[10], [2]],
+      "expected": [2, 10]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function mergeSortedArrays(left, right) {\n  const result = [];\n  let i = 0, j = 0;\n  while (i < left.length && j < right.length) {\n    if (left[i] <= right[j]) result.push(left[i++]);\n    else result.push(right[j++]);\n  }\n  return result.concat(left.slice(i), right.slice(j));\n}\n",
+    "typescript": "export function mergeSortedArrays(left: number[], right: number[]): number[] {\n  const result: number[] = [];\n  let i = 0, j = 0;\n  while (i < left.length && j < right.length) {\n    if (left[i] <= right[j]) result.push(left[i++]);\n    else result.push(right[j++]);\n  }\n  return result.concat(left.slice(i), right.slice(j));\n}\n"
+  },
+  "explanation": "Advance the pointer with the smaller current value and append that value. When one array is exhausted, append the remaining suffix of the other. Time is O(n + m), with O(n + m) output space."
+}

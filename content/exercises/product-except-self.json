@@ -1,0 +1,100 @@
+{
+  "public": {
+    "id": "product-except-self",
+    "slug": "product-except-self",
+    "version": "1.0.0",
+    "title": "Product Except Self",
+    "description": "For each position in values, return the product of all elements except the one at that position. Use no division and aim for linear time. The array has 0 to 20 integers between -5 and 5; the product of an empty collection is 1. Return an empty array for empty input. All possible products under these bounds are safe integers.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "prefix-sums"],
+    "hints": [
+      "Multiply the product to the left by the product to the right.",
+      "Two passes avoid division and handle zeroes."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "productExceptSelf",
+        "signature": "productExceptSelf(values: number[]): number[]",
+        "starter": "export function productExceptSelf(values) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 3, 4]],
+            "expected": [12, 8, 6]
+          },
+          {
+            "args": [[0, 2, 3]],
+            "expected": [6, 0, 0]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "productExceptSelf",
+        "signature": "productExceptSelf(values: number[]): number[]",
+        "starter": "export function productExceptSelf(values: number[]): number[] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 3, 4]],
+            "expected": [12, 8, 6]
+          },
+          {
+            "args": [[0, 2, 3]],
+            "expected": [6, 0, 0]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[5]],
+      "expected": [1]
+    },
+    {
+      "args": [[0, 4, 0]],
+      "expected": [0, 0, 0]
+    },
+    {
+      "args": [[-2, 3, -1]],
+      "expected": [-3, 2, -6]
+    },
+    {
+      "args": [[1, 1]],
+      "expected": [1, 1]
+    },
+    {
+      "args": [[5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]],
+      "expected": [
+        19073486328125, 19073486328125, 19073486328125, 19073486328125, 19073486328125,
+        19073486328125, 19073486328125, 19073486328125, 19073486328125, 19073486328125,
+        19073486328125, 19073486328125, 19073486328125, 19073486328125, 19073486328125,
+        19073486328125, 19073486328125, 19073486328125, 19073486328125, 19073486328125
+      ]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function productExceptSelf(values) {\n  const result = Array(values.length).fill(1);\n  let prefix = 1, suffix = 1;\n  for (let i = 0; i < values.length; i++) {\n    result[i] = prefix;\n    prefix *= values[i];\n  }\n  for (let i = values.length - 1; i >= 0; i--) {\n    result[i] *= suffix;\n    suffix *= values[i];\n  }\n  return result;\n}\n",
+    "typescript": "export function productExceptSelf(values: number[]): number[] {\n  const result: number[] = Array(values.length).fill(1);\n  let prefix = 1, suffix = 1;\n  for (let i = 0; i < values.length; i++) {\n    result[i] = prefix;\n    prefix *= values[i];\n  }\n  for (let i = values.length - 1; i >= 0; i--) {\n    result[i] *= suffix;\n    suffix *= values[i];\n  }\n  return result;\n}\n"
+  },
+  "explanation": "First store the exclusive prefix product at each index. Scan backward multiplying each stored value by the exclusive suffix product. Zeroes and negative values work without special cases. Time is O(n), with O(1) extra space beyond the output."
+}

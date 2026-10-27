@@ -1,0 +1,95 @@
+{
+  "public": {
+    "id": "longest-unique-substring",
+    "slug": "longest-unique-substring",
+    "version": "1.0.0",
+    "title": "Longest Unique Substring",
+    "description": "Return the length of the longest contiguous substring of text that contains no repeated character. text contains only lowercase English letters and has at most 1000 characters. Return 0 for empty text. Aim for linear time.",
+    "difficulty": "medium",
+    "concepts": ["strings", "sliding-window", "hash-maps"],
+    "hints": [
+      "Maintain a window of distinct characters.",
+      "On a repeat, move its left edge forward past the previous occurrence, never backward."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "longestUniqueSubstring",
+        "signature": "longestUniqueSubstring(text: string): number",
+        "starter": "export function longestUniqueSubstring(text) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": ["abcaef"],
+            "expected": 5
+          },
+          {
+            "args": ["zzzz"],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "longestUniqueSubstring",
+        "signature": "longestUniqueSubstring(text: string): number",
+        "starter": "export function longestUniqueSubstring(text: string): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": ["abcaef"],
+            "expected": 5
+          },
+          {
+            "args": ["zzzz"],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [""],
+      "expected": 0
+    },
+    {
+      "args": ["abba"],
+      "expected": 2
+    },
+    {
+      "args": ["pwwkew"],
+      "expected": 3
+    },
+    {
+      "args": ["dvdf"],
+      "expected": 3
+    },
+    {
+      "args": ["abcabcbb"],
+      "expected": 3
+    },
+    {
+      "args": ["abcdef"],
+      "expected": 6
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function longestUniqueSubstring(text) {\n  const last = new Map();\n  let start = 0, best = 0;\n  for (let end = 0; end < text.length; end++) {\n    start = Math.max(start, (last.get(text[end]) ?? -1) + 1);\n    last.set(text[end], end);\n    best = Math.max(best, end - start + 1);\n  }\n  return best;\n}\n",
+    "typescript": "export function longestUniqueSubstring(text: string): number {\n  const last = new Map<string, number>();\n  let start = 0, best = 0;\n  for (let end = 0; end < text.length; end++) {\n    start = Math.max(start, (last.get(text[end]) ?? -1) + 1);\n    last.set(text[end], end);\n    best = Math.max(best, end - start + 1);\n  }\n  return best;\n}\n"
+  },
+  "explanation": "Track each character's latest index. Move the window start past a repeated character only when that index lies in the current window. Record the longest window. Time is O(n), space O(26)."
+}

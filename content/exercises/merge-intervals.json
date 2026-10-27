@@ -1,0 +1,95 @@
+{
+  "public": {
+    "id": "merge-intervals",
+    "slug": "merge-intervals",
+    "version": "1.0.0",
+    "title": "Merge Intervals",
+    "description": "intervals is an array of closed integer intervals, each represented as a two-element array giving start and end, with start no greater than end. Merge overlapping intervals, including intervals touching at an endpoint. Return disjoint intervals sorted by start. Input order is arbitrary. There are 0 to 500 intervals with endpoints between -1000000 and 1000000. Aim for O(n log n) time.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "sorting", "intervals"],
+    "hints": [
+      "Sort by the starting endpoint.",
+      "Compare each interval with the last interval already merged."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "mergeIntervals",
+        "signature": "mergeIntervals(intervals: number[][]): number[][]",
+        "starter": "export function mergeIntervals(intervals) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[[6, 9], [1, 4], [3, 7]]],
+            "expected": [[1, 9]]
+          },
+          {
+            "args": [[[1, 2], [4, 5]]],
+            "expected": [[1, 2], [4, 5]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "mergeIntervals",
+        "signature": "mergeIntervals(intervals: number[][]): number[][]",
+        "starter": "export function mergeIntervals(intervals: number[][]): number[][] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[[6, 9], [1, 4], [3, 7]]],
+            "expected": [[1, 9]]
+          },
+          {
+            "args": [[[1, 2], [4, 5]]],
+            "expected": [[1, 2], [4, 5]]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[[1, 3], [3, 6]]],
+      "expected": [[1, 6]]
+    },
+    {
+      "args": [[[1, 10], [2, 3], [4, 8]]],
+      "expected": [[1, 10]]
+    },
+    {
+      "args": [[[2, 2], [2, 2]]],
+      "expected": [[2, 2]]
+    },
+    {
+      "args": [[[-8, -3], [-5, 0], [10, 12]]],
+      "expected": [[-8, 0], [10, 12]]
+    },
+    {
+      "args": [[[10, 11], [2, 3]]],
+      "expected": [[2, 3], [10, 11]]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function mergeIntervals(intervals) {\n  const sorted = intervals.map(pair => [...pair]).sort((a, b) => a[0] - b[0]);\n  const result = [];\n  for (const pair of sorted) {\n    const previous = result[result.length - 1];\n    if (previous && pair[0] <= previous[1]) previous[1] = Math.max(previous[1], pair[1]);\n    else result.push(pair);\n  }\n  return result;\n}\n",
+    "typescript": "export function mergeIntervals(intervals: number[][]): number[][] {\n  const sorted = intervals.map(pair => [...pair]).sort((a, b) => a[0] - b[0]);\n  const result: number[][] = [];\n  for (const pair of sorted) {\n    const previous = result[result.length - 1];\n    if (previous && pair[0] <= previous[1]) previous[1] = Math.max(previous[1], pair[1]);\n    else result.push(pair);\n  }\n  return result;\n}\n"
+  },
+  "explanation": "After sorting by start, an interval either extends the last merged interval or starts a disjoint one. Keep the larger end when merging, so nested intervals cannot shorten the result. Time is O(n log n), space O(n)."
+}

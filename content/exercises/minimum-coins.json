@@ -1,0 +1,95 @@
+{
+  "public": {
+    "id": "minimum-coins",
+    "slug": "minimum-coins",
+    "version": "1.0.0",
+    "title": "Minimum Coins",
+    "description": "Given distinct positive integer coin denominations coins and a nonnegative integer amount, return the fewest coins needed to total exactly amount. Each denomination can be used any number of times. Return -1 if impossible, and 0 for amount 0. There are 0 to 20 denominations, each between 1 and 1000; amount is between 0 and 1000. Aim for O(amount times number of denominations) time.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "dynamic-programming"],
+    "hints": [
+      "Store the minimum coins for each smaller total.",
+      "Choosing the largest coin first can miss the best solution."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "minimumCoins",
+        "signature": "minimumCoins(coins: number[], amount: number): number",
+        "starter": "export function minimumCoins(coins, amount) {\n  // Implement the function.\n  return -1;\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 4, 6], 8],
+            "expected": 2
+          },
+          {
+            "args": [[4, 6], 7],
+            "expected": -1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "minimumCoins",
+        "signature": "minimumCoins(coins: number[], amount: number): number",
+        "starter": "export function minimumCoins(coins: number[], amount: number): number {\n  // Implement the function.\n  return -1;\n}\n",
+        "publicTests": [
+          {
+            "args": [[1, 4, 6], 8],
+            "expected": 2
+          },
+          {
+            "args": [[4, 6], 7],
+            "expected": -1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[2], 0],
+      "expected": 0
+    },
+    {
+      "args": [[], 5],
+      "expected": -1
+    },
+    {
+      "args": [[], 0],
+      "expected": 0
+    },
+    {
+      "args": [[7, 3, 2], 6],
+      "expected": 2
+    },
+    {
+      "args": [[5], 10],
+      "expected": 2
+    },
+    {
+      "args": [[1], 1000],
+      "expected": 1000
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function minimumCoins(coins, amount) {\n  const best = Array(amount + 1).fill(Infinity);\n  best[0] = 0;\n  for (let total = 1; total <= amount; total++) {\n    for (const coin of coins) {\n      if (coin <= total) best[total] = Math.min(best[total], best[total - coin] + 1);\n    }\n  }\n  return Number.isFinite(best[amount]) ? best[amount] : -1;\n}\n",
+    "typescript": "export function minimumCoins(coins: number[], amount: number): number {\n  const best: number[] = Array(amount + 1).fill(Infinity);\n  best[0] = 0;\n  for (let total = 1; total <= amount; total++) {\n    for (const coin of coins) {\n      if (coin <= total) best[total] = Math.min(best[total], best[total - coin] + 1);\n    }\n  }\n  return Number.isFinite(best[amount]) ? best[amount] : -1;\n}\n"
+  },
+  "explanation": "Set the minimum for zero to zero and other totals to infinity. For each total, try every possible final coin and extend an optimal smaller total. Unreachable totals stay infinite. Time is O(amount times denominations), space O(amount)."
+}

@@ -1,0 +1,92 @@
+{
+  "public": {
+    "id": "binary-search",
+    "slug": "binary-search",
+    "version": "1.0.0",
+    "title": "Binary Search",
+    "description": "Given a strictly increasing integer array values and an integer target, return the zero-based index of target, or -1 if it is absent. The array has 0 to 1000 elements; values and target are between -1000000 and 1000000. Use O(log n) time.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "binary-search"],
+    "hints": ["Each middle element tells you which half can still contain the target."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "binarySearch",
+        "signature": "binarySearch(values: number[], target: number): number",
+        "starter": "export function binarySearch(values, target) {\n  // Implement the function.\n  return -1;\n}\n",
+        "publicTests": [
+          {
+            "args": [[-8, -1, 4, 12, 19], 12],
+            "expected": 3
+          },
+          {
+            "args": [[1, 5, 9], 6],
+            "expected": -1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "binarySearch",
+        "signature": "binarySearch(values: number[], target: number): number",
+        "starter": "export function binarySearch(values: number[], target: number): number {\n  // Implement the function.\n  return -1;\n}\n",
+        "publicTests": [
+          {
+            "args": [[-8, -1, 4, 12, 19], 12],
+            "expected": 3
+          },
+          {
+            "args": [[1, 5, 9], 6],
+            "expected": -1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[], 0],
+      "expected": -1
+    },
+    {
+      "args": [[7], 7],
+      "expected": 0
+    },
+    {
+      "args": [[7], 8],
+      "expected": -1
+    },
+    {
+      "args": [[-5, 2, 11, 20], -5],
+      "expected": 0
+    },
+    {
+      "args": [[-5, 2, 11, 20], 20],
+      "expected": 3
+    },
+    {
+      "args": [[1, 2], 0],
+      "expected": -1
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function binarySearch(values, target) {\n  let low = 0, high = values.length - 1;\n  while (low <= high) {\n    const middle = Math.floor((low + high) / 2);\n    if (values[middle] === target) return middle;\n    if (values[middle] < target) low = middle + 1;\n    else high = middle - 1;\n  }\n  return -1;\n}\n",
+    "typescript": "export function binarySearch(values: number[], target: number): number {\n  let low = 0, high = values.length - 1;\n  while (low <= high) {\n    const middle = Math.floor((low + high) / 2);\n    if (values[middle] === target) return middle;\n    if (values[middle] < target) low = middle + 1;\n    else high = middle - 1;\n  }\n  return -1;\n}\n"
+  },
+  "explanation": "Maintain an inclusive search range. Compare its midpoint with the target and discard the half that cannot contain it. An empty range means absence. Time is O(log n) with O(1) space."
+}

@@ -1,0 +1,103 @@
+{
+  "public": {
+    "id": "count-islands",
+    "slug": "count-islands",
+    "version": "1.0.0",
+    "title": "Count Islands",
+    "description": "grid is a rectangular matrix of integers 0 and 1, where 1 is land and 0 is water. Return the number of connected groups of land. Land connects horizontally and vertically, never diagonally. There are 0 to 30 rows and 0 to 30 columns. Empty grids and rows are allowed. Mutating grid is allowed but not required. Aim for O(rows times columns) time.",
+    "difficulty": "medium",
+    "concepts": ["matrices", "graphs", "depth-first-search"],
+    "hints": [
+      "Each unseen land cell starts one group.",
+      "Mark all land reachable from it using a stack or queue before continuing the scan."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "countIslands",
+        "signature": "countIslands(grid: number[][]): number",
+        "starter": "export function countIslands(grid) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 1, 0], [0, 1, 0], [1, 0, 1]]],
+            "expected": 3
+          },
+          {
+            "args": [[[1, 0], [0, 1]]],
+            "expected": 2
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "countIslands",
+        "signature": "countIslands(grid: number[][]): number",
+        "starter": "export function countIslands(grid: number[][]): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[[1, 1, 0], [0, 1, 0], [1, 0, 1]]],
+            "expected": 3
+          },
+          {
+            "args": [[[1, 0], [0, 1]]],
+            "expected": 2
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": 0
+    },
+    {
+      "args": [[[]]],
+      "expected": 0
+    },
+    {
+      "args": [[[0, 0], [0, 0]]],
+      "expected": 0
+    },
+    {
+      "args": [[[1, 1], [1, 1]]],
+      "expected": 1
+    },
+    {
+      "args": [[[1, 0, 1, 1, 0, 1]]],
+      "expected": 3
+    },
+    {
+      "args": [[[1], [0], [1]]],
+      "expected": 2
+    },
+    {
+      "args": [[[1, 1, 1], [1, 0, 1], [1, 1, 1]]],
+      "expected": 1
+    },
+    {
+      "args": [[[1, 0, 0], [0, 1, 0], [0, 0, 1]]],
+      "expected": 3
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function countIslands(grid) {\n  const rows = grid.length, columns = grid[0]?.length ?? 0;\n  const visited = new Set();\n  let islands = 0;\n  for (let row = 0; row < rows; row++) {\n    for (let column = 0; column < columns; column++) {\n      const start = row * columns + column;\n      if (grid[row][column] !== 1 || visited.has(start)) continue;\n      islands++;\n      visited.add(start);\n      const stack = [start];\n      while (stack.length) {\n        const cell = stack.pop();\n        const r = Math.floor(cell / columns), c = cell % columns;\n        for (const [nr, nc] of [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]]) {\n          const key = nr * columns + nc;\n          if (nr >= 0 && nr < rows && nc >= 0 && nc < columns && grid[nr][nc] === 1 && !visited.has(key)) {\n            visited.add(key);\n            stack.push(key);\n          }\n        }\n      }\n    }\n  }\n  return islands;\n}\n",
+    "typescript": "export function countIslands(grid: number[][]): number {\n  const rows = grid.length, columns = grid[0]?.length ?? 0;\n  const visited = new Set<number>();\n  let islands = 0;\n  for (let row = 0; row < rows; row++) {\n    for (let column = 0; column < columns; column++) {\n      const start = row * columns + column;\n      if (grid[row][column] !== 1 || visited.has(start)) continue;\n      islands++;\n      visited.add(start);\n      const stack = [start];\n      while (stack.length) {\n        const cell = stack.pop()!;\n        const r = Math.floor(cell / columns), c = cell % columns;\n        for (const [nr, nc] of [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]]) {\n          const key = nr * columns + nc;\n          if (nr >= 0 && nr < rows && nc >= 0 && nc < columns && grid[nr][nc] === 1 && !visited.has(key)) {\n            visited.add(key);\n            stack.push(key);\n          }\n        }\n      }\n    }\n  }\n  return islands;\n}\n"
+  },
+  "explanation": "Scan cells and flood each unseen land component through its four neighbors. Mark cells when pushed to avoid repeated work. An explicit stack avoids recursion depth limits. Time and auxiliary space are O(rows times columns)."
+}

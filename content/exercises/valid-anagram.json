@@ -1,0 +1,92 @@
+{
+  "public": {
+    "id": "valid-anagram",
+    "slug": "valid-anagram",
+    "version": "1.0.0",
+    "title": "Valid Anagram",
+    "description": "Given strings first and second containing only lowercase English letters, return true if rearranging all letters of first can produce second. Each string has 0 to 1000 characters. Repeated letters count separately; two empty strings are anagrams. Aim for linear time.",
+    "difficulty": "easy",
+    "concepts": ["strings", "hash-maps"],
+    "hints": ["Compare how many times each letter occurs."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "validAnagram",
+        "signature": "validAnagram(first: string, second: string): boolean",
+        "starter": "export function validAnagram(first, second) {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": ["rescue", "secure"],
+            "expected": true
+          },
+          {
+            "args": ["abb", "aba"],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "validAnagram",
+        "signature": "validAnagram(first: string, second: string): boolean",
+        "starter": "export function validAnagram(first: string, second: string): boolean {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": ["rescue", "secure"],
+            "expected": true
+          },
+          {
+            "args": ["abb", "aba"],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": ["", ""],
+      "expected": true
+    },
+    {
+      "args": ["a", ""],
+      "expected": false
+    },
+    {
+      "args": ["aa", "ab"],
+      "expected": false
+    },
+    {
+      "args": ["abc", "xyz"],
+      "expected": false
+    },
+    {
+      "args": ["aabb", "baba"],
+      "expected": true
+    },
+    {
+      "args": ["aabb", "abbb"],
+      "expected": false
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function validAnagram(first, second) {\n  if (first.length !== second.length) return false;\n  const counts = new Map();\n  for (const letter of first) counts.set(letter, (counts.get(letter) ?? 0) + 1);\n  for (const letter of second) {\n    const count = counts.get(letter) ?? 0;\n    if (count === 0) return false;\n    counts.set(letter, count - 1);\n  }\n  return true;\n}\n",
+    "typescript": "export function validAnagram(first: string, second: string): boolean {\n  if (first.length !== second.length) return false;\n  const counts = new Map<string, number>();\n  for (const letter of first) counts.set(letter, (counts.get(letter) ?? 0) + 1);\n  for (const letter of second) {\n    const count = counts.get(letter) ?? 0;\n    if (count === 0) return false;\n    counts.set(letter, count - 1);\n  }\n  return true;\n}\n"
+  },
+  "explanation": "Lengths must match. Count letters in the first string, then consume one count per letter in the second. A missing count proves a mismatch. Time is O(n + m); the map holds at most 26 keys."
+}

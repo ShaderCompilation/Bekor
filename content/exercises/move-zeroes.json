@@ -1,0 +1,90 @@
+{
+  "public": {
+    "id": "move-zeroes",
+    "slug": "move-zeroes",
+    "version": "1.0.0",
+    "title": "Move Zeroes",
+    "description": "Return an array containing all nonzero elements of values in their original relative order, followed by all its zeroes. Keep the same length and number of zeroes. The input has 0 to 1000 integers between -1000000 and 1000000. Return the resulting array; mutating the input is allowed but not required. Aim for linear time.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "two-pointers"],
+    "hints": [
+      "Preserve the order of nonzero values, then fill the remaining positions with zeroes."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "moveZeroes",
+        "signature": "moveZeroes(values: number[]): number[]",
+        "starter": "export function moveZeroes(values) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[0, 4, 0, -2, 7]],
+            "expected": [4, -2, 7, 0, 0]
+          },
+          {
+            "args": [[1, 2]],
+            "expected": [1, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "moveZeroes",
+        "signature": "moveZeroes(values: number[]): number[]",
+        "starter": "export function moveZeroes(values: number[]): number[] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[0, 4, 0, -2, 7]],
+            "expected": [4, -2, 7, 0, 0]
+          },
+          {
+            "args": [[1, 2]],
+            "expected": [1, 2]
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": []
+    },
+    {
+      "args": [[0, 0]],
+      "expected": [0, 0]
+    },
+    {
+      "args": [[0]],
+      "expected": [0]
+    },
+    {
+      "args": [[-1, 0, -1, 0]],
+      "expected": [-1, -1, 0, 0]
+    },
+    {
+      "args": [[0, 0, 5]],
+      "expected": [5, 0, 0]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function moveZeroes(values) {\n  const result = values.filter(value => value !== 0);\n  while (result.length < values.length) result.push(0);\n  return result;\n}\n",
+    "typescript": "export function moveZeroes(values: number[]): number[] {\n  const result = values.filter(value => value !== 0);\n  while (result.length < values.length) result.push(0);\n  return result;\n}\n"
+  },
+  "explanation": "Collect nonzero elements in order and append zeroes until the original length is reached. This takes O(n) time and O(n) output space. An in-place write pointer is also valid."
+}

@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "contains-duplicate",
+    "slug": "contains-duplicate",
+    "version": "1.0.0",
+    "title": "Contains Duplicate",
+    "description": "Return true if any integer appears more than once in values, otherwise false. The array has 0 to 1000 integers, each between -1000000 and 1000000. Equal values need not be adjacent. Aim for linear time.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "sets"],
+    "hints": ["Use a set to remember distinct values."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "containsDuplicate",
+        "signature": "containsDuplicate(values: number[]): boolean",
+        "starter": "export function containsDuplicate(values) {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": [[8, 1, 8]],
+            "expected": true
+          },
+          {
+            "args": [[8, 1, 3]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "containsDuplicate",
+        "signature": "containsDuplicate(values: number[]): boolean",
+        "starter": "export function containsDuplicate(values: number[]): boolean {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": [[8, 1, 8]],
+            "expected": true
+          },
+          {
+            "args": [[8, 1, 3]],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": false
+    },
+    {
+      "args": [[0]],
+      "expected": false
+    },
+    {
+      "args": [[-2, 0, -2]],
+      "expected": true
+    },
+    {
+      "args": [[4, 4, 4]],
+      "expected": true
+    },
+    {
+      "args": [[1, 2, 3, 4, 1]],
+      "expected": true
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function containsDuplicate(values) {\n  return new Set(values).size !== values.length;\n}\n",
+    "typescript": "export function containsDuplicate(values: number[]): boolean {\n  return new Set(values).size !== values.length;\n}\n"
+  },
+  "explanation": "A set keeps one copy of each distinct number. If its size differs from the array length, at least one value was repeated. Expected time and space are O(n)."
+}

@@ -1,0 +1,91 @@
+{
+  "public": {
+    "id": "two-sum",
+    "slug": "two-sum",
+    "version": "1.0.0",
+    "title": "Two Sum",
+    "description": "Given an integer array values and an integer target, return the two distinct zero-based indices whose values sum to target, in increasing index order. There is at most one valid pair. Return an empty array if no pair exists. The array has 0 to 1000 elements; values and target are between -1000000 and 1000000. Aim for linear time.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "hash-maps"],
+    "hints": [
+      "Track the index of each value already visited.",
+      "Look for the complement before storing the current index."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "twoSum",
+        "signature": "twoSum(values: number[], target: number): number[]",
+        "starter": "export function twoSum(values, target) {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[4, 9, 1], 10],
+            "expected": [1, 2]
+          },
+          {
+            "args": [[2, 5], 8],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "twoSum",
+        "signature": "twoSum(values: number[], target: number): number[]",
+        "starter": "export function twoSum(values: number[], target: number): number[] {\n  // Implement the function.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[4, 9, 1], 10],
+            "expected": [1, 2]
+          },
+          {
+            "args": [[2, 5], 8],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[3, 3], 6],
+      "expected": [0, 1]
+    },
+    {
+      "args": [[0, 7], 7],
+      "expected": [0, 1]
+    },
+    {
+      "args": [[-5, 2, 8], 3],
+      "expected": [0, 2]
+    },
+    {
+      "args": [[4], 8],
+      "expected": []
+    },
+    {
+      "args": [[], 0],
+      "expected": []
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function twoSum(values, target) {\n  const seen = new Map();\n  for (let i = 0; i < values.length; i++) {\n    const previous = seen.get(target - values[i]);\n    if (previous !== undefined) return [previous, i];\n    seen.set(values[i], i);\n  }\n  return [];\n}\n",
+    "typescript": "export function twoSum(values: number[], target: number): number[] {\n  const seen = new Map<number, number>();\n  for (let i = 0; i < values.length; i++) {\n    const previous = seen.get(target - values[i]);\n    if (previous !== undefined) return [previous, i];\n    seen.set(values[i], i);\n  }\n  return [];\n}\n"
+  },
+  "explanation": "Store visited values and their indices in a map. For each value, look up target minus that value before inserting it, so an element cannot pair with itself. This takes O(n) expected time and O(n) space."
+}

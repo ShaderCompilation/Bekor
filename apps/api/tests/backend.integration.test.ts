@@ -19,6 +19,7 @@ import {
   user,
 } from "../../../packages/db/src/index.js";
 import { migrateDatabase } from "../../../packages/db/src/migrate.js";
+import { listExercises } from "../../../packages/exercises/src/index.js";
 import { createAuth } from "../src/auth.js";
 import { createApp } from "../src/index.js";
 
@@ -95,7 +96,20 @@ describe.skipIf(!adminUrl)(
           .rows[0].count,
       ).toBeGreaterThan(0);
       await catalog.publish();
-      expect((await catalog.list({ limit: 10 })).items).toHaveLength(3);
+      const published: string[] = [];
+      let cursor: string | undefined;
+      do {
+        const page = await catalog.list({ limit: 7, ...(cursor ? { cursor } : {}) });
+        expect(page.items.length).toBeLessThanOrEqual(7);
+        published.push(...page.items.map((item) => item.id));
+        expect(new Set(published).size).toBe(published.length);
+        cursor = page.nextCursor ?? undefined;
+      } while (cursor);
+      expect(published.sort()).toEqual(
+        listExercises()
+          .map((item) => item.public.id)
+          .sort(),
+      );
       const downloaded = await catalog.download("cumulative-sums", "typescript", origin, "1.0.0");
       expect(Object.keys(downloaded.files)).toContain("solution.ts");
       expect(JSON.stringify(downloaded)).not.toContain("referenceSolutions");

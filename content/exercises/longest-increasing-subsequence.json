@@ -1,0 +1,95 @@
+{
+  "public": {
+    "id": "longest-increasing-subsequence",
+    "slug": "longest-increasing-subsequence",
+    "version": "1.0.0",
+    "title": "Longest Increasing Subsequence",
+    "description": "Return the length of the longest strictly increasing subsequence of values. A subsequence preserves order but may skip elements. Equal consecutive selections are not increasing. The input has 0 to 1000 integers between -1000000 and 1000000. Return 0 for empty input. An O(n squared) solution is acceptable; try O(n log n) time as an extension.",
+    "difficulty": "medium",
+    "concepts": ["arrays", "dynamic-programming", "binary-search"],
+    "hints": [
+      "Track the best subsequence ending at each position for a quadratic solution.",
+      "For a faster solution, keep the smallest possible tail for each subsequence length."
+    ],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "longestIncreasingSubsequence",
+        "signature": "longestIncreasingSubsequence(values: number[]): number",
+        "starter": "export function longestIncreasingSubsequence(values) {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[5, 1, 6, 2, 3]],
+            "expected": 3
+          },
+          {
+            "args": [[4, 4, 4]],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "longestIncreasingSubsequence",
+        "signature": "longestIncreasingSubsequence(values: number[]): number",
+        "starter": "export function longestIncreasingSubsequence(values: number[]): number {\n  // Implement the function.\n  return 0;\n}\n",
+        "publicTests": [
+          {
+            "args": [[5, 1, 6, 2, 3]],
+            "expected": 3
+          },
+          {
+            "args": [[4, 4, 4]],
+            "expected": 1
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[]],
+      "expected": 0
+    },
+    {
+      "args": [[9]],
+      "expected": 1
+    },
+    {
+      "args": [[5, 4, 3, 2]],
+      "expected": 1
+    },
+    {
+      "args": [[-3, -2, -1, 0]],
+      "expected": 4
+    },
+    {
+      "args": [[1, 3, 2, 4, 3, 5]],
+      "expected": 4
+    },
+    {
+      "args": [[2, 1, 2, 1, 2]],
+      "expected": 2
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function longestIncreasingSubsequence(values) {\n  const tails = [];\n  for (const value of values) {\n    let low = 0, high = tails.length;\n    while (low < high) {\n      const middle = Math.floor((low + high) / 2);\n      if (tails[middle] < value) low = middle + 1;\n      else high = middle;\n    }\n    tails[low] = value;\n  }\n  return tails.length;\n}\n",
+    "typescript": "export function longestIncreasingSubsequence(values: number[]): number {\n  const tails: number[] = [];\n  for (const value of values) {\n    let low = 0, high = tails.length;\n    while (low < high) {\n      const middle = Math.floor((low + high) / 2);\n      if (tails[middle] < value) low = middle + 1;\n      else high = middle;\n    }\n    tails[low] = value;\n  }\n  return tails.length;\n}\n"
+  },
+  "explanation": "Maintain the smallest achievable tail for every positive subsequence length. Replace the first tail greater than or equal to each new value, or append if none exists. Binary search gives O(n log n) time and O(n) space. The tails array need not itself be a subsequence."
+}

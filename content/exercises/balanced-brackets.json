@@ -1,0 +1,92 @@
+{
+  "public": {
+    "id": "balanced-brackets",
+    "slug": "balanced-brackets",
+    "version": "1.0.0",
+    "title": "Balanced Brackets",
+    "description": "Given text made only of parentheses, square brackets and curly braces, return whether every closing bracket matches the most recent unmatched opening bracket of the same type. All brackets must be matched. The empty string is balanced. The input has at most 1000 characters.",
+    "difficulty": "easy",
+    "concepts": ["strings", "stacks"],
+    "hints": ["A stack records the opening brackets that still need a match."],
+    "attribution": "Original statement, examples, tests and solutions authored for Bekor, 2026. Uses a standard algorithmic pattern; no third-party exercise text used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "balancedBrackets",
+        "signature": "balancedBrackets(text: string): boolean",
+        "starter": "export function balancedBrackets(text) {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": ["{[()]}"],
+            "expected": true
+          },
+          {
+            "args": ["([)]"],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "balancedBrackets",
+        "signature": "balancedBrackets(text: string): boolean",
+        "starter": "export function balancedBrackets(text: string): boolean {\n  // Implement the function.\n  return false;\n}\n",
+        "publicTests": [
+          {
+            "args": ["{[()]}"],
+            "expected": true
+          },
+          {
+            "args": ["([)]"],
+            "expected": false
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [""],
+      "expected": true
+    },
+    {
+      "args": ["]"],
+      "expected": false
+    },
+    {
+      "args": ["("],
+      "expected": false
+    },
+    {
+      "args": ["()[]{}"],
+      "expected": true
+    },
+    {
+      "args": ["(()"],
+      "expected": false
+    },
+    {
+      "args": ["())"],
+      "expected": false
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function balancedBrackets(text) {\n  const stack = [];\n  const opening = new Map([[')', '('], [']', '['], ['}', '{']]);\n  for (const char of text) {\n    if (opening.has(char)) {\n      if (stack.pop() !== opening.get(char)) return false;\n    } else stack.push(char);\n  }\n  return stack.length === 0;\n}\n",
+    "typescript": "export function balancedBrackets(text: string): boolean {\n  const stack: string[] = [];\n  const opening = new Map([[')', '('], [']', '['], ['}', '{']]);\n  for (const char of text) {\n    if (opening.has(char)) {\n      if (stack.pop() !== opening.get(char)) return false;\n    } else stack.push(char);\n  }\n  return stack.length === 0;\n}\n"
+  },
+  "explanation": "Push opening brackets. Each closing bracket must match the stack top, which is then removed. Accept only if the stack is empty after the scan. Time and worst-case space are O(n)."
+}

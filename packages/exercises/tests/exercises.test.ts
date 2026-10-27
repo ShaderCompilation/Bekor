@@ -16,9 +16,15 @@ import {
 import { compareJson } from "../src/public.js";
 
 describe("authored exercises and public packages", () => {
-  it("validates three original exercises with matching language semantics and immutable lookup", () => {
+  it("validates the curated catalog with matching language semantics and immutable lookup", () => {
     const exercises = listExercises();
-    expect(exercises).toHaveLength(3);
+    expect(exercises.length).toBeGreaterThanOrEqual(20);
+    expect(
+      exercises.filter((exercise) => exercise.public.difficulty === "easy").length,
+    ).toBeGreaterThanOrEqual(12);
+    expect(
+      exercises.filter((exercise) => exercise.public.difficulty === "medium").length,
+    ).toBeGreaterThanOrEqual(8);
     for (const exercise of exercises) {
       expect(authoredExerciseSchema.safeParse(exercise).success).toBe(true);
       expect(getExercise(exercise.public.id, exercise.public.version)).toEqual(exercise);
@@ -95,6 +101,43 @@ describe("authored exercises and public packages", () => {
   });
 });
 
+// Each mutation models a plausible bug that must be caught by the server cases,
+// even when examples happen to pass. Applied to both trusted language references.
+const mutations: Record<string, [string, string]> = {
+  "two-sum": ["previous !== undefined", "previous !== undefined && previous > 0"],
+  "contains-duplicate": [
+    "new Set(values).size !== values.length",
+    "values.some((value, index) => index > 0 && value === values[index - 1])",
+  ],
+  "valid-anagram": ["count - 1", "count"],
+  "balanced-brackets": ["return stack.length === 0;", "return true;"],
+  "binary-search": ["low <= high", "low < high"],
+  "merge-sorted-arrays": ["return result.concat(left.slice(i), right.slice(j));", "return result;"],
+  "max-stock-profit": [
+    "profit = Math.max(profit, price - minimum);",
+    "profit = Math.max(profit, Math.max(...prices) - Math.min(...prices));",
+  ],
+  "move-zeroes": ["return result;", "return result.sort((a, b) => a - b);"],
+  "missing-number": ["n * (n + 1) / 2", "n * (n - 1) / 2"],
+  "longest-unique-substring": [
+    "Math.max(start, (last.get(text[end]) ?? -1) + 1)",
+    "(last.get(text[end]) ?? -1) + 1",
+  ],
+  "product-except-self": [
+    "result[i] *= suffix;",
+    "result[i] = values.reduce((a, b) => a * b, 1) / values[i];",
+  ],
+  "merge-intervals": ["Math.max(previous[1], pair[1])", "pair[1]"],
+  "count-target-subarrays": ["[[0, 1]]", "[[0, 0]]"],
+  "minimum-coins": ["if (coin <= total)", "if (coin <= total && best[total - coin] === 0)"],
+  "longest-increasing-subsequence": ["tails[middle] < value", "tails[middle] <= value"],
+  "count-islands": [
+    "[[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]]",
+    "[[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1], [r - 1, c - 1], [r + 1, c + 1]]",
+  ],
+  "search-rotated-array": ["values[low] <= values[middle]", "values[low] < values[middle]"],
+};
+
 describe("trusted authored references (local checks, not isolated runner verification)", () => {
   for (const exercise of listExercises())
     for (const language of ["javascript", "typescript"] as const) {
@@ -132,6 +175,28 @@ describe("trusted authored references (local checks, not isolated runner verific
             timeout: 15000,
             stdio: "pipe",
           });
+          const mutation = mutations[exercise.public.id];
+          if (mutation) {
+            const reference = exercise.referenceSolutions[language];
+            expect(reference).toContain(mutation[0]);
+            writeFileSync(
+              join(directory, exercise.public.variants[language].filename),
+              reference.replace(mutation[0], mutation[1]),
+            );
+            if (language === "typescript")
+              execFileSync(
+                process.execPath,
+                [resolve("node_modules/typescript/bin/tsc"), "--project", "tsconfig.json"],
+                { cwd: directory, timeout: 15000, stdio: "pipe" },
+              );
+            expect(() =>
+              execFileSync(process.execPath, ["private-check.mjs"], {
+                cwd: directory,
+                timeout: 15000,
+                stdio: "pipe",
+              }),
+            ).toThrow();
+          }
           // A broken constant result must fail public tests; checks must not merely load source.
           writeFileSync(
             join(directory, "solution.js"),
