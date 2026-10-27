@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
+    inputs:
+      real_runner:
+        description: Run the real Judge0 suite on the self-hosted runner (pnpm test:runner)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, typecheck, unit, content, integration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17.11-alpine
+        env:
+          POSTGRES_USER: bekor
+          POSTGRES_PASSWORD: bekor
+          POSTGRES_DB: bekor
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U bekor -d bekor"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+    env:
+      # Admin URL: integration suites create and drop throwaway databases.
+      TEST_DATABASE_URL: postgresql://bekor:bekor@localhost:5432/postgres
+    steps:
+      - uses: actions/checkout@v5
+      # Version comes from package.json "packageManager" (pnpm@12.14.0).
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm content:validate
+      - name: Migrations apply to an empty database
+        run: pnpm db:migrate
+        env:
+          DATABASE_URL: postgresql://bekor:bekor@localhost:5432/bekor
+      - run: pnpm test:integration
+
+  real-runner:
+    # PLACEHOLDER: no self-hosted Judge0 runner is registered yet, so this job has never run.
+    # It needs a dedicated, rootful, cgroup-v1 host with the infra/compose runner profile
+    # (see docs/decisions/runner.md). It only runs on manual dispatch or the `real-runner` label
+    # on same-repository PRs, never for forks, so untrusted code cannot reach the self-hosted machine.
+    name: Real Judge0 suite (self-hosted)
+    needs: checks
+    if: >-
+      (github.event_name == 'workflow_dispatch' && inputs.real_runner) ||
+      (github.event_name == 'pull_request' &&
+       contains(github.event.pull_request.labels.*.name, 'real-runner') &&
+       github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: [self-hosted, linux, judge0]
+    timeout-minutes: 30
+    environment: real-runner
+    env:
+      # Private endpoint reachable only from the self-hosted runner; never a public Judge0.
+      JUDGE0_URL: ${{ secrets.JUDGE0_URL }}
+      JUDGE0_AUTH_TOKEN: ${{ secrets.JUDGE0_AUTH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+      - run: pnpm install --frozen-lockfile
+      - name: Refuse to run without a private runner endpoint
+        run: test -n "$JUDGE0_URL" || { echo "JUDGE0_URL secret is not configured"; exit 1; }
+      - run: pnpm test:runner

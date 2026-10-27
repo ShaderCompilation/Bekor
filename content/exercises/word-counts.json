@@ -1,0 +1,103 @@
+{
+  "public": {
+    "id": "word-counts",
+    "slug": "word-counts",
+    "version": "1.0.0",
+    "title": "Word Counts",
+    "description": "Given an array of strings, return an object mapping each distinct string to its occurrence count. Matching is case-sensitive. Include empty strings and names such as __proto__ as ordinary keys. Object key order does not matter. The array has at most 1000 strings, each with at most 100 characters.",
+    "difficulty": "easy",
+    "concepts": ["maps", "counting"],
+    "hints": [
+      "Use a map so that strings matching built-in object property names remain ordinary keys."
+    ],
+    "attribution": "Original exercise authored for Bekor, 2026. No third-party exercise material used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "wordCounts",
+        "signature": "wordCounts(words: string[]): Record<string, number>",
+        "starter": "export function wordCounts(words) {\n  // Count occurrences by exact string.\n  return {};\n}\n",
+        "publicTests": [
+          {
+            "args": [["pear", "apple", "pear"]],
+            "expected": {
+              "pear": 2,
+              "apple": 1
+            }
+          },
+          {
+            "args": [[]],
+            "expected": {}
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "wordCounts",
+        "signature": "wordCounts(words: string[]): Record<string, number>",
+        "starter": "export function wordCounts(words: string[]): Record<string, number> {\n  // Count occurrences by exact string.\n  return {};\n}\n",
+        "publicTests": [
+          {
+            "args": [["pear", "apple", "pear"]],
+            "expected": {
+              "pear": 2,
+              "apple": 1
+            }
+          },
+          {
+            "args": [[]],
+            "expected": {}
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [["a", "A", "a"]],
+      "expected": {
+        "a": 2,
+        "A": 1
+      }
+    },
+    {
+      "args": [["", "x", ""]],
+      "expected": {
+        "": 2,
+        "x": 1
+      }
+    },
+    {
+      "args": [["__proto__", "constructor", "__proto__"]],
+      "expected": {
+        "__proto__": 2,
+        "constructor": 1
+      }
+    },
+    {
+      "args": [["same", "same", "same", "same", "same"]],
+      "expected": {
+        "same": 5
+      }
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function wordCounts(words) {\n  const counts = new Map();\n  for (const word of words) counts.set(word, (counts.get(word) ?? 0) + 1);\n  return Object.fromEntries(counts);\n}\n",
+    "typescript": "export function wordCounts(words: string[]): Record<string, number> {\n  const counts = new Map<string, number>();\n  for (const word of words) counts.set(word, (counts.get(word) ?? 0) + 1);\n  return Object.fromEntries(counts);\n}\n"
+  },
+  "explanation": "Accumulate each exact word in a Map, then convert its entries to an object. A Map avoids inherited-property collisions, and Object.fromEntries safely creates an own property even for __proto__."
+}

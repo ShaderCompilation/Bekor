@@ -11,4 +11,4 @@ Read `docs/IMPLEMENTATION_PLAN.md` before implementing or delegating work. It is
 - Execute submitted code only through the isolated runner. Never execute it in the API or application worker process.
 - Use small vertical slices and focused tests. Do not add deferred features or infrastructure without a concrete need.
 
-The planning task has created documentation only. Infrastructure setup, application implementation, publishing, and deployment have not happened.
+The backend (API, worker, runner adapter, scheduling, persistence) is implemented and verified against real PostgreSQL; real Judge0 execution, the web app, the CLI, publishing and deployment have not happened. See the plan's Current handoff.

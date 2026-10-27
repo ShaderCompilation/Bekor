@@ -1,0 +1,28 @@
+{
+  "name": "@bekor/api",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "dev": "tsx watch src/main.ts"
+  },
+  "dependencies": {
+    "@bekor/contracts": "workspace:*",
+    "@bekor/core": "workspace:*",
+    "@bekor/db": "workspace:*",
+    "@hono/node-server": "2.1.5",
+    "@hono/zod-openapi": "1.6.3",
+    "better-auth": "1.7.13",
+    "hono": "4.13.14",
+    "zod": "4.6.7",
+    "drizzle-orm": "0.45.4"
+  }
+}

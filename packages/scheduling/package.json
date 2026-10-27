@@ -1,0 +1,20 @@
+{
+  "name": "@bekor/scheduling",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@bekor/contracts": "workspace:*",
+    "ts-fsrs": "5.4.2"
+  }
+}

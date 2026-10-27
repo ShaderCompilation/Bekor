@@ -1,0 +1,23 @@
+{
+  "name": "@bekor/worker",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "dev": "tsx src/main.ts",
+    "start": "tsx src/main.ts"
+  },
+  "dependencies": {
+    "@bekor/contracts": "workspace:*",
+    "@bekor/core": "workspace:*",
+    "@bekor/db": "workspace:*",
+    "@bekor/exercises": "workspace:*",
+    "@bekor/runner": "workspace:*",
+    "drizzle-orm": "0.45.4",
+    "pg": "8.23.1",
+    "pg-boss": "12.38.0",
+    "zod": "4.6.7"
+  }
+}

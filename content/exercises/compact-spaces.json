@@ -1,0 +1,88 @@
+{
+  "public": {
+    "id": "compact-spaces",
+    "slug": "compact-spaces",
+    "version": "1.0.0",
+    "title": "Compact Spaces",
+    "description": "Given a string, remove leading and trailing ASCII spaces and replace each internal run of ASCII spaces with one space. Preserve all other characters exactly, including tabs and newlines. The string has at most 1000 characters.",
+    "difficulty": "easy",
+    "concepts": ["strings", "scanning"],
+    "hints": ["Only the ordinary ASCII space character is removed or combined."],
+    "attribution": "Original exercise authored for Bekor, 2026. No third-party exercise material used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "compactSpaces",
+        "signature": "compactSpaces(text: string): string",
+        "starter": "export function compactSpaces(text) {\n  // Compact ASCII spaces only.\n  return text;\n}\n",
+        "publicTests": [
+          {
+            "args": ["  small   steps  "],
+            "expected": "small steps"
+          },
+          {
+            "args": ["already compact"],
+            "expected": "already compact"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "compactSpaces",
+        "signature": "compactSpaces(text: string): string",
+        "starter": "export function compactSpaces(text: string): string {\n  // Compact ASCII spaces only.\n  return text;\n}\n",
+        "publicTests": [
+          {
+            "args": ["  small   steps  "],
+            "expected": "small steps"
+          },
+          {
+            "args": ["already compact"],
+            "expected": "already compact"
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [""],
+      "expected": ""
+    },
+    {
+      "args": ["    "],
+      "expected": ""
+    },
+    {
+      "args": [" a\tb  c\nd "],
+      "expected": "a\tb c\nd"
+    },
+    {
+      "args": ["hi"],
+      "expected": "hi"
+    },
+    {
+      "args": ["  x   y   z "],
+      "expected": "x y z"
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function compactSpaces(text) {\n  return text.replace(/^ +| +$/g, '').replace(/ +/g, ' ');\n}\n",
+    "typescript": "export function compactSpaces(text: string): string {\n  return text.replace(/^ +| +$/g, '').replace(/ +/g, ' ');\n}\n"
+  },
+  "explanation": "Remove spaces at both ends, then replace every remaining nonempty run of spaces with a single space. Do not use a general whitespace operation because tabs and newlines must survive."
+}

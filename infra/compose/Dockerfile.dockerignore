@@ -1,0 +1,12 @@
+# Used by BuildKit/podman via `Dockerfile.dockerignore` next to the Dockerfile.
+**/node_modules
+**/dist
+**/coverage
+.git
+.env
+.env.*
+!.env.example
+.local
+.claude
+.vitest
+infra/compose/judge0

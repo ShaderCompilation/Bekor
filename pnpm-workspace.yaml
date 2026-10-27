@@ -1,0 +1,17 @@
+packages:
+  - apps/*
+  - packages/*
+nodeVersion: 24.22.1
+engineStrict: true
+savePrefix: ""
+allowBuilds:
+  esbuild: true
+minimumReleaseAgeExclude:
+  - "@better-auth/core@1.7.13"
+  - "@better-auth/drizzle-adapter@1.7.13"
+  - "@better-auth/kysely-adapter@1.7.13"
+  - "@better-auth/memory-adapter@1.7.13"
+  - "@better-auth/mongo-adapter@1.7.13"
+  - "@better-auth/prisma-adapter@1.7.13"
+  - "@better-auth/telemetry@1.7.13"
+  - better-auth@1.7.13

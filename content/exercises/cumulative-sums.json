@@ -1,0 +1,84 @@
+{
+  "public": {
+    "id": "cumulative-sums",
+    "slug": "cumulative-sums",
+    "version": "1.0.0",
+    "title": "Cumulative Sums",
+    "description": "Given an array of safe integers, return a new array whose element at each index is the sum of all input elements up to that index. The input has at most 1000 elements, each between -1000 and 1000. Return an empty array for empty input.",
+    "difficulty": "easy",
+    "concepts": ["arrays", "accumulation"],
+    "hints": ["Keep a running sum while visiting values from left to right."],
+    "attribution": "Original exercise authored for Bekor, 2026. No third-party exercise material used.",
+    "variants": {
+      "javascript": {
+        "language": "javascript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.js",
+        "entrypoint": "cumulativeSums",
+        "signature": "cumulativeSums(values: number[]): number[]",
+        "starter": "export function cumulativeSums(values) {\n  // Return cumulative sums.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 3, -1]],
+            "expected": [2, 5, 4]
+          },
+          {
+            "args": [[]],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      },
+      "typescript": {
+        "language": "typescript",
+        "runtime": "node-24.22.1-ts-7.0.2",
+        "filename": "solution.ts",
+        "entrypoint": "cumulativeSums",
+        "signature": "cumulativeSums(values: number[]): number[]",
+        "starter": "export function cumulativeSums(values: number[]): number[] {\n  // Return cumulative sums.\n  return [];\n}\n",
+        "publicTests": [
+          {
+            "args": [[2, 3, -1]],
+            "expected": [2, 5, 4]
+          },
+          {
+            "args": [[]],
+            "expected": []
+          }
+        ],
+        "limits": {
+          "timeMs": 1000,
+          "memoryKb": 262144,
+          "outputBytes": 32768
+        }
+      }
+    }
+  },
+  "privateTests": [
+    {
+      "args": [[4]],
+      "expected": [4]
+    },
+    {
+      "args": [[-2, -3, 5]],
+      "expected": [-2, -5, 0]
+    },
+    {
+      "args": [[0, 0, 7, 0]],
+      "expected": [0, 0, 7, 7]
+    },
+    {
+      "args": [[1, -1, 1, -1]],
+      "expected": [1, 0, 1, 0]
+    }
+  ],
+  "referenceSolutions": {
+    "javascript": "export function cumulativeSums(values) {\n  let sum = 0;\n  return values.map(value => { sum += value; return sum; });\n}\n",
+    "typescript": "export function cumulativeSums(values: number[]): number[] {\n  let sum = 0;\n  return values.map(value => { sum += value; return sum; });\n}\n"
+  },
+  "explanation": "Maintain a running sum initialized to zero. Add each value and append the new sum to a result array. This visits each element once and returns a distinct array."
+}
