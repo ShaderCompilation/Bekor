@@ -23,7 +23,10 @@
     "test:integration": "vitest run --project integration",
     "test:runner": "vitest run --project runner",
     "db:migrate": "pnpm --filter @bekor/db migrate",
-    "content:validate": "pnpm --filter @bekor/exercises validate"
+    "content:validate": "pnpm --filter @bekor/exercises validate",
+    "dev:web": "pnpm --filter @bekor/web dev",
+    "test:e2e": "playwright test",
+    "check:web-bundle": "node scripts/check-web-bundle.mjs"
   },
   "dependencies": {
     "@hono/node-server": "2.1.5",
@@ -39,6 +42,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.3",
+    "@playwright/test": "1.64.1",
     "@types/node": "24.19.2",
     "@types/pg": "8.23.1",
     "drizzle-kit": "0.31.11",

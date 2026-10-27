@@ -54,6 +54,8 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm content:validate
+      - name: Web production build contains no server-only content
+        run: pnpm --filter @bekor/web build && pnpm check:web-bundle
       - name: Migrations apply to an empty database
         run: pnpm db:migrate
         env:

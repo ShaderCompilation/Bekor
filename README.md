@@ -12,7 +12,8 @@ Scope, architecture, task status and acceptance criteria live in [`docs/IMPLEMEN
 | Judging worker (`apps/worker`, pg-boss) and Judge0 adapter (`packages/runner`)                    | Implemented and tested against a **fake** runner only                                                                                                                                            |
 | Development Podman runner (`RUNNER=podman`, personal use only)                                    | Real execution in local rootless containers; passes `pnpm test:runner`. Weaker isolation than production, see [`docs/verification/f05-podman-runner.md`](docs/verification/f05-podman-runner.md) |
 | Real Judge0 execution                                                                             | **Not verified.** The Fedora dev host (cgroup v2, rootless Podman) cannot run Judge0 1.13.1. See [`docs/verification/f03-runner.md`](docs/verification/f03-runner.md)                            |
-| Web app (`apps/web`) and CLI (`apps/cli`)                                                         | Not implemented yet                                                                                                                                                                              |
+| Web app (`apps/web`, React/Vite/TanStack Router+Query/Zustand/Monaco)                             | Implemented; Playwright journeys pass against the real API/worker/PostgreSQL with the Podman runner. See [`docs/verification/web.md`](docs/verification/web.md)                                  |
+| CLI (`apps/cli`)                                                                                  | Not implemented yet                                                                                                                                                                              |
 | Deployment                                                                                        | None. `infra/compose` is for local development only                                                                                                                                              |
 
 ## Prerequisites
@@ -59,6 +60,17 @@ Each execution runs in its own rootless container: no network, read-only root fi
 
 With the default `RUNNER=judge0`, the worker refuses to start without `JUDGE0_URL`. Without a worker, the API still accepts runs/submissions; they stay `queued` and are picked up (recovery requeues them) once a worker runs. With `WORKER_HEALTH_PORT` set, the worker serves `GET /health` (database reachability, not draining).
 
+### Web app
+
+The SPA and API share one origin: Vite (`http://localhost:5173`) proxies `/api`, `/auth` and `/health` to the API on port 3000. Because cookie sessions and the API's Origin check use `API_ORIGIN`, set it to the Vite origin while developing the web app:
+
+```bash
+# in .env: API_ORIGIN=http://localhost:5173   (and REGISTRATION_ENABLED=true to create an account)
+pnpm dev:web                 # http://localhost:5173; start the API (and worker) as above
+```
+
+`BEKOR_API_PROXY` overrides the proxy target. `pnpm --filter @bekor/web build` writes static files to `apps/web/dist`; serving them on the API's origin in production is not set up yet.
+
 ### Everything in containers
 
 ```bash
@@ -83,7 +95,11 @@ pnpm test                  # unit tests (no database, no runner)
 pnpm content:validate      # exercise packages
 pnpm test:integration      # real PostgreSQL; skipped unless TEST_DATABASE_URL is set
 pnpm test:runner           # real runner; skipped unless JUDGE0_URL or BEKOR_PODMAN_RUNNER=1 is set
+pnpm check:web-bundle      # after building apps/web: no reference solutions/private tests in the bundle
+pnpm test:e2e              # Playwright against a running stack (BEKOR_E2E_URL, default http://localhost:5173)
 ```
+
+`pnpm test:e2e` needs the web dev server, API (`API_ORIGIN=http://localhost:5173`, `REGISTRATION_ENABLED=true`), a worker with a real runner and a migrated database already running; it starts nothing itself. Install the browser once with `pnpm exec playwright install chromium`. It signs up two accounts per run, so rerunning within a minute can hit the sign-up rate limit.
 
 `TEST_DATABASE_URL` is an admin connection; each suite creates and drops its own throwaway database, so the role needs `CREATEDB`:
 
@@ -93,7 +109,7 @@ TEST_DATABASE_URL=postgresql://bekor:bekor@127.0.0.1:55432/postgres pnpm test:in
 
 Worker integration tests use a **fake** runner and verify persistence/recovery, not execution. `BEKOR_PODMAN_RUNNER=1 pnpm test:runner` verifies real execution in the development Podman runner; only `pnpm test:runner` against a private Judge0 built from `infra/compose/judge0` verifies the production runner. Never point it at a public Judge0 endpoint.
 
-CI (`.github/workflows/ci.yml`) runs lint, typecheck, unit tests, content validation, migrations and integration tests against a PostgreSQL service. The real-runner job is a placeholder for a self-hosted Judge0 machine and has not run.
+CI (`.github/workflows/ci.yml`) runs lint, typecheck, unit tests, content validation, the web production build with the bundle check, migrations and integration tests against a PostgreSQL service. The real-runner job is a placeholder for a self-hosted Judge0 machine and has not run.
 
 ## Runbooks
 

@@ -7,3 +7,5 @@ coverage/
 *.tsbuildinfo
 .vitest/
 .local/
+test-results/
+playwright-report/
