@@ -1,9 +1,9 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { getRouteApi, Link } from "@tanstack/react-router";
 import { judgedSource, SubmissionResult } from "../components/SubmissionResult";
 import { Badge, EmptyState, ErrorNotice, PageLoading } from "../components/ui";
 import { formatDateTime, LANGUAGE_LABEL, submissionLabel, submissionTone } from "../format";
-import { historyQuery, problemQuery, problemsQuery, submissionQuery } from "../queries";
+import { historyQuery, problemQuery, problemsByIdQuery, submissionQuery } from "../queries";
 
 const historyRoute = getRouteApi("/authed/history");
 const submissionRoute = getRouteApi("/authed/submissions/$id");
@@ -11,8 +11,11 @@ const submissionRoute = getRouteApi("/authed/submissions/$id");
 export function HistoryPage() {
   const { user } = historyRoute.useRouteContext();
   const history = useInfiniteQuery(historyQuery(user.id));
-  const problems = useQuery(problemsQuery);
-  const titles = new Map((problems.data ?? []).map((problem) => [problem.id, problem]));
+  const ids = (history.data?.pages ?? []).flatMap((page) =>
+    page.items.map((item) => item.exerciseId),
+  );
+  const problems = useQuery({ ...problemsByIdQuery(ids), placeholderData: keepPreviousData });
+  const titles = problems.data ?? new Map();
 
   if (history.isPending) return <PageLoading />;
   if (history.isError) return <ErrorNotice error={history.error} />;
@@ -80,8 +83,12 @@ export function SubmissionPage() {
   const { id } = submissionRoute.useParams();
   const { user } = submissionRoute.useRouteContext();
   const submission = useQuery(submissionQuery(user.id, id));
-  const problems = useQuery(problemsQuery);
-  const slug = problems.data?.find((item) => item.id === submission.data?.exerciseId)?.slug;
+  const exerciseId = submission.data?.exerciseId;
+  const problems = useQuery({
+    ...problemsByIdQuery(exerciseId ? [exerciseId] : []),
+    enabled: Boolean(exerciseId),
+  });
+  const slug = exerciseId ? problems.data?.get(exerciseId)?.slug : undefined;
   const exercise = useQuery({
     ...problemQuery(slug ?? "", submission.data?.exerciseVersion),
     enabled: Boolean(slug && submission.data),

@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { SubmissionCreate } from "@bekor/contracts";
+import type { ProblemListQuery, SubmissionCreate } from "@bekor/contracts";
 import { and, eq } from "drizzle-orm";
 import pg from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -116,6 +116,64 @@ describe.skipIf(!adminUrl)(
       const first = await catalog.list({ limit: 1 });
       const second = await catalog.list({ limit: 1, cursor: first.nextCursor as string });
       expect(first.items[0]?.id).not.toBe(second.items[0]?.id);
+      expect(Object.keys(first.items[0] ?? {}).sort()).toEqual(
+        ["concepts", "difficulty", "id", "slug", "title", "version"].sort(),
+      );
+    });
+    it("filters the catalog on the server before paging", async () => {
+      await catalog.publish();
+      const all = listExercises().map((item) => item.public);
+      const collect = async (filters: Omit<ProblemListQuery, "limit">) => {
+        const slugs: string[] = [];
+        let cursor: string | undefined;
+        do {
+          const page = await catalog.list({ ...filters, limit: 9, ...(cursor ? { cursor } : {}) });
+          slugs.push(...page.items.map((item) => item.slug));
+          cursor = page.nextCursor ?? undefined;
+        } while (cursor);
+        return slugs;
+      };
+      const expected = (keep: (item: (typeof all)[number]) => boolean) =>
+        all
+          .filter(keep)
+          .map((item) => item.slug)
+          .sort();
+      expect(await collect({ difficulty: "hard" })).toEqual(
+        expected((item) => item.difficulty === "hard"),
+      );
+      const concept = all[0]?.concepts[0] as string;
+      expect(await collect({ concept })).toEqual(
+        expected((item) => item.concepts.includes(concept)),
+      );
+      expect(await collect({ q: "WORD", difficulty: "easy" })).toEqual(
+        expected(
+          (item) =>
+            item.difficulty === "easy" &&
+            `${item.title}\n${item.description}`.toLowerCase().includes("word"),
+        ),
+      );
+      const ids = all.slice(0, 3).map((item) => item.id);
+      expect(
+        (await catalog.list({ ids: [...ids, "missing-id"], limit: 100 })).items
+          .map((item) => item.id)
+          .sort(),
+      ).toEqual([...ids].sort());
+      const http = await app.request(
+        `${origin}/api/v1/problems?difficulty=easy&limit=2&ids=${ids.join(",")}`,
+      );
+      expect(http.status).toBe(200);
+      const body = (await http.json()) as { items: { id: string; difficulty: string }[] };
+      expect(body.items.length).toBeLessThanOrEqual(2);
+      expect(body.items.every((item) => ids.includes(item.id) && item.difficulty === "easy")).toBe(
+        true,
+      );
+      expect((await app.request(`${origin}/api/v1/problems?difficulty=impossible`)).status).toBe(
+        400,
+      );
+      expect((await app.request(`${origin}/api/v1/concepts`)).status).toBe(200);
+      expect((await catalog.concepts()).items).toEqual(
+        [...new Set(all.flatMap((item) => item.concepts))].sort(),
+      );
     });
     it("atomically enqueues concurrent idempotent submissions and rejects key reuse", async () => {
       const id = await newUser();

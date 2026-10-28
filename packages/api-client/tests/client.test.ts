@@ -24,6 +24,16 @@ describe("shared HTTP client", () => {
       }),
     );
   });
+  it("sends catalog filters and joins id lookups", async () => {
+    const transport = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(Response.json({ items: [], nextCursor: null }));
+    const client = createApiClient({ baseUrl: "https://bekor.test", fetch: transport });
+    await client.problems({ q: "two sum", difficulty: "easy", ids: ["a-b", "c"], limit: 30 });
+    expect(transport.mock.calls[0]?.[0]).toBe(
+      "https://bekor.test/api/v1/problems?q=two+sum&difficulty=easy&limit=30&ids=a-b%2Cc",
+    );
+  });
   it("preserves stable API errors without reflecting an HTML response", async () => {
     const transport = vi
       .fn<typeof fetch>()

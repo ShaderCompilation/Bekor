@@ -1,17 +1,20 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import type { Difficulty } from "@bekor/contracts";
+import { keepPreviousData, useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { getRouteApi, Link } from "@tanstack/react-router";
-import { useMemo } from "react";
-import { Badge, EmptyState } from "../components/ui";
-import { problemsQuery, recentSubmissionsQuery } from "../queries";
-import type { Difficulty } from "../router";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Badge, EmptyState, ErrorNotice, PageLoading } from "../components/ui";
+import { conceptsQuery, problemsQuery, recentSubmissionsQuery } from "../queries";
 
 const route = getRouteApi("/");
+
+const SEARCH_DELAY_MS = 300;
 
 export function CatalogPage() {
   const search = route.useSearch();
   const navigate = route.useNavigate();
   const { user } = route.useRouteContext();
-  const problems = useSuspenseQuery(problemsQuery).data;
+  const list = useInfiniteQuery({ ...problemsQuery(search), placeholderData: keepPreviousData });
+  const concepts = useQuery(conceptsQuery).data ?? [];
   const recent = useQuery({ ...recentSubmissionsQuery(user?.id ?? ""), enabled: Boolean(user) });
 
   const solved = useMemo(() => {
@@ -20,28 +23,40 @@ export function CatalogPage() {
       if (item.mode === "submit" && item.verdict === "accepted") ids.add(item.exerciseId);
     return ids;
   }, [recent.data]);
-  const concepts = useMemo(
-    () => [...new Set(problems.flatMap((problem) => problem.concepts))].sort(),
-    [problems],
+  const update = useCallback(
+    (patch: Record<string, string | undefined>) =>
+      navigate({
+        search: (previous) => {
+          const next: Record<string, string | undefined> = { ...previous, ...patch };
+          for (const key of Object.keys(next)) if (!next[key]) delete next[key];
+          return next;
+        },
+        replace: true,
+      }),
+    [navigate],
   );
-  const query = search.q?.toLowerCase() ?? "";
-  const visible = problems.filter(
-    (problem) =>
-      (!query ||
-        problem.title.toLowerCase().includes(query) ||
-        problem.description.toLowerCase().includes(query)) &&
-      (!search.difficulty || problem.difficulty === search.difficulty) &&
-      (!search.concept || problem.concepts.includes(search.concept)),
-  );
-  const update = (patch: Record<string, string | undefined>) =>
-    navigate({
-      search: (previous) => {
-        const next: Record<string, string | undefined> = { ...previous, ...patch };
-        for (const key of Object.keys(next)) if (!next[key]) delete next[key];
-        return next;
-      },
-      replace: true,
-    });
+
+  // The search box updates the URL (and so the server query) once typing pauses.
+  const [text, setText] = useState(search.q ?? "");
+  const pushed = useRef(search.q ?? "");
+  useEffect(() => {
+    const q = search.q ?? "";
+    if (q !== pushed.current) {
+      pushed.current = q;
+      setText(q);
+    }
+  }, [search.q]);
+  useEffect(() => {
+    if (text === pushed.current) return;
+    const timer = setTimeout(() => {
+      pushed.current = text;
+      void update({ q: text });
+    }, SEARCH_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [text, update]);
+
+  const filtered = Boolean(search.q || search.difficulty || search.concept);
+  const items = list.data?.pages.flatMap((page) => page.items) ?? [];
 
   return (
     <div className="page">
@@ -52,8 +67,8 @@ export function CatalogPage() {
             Search
             <input
               type="search"
-              value={search.q ?? ""}
-              onChange={(event) => update({ q: event.target.value })}
+              value={text}
+              onChange={(event) => setText(event.target.value)}
               placeholder="Title or description"
             />
           </label>
@@ -86,17 +101,21 @@ export function CatalogPage() {
         </form>
       </search>
 
-      {problems.length === 0 ? (
+      {list.isError ? (
+        <ErrorNotice error={list.error} />
+      ) : list.isPending ? (
+        <PageLoading />
+      ) : items.length === 0 && !filtered ? (
         <EmptyState title="No problems published yet" />
-      ) : visible.length === 0 ? (
+      ) : items.length === 0 ? (
         <EmptyState title="No problems match these filters">
           <Link to="/" search={{}}>
             Clear filters
           </Link>
         </EmptyState>
       ) : (
-        <ul className="problem-list">
-          {visible.map((problem) => (
+        <ul className="problem-list" aria-busy={list.isPlaceholderData}>
+          {items.map((problem) => (
             <li key={problem.id}>
               <Link to="/problems/$slug" params={{ slug: problem.slug }} className="problem-card">
                 <span className="problem-title">
@@ -115,6 +134,16 @@ export function CatalogPage() {
             </li>
           ))}
         </ul>
+      )}
+      {list.hasNextPage && !list.isPlaceholderData && (
+        <button
+          type="button"
+          className="load-more"
+          onClick={() => void list.fetchNextPage()}
+          disabled={list.isFetchingNextPage}
+        >
+          {list.isFetchingNextPage ? "Loading…" : "Load more"}
+        </button>
       )}
     </div>
   );

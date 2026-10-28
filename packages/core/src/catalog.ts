@@ -1,4 +1,11 @@
-import type { Language, Pagination } from "@bekor/contracts";
+import type { Language, ProblemListQuery, ProblemSummary } from "@bekor/contracts";
+
+interface CatalogEntry {
+  summary: ProblemSummary;
+  /** Lower-cased title and description for search. */
+  search: string;
+}
+
 import { type Database, exerciseVersions, problems } from "@bekor/db";
 import {
   contentHash,
@@ -7,7 +14,7 @@ import {
   listExercises,
   toPublicExercise,
 } from "@bekor/exercises";
-import { and, asc, desc, eq, exists, gt } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import { ServiceError } from "./errors.js";
 
 export function createCatalogService(database: Database) {
@@ -34,6 +41,47 @@ export function createCatalogService(database: Database) {
       );
     return exercise;
   }
+  // Published content is immutable per id@version, so its verified summary is cached.
+  const summaries = new Map<string, CatalogEntry>();
+  function entry(exerciseId: string, version: string, hash: string): CatalogEntry {
+    const key = `${exerciseId}@${version}`;
+    let cached = summaries.get(key);
+    if (!cached) {
+      const exercise = getExercise(exerciseId, version);
+      if (!exercise || contentHash(exercise) !== hash)
+        throw new ServiceError(
+          "CONTENT_UNAVAILABLE",
+          "Published exercise content is unavailable.",
+          503,
+        );
+      const { id, slug, title, difficulty, concepts, description } = exercise.public;
+      cached = {
+        summary: { id, slug, version, title, difficulty, concepts },
+        search: `${title}\n${description}`.toLowerCase(),
+      };
+      summaries.set(key, cached);
+    }
+    return cached;
+  }
+  /** Latest published version of every problem, ordered by slug, in one query. */
+  async function published() {
+    const rows = await database.db
+      .selectDistinctOn([problems.slug], {
+        slug: problems.slug,
+        exerciseId: exerciseVersions.exerciseId,
+        version: exerciseVersions.version,
+        contentHash: exerciseVersions.contentHash,
+      })
+      .from(problems)
+      .innerJoin(exerciseVersions, eq(exerciseVersions.exerciseId, problems.id))
+      .where(eq(exerciseVersions.status, "published"))
+      .orderBy(
+        asc(problems.slug),
+        desc(exerciseVersions.publishedAt),
+        desc(exerciseVersions.version),
+      );
+    return rows.map((row) => entry(row.exerciseId, row.version, row.contentHash));
+  }
   return {
     resolve,
     async publish() {
@@ -54,47 +102,28 @@ export function createCatalogService(database: Database) {
         });
       }
     },
-    async list(page: Pagination) {
-      if (page.cursor && !/^[a-z][a-z0-9-]{0,79}$/.test(page.cursor))
+    async list(query: ProblemListQuery) {
+      if (query.cursor && !/^[a-z][a-z0-9-]{0,79}$/.test(query.cursor))
         throw new ServiceError("INVALID_CURSOR", "Invalid catalog cursor.");
-      const rows = await database.db
-        .select()
-        .from(problems)
-        .where(
-          and(
-            page.cursor ? gt(problems.slug, page.cursor) : undefined,
-            exists(
-              database.db
-                .select({ id: exerciseVersions.exerciseId })
-                .from(exerciseVersions)
-                .where(
-                  and(
-                    eq(exerciseVersions.exerciseId, problems.id),
-                    eq(exerciseVersions.status, "published"),
-                  ),
-                ),
-            ),
-          ),
-        )
-        .orderBy(asc(problems.slug))
-        .limit(page.limit + 1);
-      const items = [];
-      for (const row of rows) {
-        const versions = await database.db
-          .select()
-          .from(exerciseVersions)
-          .where(
-            and(eq(exerciseVersions.exerciseId, row.id), eq(exerciseVersions.status, "published")),
-          )
-          .orderBy(desc(exerciseVersions.publishedAt), desc(exerciseVersions.version))
-          .limit(1);
-        const latest = versions[0];
-        if (latest) items.push(toPublicExercise(await resolve(row.id, latest.version)));
-        if (items.length > page.limit) break;
+      const ids = query.ids && new Set(query.ids);
+      const text = query.q?.toLowerCase();
+      const items: ProblemSummary[] = [];
+      for (const { summary, search } of await published()) {
+        if (query.cursor && summary.slug <= query.cursor) continue;
+        if (ids && !ids.has(summary.id)) continue;
+        if (query.difficulty && summary.difficulty !== query.difficulty) continue;
+        if (query.concept && !summary.concepts.includes(query.concept)) continue;
+        if (text && !search.includes(text)) continue;
+        items.push(summary);
+        if (items.length > query.limit) break;
       }
-      const more = items.length > page.limit;
+      const more = items.length > query.limit;
       if (more) items.pop();
       return { items, nextCursor: more ? (items.at(-1)?.slug ?? null) : null };
+    },
+    async concepts() {
+      const all = new Set((await published()).flatMap(({ summary }) => summary.concepts));
+      return { items: [...all].sort() };
     },
     async detail(slug: string, version?: string) {
       const [problem] = await database.db.select().from(problems).where(eq(problems.slug, slug));

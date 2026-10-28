@@ -4,15 +4,14 @@ import { getRouteApi, Link, useNavigate } from "@tanstack/react-router";
 import { api, errorCode } from "../api";
 import { Badge, EmptyState, ErrorNotice } from "../components/ui";
 import { formatDateTime, formatRelative, LANGUAGE_LABEL } from "../format";
-import { problemsQuery, reviewsQuery } from "../queries";
+import { problemsByIdQuery, reviewExerciseIds, reviewsQuery } from "../queries";
 
 const route = getRouteApi("/authed/reviews");
 
 export function ReviewsPage() {
   const { user } = route.useRouteContext();
   const queue = useSuspenseQuery(reviewsQuery(user.id)).data;
-  const problems = useSuspenseQuery(problemsQuery).data;
-  const byId = new Map(problems.map((problem) => [problem.id, problem]));
+  const byId = useSuspenseQuery(problemsByIdQuery(reviewExerciseIds(queue))).data;
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const now = Date.now();

@@ -6,6 +6,8 @@ export const MAX_SOURCE_BYTES = 65_536;
 export const MAX_CASES = 32;
 export const languageSchema = z.enum(["javascript", "typescript"]);
 export type Language = z.infer<typeof languageSchema>;
+export const difficultySchema = z.enum(["easy", "medium", "hard"]);
+export type Difficulty = z.infer<typeof difficultySchema>;
 export const verdictSchema = z.enum([
   "accepted",
   "wrong_answer",
@@ -106,7 +108,7 @@ export const publicExerciseSchema = z
     version: versionSchema,
     title: z.string().min(1).max(200),
     description: z.string().max(30_000),
-    difficulty: z.enum(["easy", "medium", "hard"]),
+    difficulty: difficultySchema,
     concepts: z.array(z.string().max(80)).max(20),
     hints: z.array(z.string().max(2000)).max(10),
     attribution: z.string().max(2000),
@@ -169,6 +171,32 @@ export const paginationSchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
 });
 export type Pagination = z.infer<typeof paginationSchema>;
+/** Catalog list entry: just what a list row needs. Full content comes from the detail endpoint. */
+export const problemSummarySchema = z
+  .object({
+    id: idSchema,
+    slug: idSchema,
+    version: versionSchema,
+    title: z.string().min(1).max(200),
+    difficulty: difficultySchema,
+    concepts: z.array(z.string().max(80)).max(20),
+  })
+  .strict();
+export type ProblemSummary = z.infer<typeof problemSummarySchema>;
+/** Filters apply before paging; `ids` (comma-separated) looks up specific problems. */
+export const problemListQuerySchema = paginationSchema.extend({
+  q: z.string().trim().max(100).optional(),
+  difficulty: difficultySchema.optional(),
+  concept: z.string().max(80).optional(),
+  ids: z
+    .string()
+    .max(8200)
+    .transform((value) => value.split(",").filter(Boolean))
+    .pipe(z.array(idSchema).max(100))
+    .optional(),
+});
+export type ProblemListQuery = z.infer<typeof problemListQuerySchema>;
+export const conceptListSchema = z.object({ items: z.array(z.string()) });
 export const pageSchema = <T extends z.ZodType>(item: T) =>
   z.object({ items: z.array(item), nextCursor: z.string().nullable() });
 export type Page<T> = { items: T[]; nextCursor: string | null };

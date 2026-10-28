@@ -1,4 +1,4 @@
-import type { Language } from "@bekor/contracts";
+import { type Difficulty, difficultySchema, type Language } from "@bekor/contracts";
 import type { QueryClient } from "@tanstack/react-query";
 import {
   createRootRouteWithContext,
@@ -16,8 +16,12 @@ import { ProblemPage } from "./pages/Problem";
 import { ReviewsPage } from "./pages/Reviews";
 import { SettingsPage } from "./pages/Settings";
 import {
+  conceptsQuery,
+  type ProblemFilters,
   problemQuery,
+  problemsByIdQuery,
   problemsQuery,
+  reviewExerciseIds,
   reviewsQuery,
   sessionQuery,
   settingsQuery,
@@ -55,13 +59,8 @@ const authedRoute = createRoute({
   },
 });
 
-const difficulties = ["easy", "medium", "hard"] as const;
-export type Difficulty = (typeof difficulties)[number];
-export interface CatalogSearch {
-  q?: string;
-  difficulty?: Difficulty;
-  concept?: string;
-}
+const difficulties: readonly Difficulty[] = difficultySchema.options;
+export type CatalogSearch = ProblemFilters;
 
 const catalogRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -75,7 +74,12 @@ const catalogRoute = createRoute({
       ? { concept: search.concept.slice(0, 80) }
       : {}),
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(problemsQuery),
+  loaderDeps: ({ search }) => search,
+  loader: ({ context, deps }) =>
+    Promise.all([
+      context.queryClient.ensureInfiniteQueryData(problemsQuery(deps)),
+      context.queryClient.ensureQueryData(conceptsQuery),
+    ]),
   component: CatalogPage,
 });
 
@@ -130,11 +134,10 @@ const problemRoute = createRoute({
 const reviewsRoute = createRoute({
   getParentRoute: () => authedRoute,
   path: "/reviews",
-  loader: ({ context }) =>
-    Promise.all([
-      context.queryClient.ensureQueryData(reviewsQuery(context.user.id)),
-      context.queryClient.ensureQueryData(problemsQuery),
-    ]),
+  loader: async ({ context }) => {
+    const queue = await context.queryClient.ensureQueryData(reviewsQuery(context.user.id));
+    await context.queryClient.ensureQueryData(problemsByIdQuery(reviewExerciseIds(queue)));
+  },
   component: ReviewsPage,
 });
 

@@ -1,4 +1,4 @@
-import type { Submission } from "@bekor/contracts";
+import type { Difficulty, ReviewQueue, Submission } from "@bekor/contracts";
 import {
   infiniteQueryOptions,
   MutationCache,
@@ -16,22 +16,50 @@ export const sessionQuery = queryOptions({
   staleTime: 60_000,
 });
 
-export const problemsQuery = queryOptions({
-  queryKey: ["problems"],
-  queryFn: async () => {
-    // The beta catalog is small; collect every page so filters can run client-side.
-    const items = [];
-    let cursor: string | undefined;
-    for (let page = 0; page < 20; page++) {
-      const result = await api.problems({ limit: 100, ...(cursor ? { cursor } : {}) });
-      items.push(...result.items);
-      if (!result.nextCursor) break;
-      cursor = result.nextCursor;
-    }
-    return items;
-  },
+export interface ProblemFilters {
+  q?: string;
+  difficulty?: Difficulty;
+  concept?: string;
+}
+export const PROBLEM_PAGE_SIZE = 30;
+
+/** Filtered catalog, fetched one page at a time; the server applies the filters. */
+export const problemsQuery = (filters: ProblemFilters) =>
+  infiniteQueryOptions({
+    queryKey: ["problems", "list", filters],
+    queryFn: ({ pageParam }) =>
+      api.problems({
+        ...filters,
+        limit: PROBLEM_PAGE_SIZE,
+        ...(pageParam ? { cursor: pageParam } : {}),
+      }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (page) => page.nextCursor ?? undefined,
+    staleTime: 5 * 60_000,
+  });
+
+export const conceptsQuery = queryOptions({
+  queryKey: ["problems", "concepts"],
+  queryFn: async () => (await api.concepts()).items,
   staleTime: 5 * 60_000,
 });
+
+/** Summaries for specific problem ids (titles/slugs for reviews and history), keyed by id. */
+export const problemsByIdQuery = (ids: Iterable<string>) => {
+  const sorted = [...new Set(ids)].sort();
+  return queryOptions({
+    queryKey: ["problems", "by-id", sorted],
+    queryFn: async () => {
+      const chunks = [];
+      for (let i = 0; i < sorted.length; i += 100) chunks.push(sorted.slice(i, i + 100));
+      const pages = await Promise.all(
+        chunks.map((chunk) => api.problems({ ids: chunk, limit: 100 })),
+      );
+      return new Map(pages.flatMap((page) => page.items).map((item) => [item.id, item]));
+    },
+    staleTime: 5 * 60_000,
+  });
+};
 
 /** Without a version: the latest published version. Sessions pin their own version. */
 export const problemQuery = (slug: string, version?: string) =>
@@ -82,6 +110,12 @@ export const reviewsQuery = (userId: string) =>
     queryKey: ["user", userId, "reviews"],
     queryFn: () => api.reviews(),
   });
+
+/** Exercises referenced by a review queue; the Reviews page needs their titles and slugs. */
+export const reviewExerciseIds = (queue: ReviewQueue) => [
+  ...queue.due.map((card) => card.exerciseId),
+  ...queue.unfinished.map((session) => session.exerciseId),
+];
 
 export const settingsQuery = (userId: string) =>
   queryOptions({

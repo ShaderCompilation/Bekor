@@ -570,3 +570,10 @@ table.history td {
 .form .link-button {
   align-self: flex-start;
 }
+.problem-list[aria-busy="true"] {
+  opacity: 0.6;
+}
+.load-more {
+  display: block;
+  margin: 1rem auto 0;
+}

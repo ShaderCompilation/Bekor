@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import {
   assistanceSchema,
   completionSchema,
+  conceptListSchema,
   credentialSchema,
   downloadSchema,
   errorSchema,
@@ -9,6 +10,8 @@ import {
   pageSchema,
   paginationSchema,
   practiceSessionSchema,
+  problemListQuerySchema,
+  problemSummarySchema,
   publicExerciseSchema,
   revealSchema,
   reviewQueueSchema,
@@ -134,6 +137,7 @@ export function createApp(deps: AppDependencies) {
     if (
       c.req.method === "GET" &&
       (c.req.path === "/api/v1/problems" ||
+        c.req.path === "/api/v1/concepts" ||
         c.req.path.startsWith("/api/v1/problems/") ||
         c.req.path === "/api/v1/openapi.json")
     )
@@ -167,10 +171,18 @@ export function createApp(deps: AppDependencies) {
     createRoute({
       method: "get",
       path: "/api/v1/problems",
-      request: { query: paginationSchema },
-      responses: { 200: json(pageSchema(publicExerciseSchema)), ...failures },
+      request: { query: problemListQuerySchema },
+      responses: { 200: json(pageSchema(problemSummarySchema)), ...failures },
     }),
     async (c) => c.json(await deps.catalog.list(c.req.valid("query")), 200),
+  );
+  app.openapi(
+    createRoute({
+      method: "get",
+      path: "/api/v1/concepts",
+      responses: { 200: json(conceptListSchema), ...failures },
+    }),
+    async (c) => c.json(await deps.catalog.concepts(), 200),
   );
   app.openapi(
     createRoute({

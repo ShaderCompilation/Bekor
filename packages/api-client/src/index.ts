@@ -1,13 +1,16 @@
 import {
   type AssistanceKind,
   completionSchema,
+  conceptListSchema,
   credentialSchema,
   downloadSchema,
   errorSchema,
   type Language,
   type Pagination,
+  type ProblemListQuery,
   pageSchema,
   practiceSessionSchema,
+  problemSummarySchema,
   publicExerciseSchema,
   type Rating,
   revealSchema,
@@ -108,8 +111,12 @@ export function createApiClient(options: ClientOptions) {
   }
   const segment = encodeURIComponent;
   return {
-    problems: (pagination: Partial<Pagination> = {}) =>
-      request(`/problems${query(pagination)}`, pageSchema(publicExerciseSchema)),
+    problems: ({ ids, ...filters }: Partial<ProblemListQuery> = {}) =>
+      request(
+        `/problems${query({ ...filters, ids: ids?.join(",") })}`,
+        pageSchema(problemSummarySchema),
+      ),
+    concepts: () => request("/concepts", conceptListSchema),
     problem: (slug: string, version?: string) =>
       request(`/problems/${segment(slug)}${query({ version })}`, publicExerciseSchema),
     download: (slug: string, language: Language, version?: string) =>
