@@ -148,3 +148,9 @@ export function createQueryClient(onUnauthenticated: () => void) {
     },
   });
 }
+
+export const selfAssessmentsQuery = (userId: string) =>
+  queryOptions({
+    queryKey: ["user", userId, "self-assessments"],
+    queryFn: async () => (await api.selfAssessments()).items,
+  });

@@ -12,6 +12,7 @@
   "dependencies": {
     "@bekor/api-client": "workspace:*",
     "@bekor/contracts": "workspace:*",
+    "@codesandbox/sandpack-client": "2.19.8",
     "@monaco-editor/react": "4.7.0",
     "@tanstack/react-query": "5.104.5",
     "@tanstack/react-router": "1.170.46",

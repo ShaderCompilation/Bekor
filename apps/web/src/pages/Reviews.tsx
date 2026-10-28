@@ -23,7 +23,11 @@ export function ReviewsPage() {
     return navigate({
       to: "/problems/$slug",
       params: { slug: problem?.slug ?? session.exerciseId },
-      search: { session: session.id, language: session.language },
+      search: {
+        session: session.id,
+        language: session.language,
+        ...(session.framework ? { framework: session.framework } : {}),
+      },
     });
   };
   const start = useMutation({
@@ -36,6 +40,7 @@ export function ReviewsPage() {
           exerciseVersion: problem.version,
           language: card.language,
           kind: "review",
+          ...(card.framework ? { framework: card.framework } : {}),
         });
       } catch (error) {
         // An active session on an older version must be resumed with its own version.
@@ -43,6 +48,7 @@ export function ReviewsPage() {
           (session) =>
             session.exerciseId === card.exerciseId &&
             session.language === card.language &&
+            session.framework === card.framework &&
             session.kind !== "practice",
         );
         if (errorCode(error) === "SESSION_MISMATCH" && active) return active;
@@ -62,7 +68,10 @@ export function ReviewsPage() {
       <li key={card.id} className="review-row">
         <span>
           <strong>{title(card.exerciseId)}</strong>{" "}
-          <span className="tag">{LANGUAGE_LABEL[card.language]}</span>
+          <span className="tag">
+            {LANGUAGE_LABEL[card.language]}
+            {card.framework ? ` · ${card.framework} · Self-assessed` : ""}
+          </span>
         </span>
         <span className="muted" title={formatDateTime(card.due, queue.timezone)}>
           {overdue
@@ -98,7 +107,10 @@ export function ReviewsPage() {
               <li key={session.id} className="review-row">
                 <span>
                   <strong>{title(session.exerciseId)}</strong>{" "}
-                  <span className="tag">{LANGUAGE_LABEL[session.language]}</span>{" "}
+                  <span className="tag">
+                    {LANGUAGE_LABEL[session.language]}
+                    {session.framework ? ` · ${session.framework} · Self-assessed` : ""}
+                  </span>{" "}
                   <Badge tone="pending">{session.kind}</Badge>
                   {session.hintUsed && <Badge tone="warn">hint</Badge>}
                   {session.solutionRevealed && <Badge tone="warn">revealed</Badge>}

@@ -1,14 +1,19 @@
 // Loaded lazily (React.lazy) so Monaco and its workers stay out of the initial bundle.
-import type { Language } from "@bekor/contracts";
 import Editor, { loader, type OnMount } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
 import EditorWorker from "monaco-editor/editor/editor.worker?worker";
+import CssWorker from "monaco-editor/languages/features/css/css.worker?worker";
+import HtmlWorker from "monaco-editor/languages/features/html/html.worker?worker";
 import TsWorker from "monaco-editor/languages/features/typescript/ts.worker?worker";
 import { useEffect, useRef } from "react";
 
 self.MonacoEnvironment = {
-  getWorker: (_id: string, label: string) =>
-    label === "typescript" || label === "javascript" ? new TsWorker() : new EditorWorker(),
+  getWorker: (_id: string, label: string) => {
+    if (label === "typescript" || label === "javascript") return new TsWorker();
+    if (label === "html" || label === "handlebars" || label === "razor") return new HtmlWorker();
+    if (label === "css" || label === "scss" || label === "less") return new CssWorker();
+    return new EditorWorker();
+  },
 };
 // Use the bundled copy instead of @monaco-editor/react's default CDN download.
 loader.config({ monaco });
@@ -28,7 +33,8 @@ monaco.typescript.javascriptDefaults.setCompilerOptions({ ...compilerOptions, ch
 export interface CodeEditorProps {
   /** Unique per draft so each draft gets its own model and undo history. */
   path: string;
-  language: Language;
+  language: string;
+  preview?: boolean;
   value: string;
   fontSize: number;
   onChange: (value: string) => void;
@@ -40,23 +46,29 @@ export default function CodeEditor(props: CodeEditorProps) {
   // Monaco registers actions once; keep the latest callbacks in refs.
   const run = useRef(props.onRun);
   const submit = useRef(props.onSubmit);
+  const value = useRef(props.value);
   useEffect(() => {
     run.current = props.onRun;
     submit.current = props.onSubmit;
+    value.current = props.value;
   });
   const prefersDark =
     typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
 
   const onMount: OnMount = (editor) => {
+    // Monaco picks CRLF for single-line models on Windows user agents. Keep drafts LF everywhere.
+    const normalizeEol = () => editor.getModel()?.setEOL(monaco.editor.EndOfLineSequence.LF);
+    normalizeEol();
+    editor.onDidChangeModel(normalizeEol);
     editor.addAction({
       id: "bekor.run",
-      label: "Run public tests",
+      label: props.preview ? "Refresh preview" : "Run public tests",
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
       run: () => run.current(),
     });
     editor.addAction({
       id: "bekor.submit",
-      label: "Submit solution",
+      label: props.preview ? "Refresh preview" : "Submit solution",
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.Enter],
       run: () => submit.current(),
     });
@@ -68,7 +80,10 @@ export default function CodeEditor(props: CodeEditorProps) {
       language={props.language}
       value={props.value}
       theme={prefersDark ? "vs-dark" : "vs"}
-      onChange={(value) => props.onChange(value ?? "")}
+      onChange={(next) => {
+        // Line-ending normalization alone is not a learner edit.
+        if ((next ?? "") !== value.current) props.onChange(next ?? "");
+      }}
       onMount={onMount}
       loading={<div className="editor-loading">Loading editor…</div>}
       options={{

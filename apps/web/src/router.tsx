@@ -1,4 +1,10 @@
-import { type Difficulty, difficultySchema, type Language } from "@bekor/contracts";
+import {
+  type Difficulty,
+  difficultySchema,
+  type Framework,
+  frameworkSchema,
+  type Language,
+} from "@bekor/contracts";
 import type { QueryClient } from "@tanstack/react-query";
 import {
   createRootRouteWithContext,
@@ -106,6 +112,7 @@ const signUpRoute = createRoute({
 export interface ProblemSearch {
   language?: Language;
   session?: string;
+  framework?: Framework;
 }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -113,6 +120,9 @@ const problemRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/problems/$slug",
   validateSearch: (search: Record<string, unknown>): ProblemSearch => ({
+    ...(frameworkSchema.safeParse(search.framework).success
+      ? { framework: search.framework as Framework }
+      : {}),
     ...(search.language === "javascript" || search.language === "typescript"
       ? { language: search.language }
       : {}),

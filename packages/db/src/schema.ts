@@ -130,6 +130,15 @@ export const practiceSessions = pgTable(
       .notNull()
       .references(() => problems.id),
     exerciseVersion: text("exercise_version").notNull(),
+    framework: text("framework")
+      .$type<"node" | "vanilla" | "react" | "vue" | "svelte">()
+      .notNull()
+      .default("node"),
+    assessment: jsonb("assessment").$type<{
+      outcome: "solved" | "unable";
+      provenance: "self";
+      assessedAt: string;
+    }>(),
     language: text("language").$type<"javascript" | "typescript">().notNull(),
     kind: text("kind").$type<"learning" | "review" | "practice">().notNull(),
     status: text("status").$type<"active" | "completed">().notNull().default("active"),
@@ -141,8 +150,9 @@ export const practiceSessions = pgTable(
   },
   (t) => [
     uniqueIndex("one_active_scheduling_session")
-      .on(t.userId, t.exerciseId, t.language)
+      .on(t.userId, t.exerciseId, t.framework, t.language)
       .where(sql`${t.status} = 'active' and ${t.kind} <> 'practice'`),
+    check("session_framework", sql`${t.framework} in ('node','vanilla','react','vue','svelte')`),
     check("session_language", sql`${t.language} in ('javascript','typescript')`),
     check("session_kind", sql`${t.kind} in ('learning','review','practice')`),
     check("session_status", sql`${t.status} in ('active','completed')`),
@@ -287,6 +297,10 @@ export const reviewCards = pgTable(
     exerciseId: text("exercise_id")
       .notNull()
       .references(() => problems.id),
+    framework: text("framework")
+      .$type<"node" | "vanilla" | "react" | "vue" | "svelte">()
+      .notNull()
+      .default("node"),
     language: text("language").$type<"javascript" | "typescript">().notNull(),
     state: jsonb("state").notNull(),
     dueAt: instant("due_at").notNull(),
@@ -297,7 +311,8 @@ export const reviewCards = pgTable(
     updatedAt: instant("updated_at").notNull().defaultNow(),
   },
   (t) => [
-    uniqueIndex("review_card_identity").on(t.userId, t.exerciseId, t.language),
+    uniqueIndex("review_card_identity").on(t.userId, t.exerciseId, t.framework, t.language),
+    check("review_framework", sql`${t.framework} in ('node','vanilla','react','vue','svelte')`),
     index("review_due").on(t.userId, t.dueAt),
   ],
 );

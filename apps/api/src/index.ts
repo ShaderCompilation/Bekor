@@ -6,13 +6,14 @@ import {
   credentialSchema,
   downloadSchema,
   errorSchema,
+  exerciseDetailSchema,
+  frameworkSchema,
   languageSchema,
   pageSchema,
   paginationSchema,
   practiceSessionSchema,
   problemListQuerySchema,
   problemSummarySchema,
-  publicExerciseSchema,
   revealSchema,
   reviewQueueSchema,
   sessionCompleteSchema,
@@ -67,8 +68,14 @@ const uuidParam = z.object({ id: z.uuid() });
 export function createApp(deps: AppDependencies) {
   const origin = new URL(deps.origin).origin;
   const app = new OpenAPIHono<Env>({
-    defaultHook: (result) => {
-      if (!result.success) throw new ServiceError("INVALID_INPUT", "Invalid request fields.");
+    defaultHook: (result, c) => {
+      if (!result.success)
+        throw new ServiceError(
+          "INVALID_INPUT",
+          c.req.path === "/api/v1/submissions"
+            ? "Node submissions require solution.js or solution.ts. DOM exercises use browser preview and explicit self-assessment."
+            : "Invalid request fields.",
+        );
     },
   });
   app.use("*", async (c, next) => {
@@ -192,7 +199,7 @@ export function createApp(deps: AppDependencies) {
         params: z.object({ slug: z.string().max(80) }),
         query: z.object({ version: z.string().max(40).optional() }),
       },
-      responses: { 200: json(publicExerciseSchema), ...failures },
+      responses: { 200: json(exerciseDetailSchema), ...failures },
     }),
     async (c) =>
       c.json(
@@ -206,7 +213,11 @@ export function createApp(deps: AppDependencies) {
       path: "/api/v1/problems/{slug}/download",
       request: {
         params: z.object({ slug: z.string().max(80) }),
-        query: z.object({ version: z.string().max(40).optional(), language: languageSchema }),
+        query: z.object({
+          version: z.string().max(40).optional(),
+          language: languageSchema,
+          framework: frameworkSchema.optional(),
+        }),
       },
       responses: { 200: json(downloadSchema), ...failures },
     }),
@@ -217,6 +228,7 @@ export function createApp(deps: AppDependencies) {
           c.req.valid("query").language,
           origin,
           c.req.valid("query").version,
+          c.req.valid("query").framework,
         ),
         200,
       ),
@@ -431,9 +443,19 @@ export function createApp(deps: AppDependencies) {
           authorize(c.get("principal"), "reviews:write"),
           c.req.valid("param").id,
           c.req.valid("json").rating,
+          c.req.valid("json").selfAssessment,
         ),
         200,
       ),
+  );
+  app.openapi(
+    createRoute({
+      method: "get",
+      path: "/api/v1/me/self-assessments",
+      responses: { 200: json(z.object({ items: z.array(practiceSessionSchema) })), ...failures },
+    }),
+    async (c) =>
+      c.json(await deps.reviews.history(authorize(c.get("principal"), "reviews:read")), 200),
   );
   app.doc("/api/v1/openapi.json", {
     openapi: "3.1.0",

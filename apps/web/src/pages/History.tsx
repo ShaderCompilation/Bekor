@@ -1,9 +1,16 @@
+import { isDomExercise } from "@bekor/contracts";
 import { keepPreviousData, useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { getRouteApi, Link } from "@tanstack/react-router";
 import { judgedSource, SubmissionResult } from "../components/SubmissionResult";
 import { Badge, EmptyState, ErrorNotice, PageLoading } from "../components/ui";
 import { formatDateTime, LANGUAGE_LABEL, submissionLabel, submissionTone } from "../format";
-import { historyQuery, problemQuery, problemsByIdQuery, submissionQuery } from "../queries";
+import {
+  historyQuery,
+  problemQuery,
+  problemsByIdQuery,
+  selfAssessmentsQuery,
+  submissionQuery,
+} from "../queries";
 
 const historyRoute = getRouteApi("/authed/history");
 const submissionRoute = getRouteApi("/authed/submissions/$id");
@@ -11,9 +18,11 @@ const submissionRoute = getRouteApi("/authed/submissions/$id");
 export function HistoryPage() {
   const { user } = historyRoute.useRouteContext();
   const history = useInfiniteQuery(historyQuery(user.id));
-  const ids = (history.data?.pages ?? []).flatMap((page) =>
-    page.items.map((item) => item.exerciseId),
-  );
+  const manual = useQuery(selfAssessmentsQuery(user.id));
+  const ids = [
+    ...(history.data?.pages ?? []).flatMap((page) => page.items.map((item) => item.exerciseId)),
+    ...(manual.data ?? []).map((item) => item.exerciseId),
+  ];
   const problems = useQuery({ ...problemsByIdQuery(ids), placeholderData: keepPreviousData });
   const titles = problems.data ?? new Map();
 
@@ -23,7 +32,37 @@ export function HistoryPage() {
 
   return (
     <div className="page">
-      <h1>Submission history</h1>
+      <h1>History</h1>
+      <h2>Self-assessed DOM practice</h2>
+      {manual.isError ? (
+        <ErrorNotice error={manual.error} />
+      ) : manual.isPending ? (
+        <PageLoading />
+      ) : manual.data.length === 0 ? (
+        <p>No self-assessed completions yet.</p>
+      ) : (
+        <ul>
+          {manual.data.map((item) => (
+            <li key={item.id}>
+              <Link
+                to="/problems/$slug"
+                params={{ slug: titles.get(item.exerciseId)?.slug ?? item.exerciseId }}
+                search={{
+                  ...(item.framework ? { framework: item.framework } : {}),
+                  language: item.language,
+                }}
+              >
+                {titles.get(item.exerciseId)?.title ?? item.exerciseId}
+              </Link>
+              {" · "}
+              {item.framework} · {LANGUAGE_LABEL[item.language]} · v{item.exerciseVersion} ·
+              Self-assessed {item.assessment?.outcome} · {item.rating ?? "unscheduled"} ·{" "}
+              {formatDateTime(item.completedAt ?? item.createdAt)}
+            </li>
+          ))}
+        </ul>
+      )}
+      <h2>Submission history</h2>
       {items.length === 0 ? (
         <EmptyState title="No submissions yet">
           <Link to="/">Pick a problem to solve</Link>
@@ -118,7 +157,11 @@ export function SubmissionPage() {
       )}
       <SubmissionResult
         submission={data}
-        variant={exercise.data?.variants[data.language]}
+        variant={
+          exercise.data && !isDomExercise(exercise.data)
+            ? exercise.data.variants[data.language]
+            : undefined
+        }
         onRefresh={() => void submission.refetch()}
       />
       {source !== undefined && (

@@ -8,6 +8,13 @@
       "when": 1793050301974,
       "tag": "0000_flashy_cammi",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793148487485,
+      "tag": "0001_dry_radioactive_man",
+      "breakpoints": true
     }
   ]
 }

@@ -577,3 +577,39 @@ table.history td {
   display: block;
   margin: 1rem auto 0;
 }
+
+.dom-problem .checklist-item {
+  display: flex;
+  gap: 0.65rem;
+  align-items: baseline;
+  margin: 0.75rem 0;
+}
+.dom-problem .checklist-item input {
+  flex: none;
+}
+.dom-problem fieldset {
+  margin: 1rem 0;
+  border: 1px solid var(--border, #777);
+  border-radius: 0.4rem;
+}
+.file-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding: 0.5rem;
+}
+.file-tabs [aria-selected="true"] {
+  font-weight: bold;
+  text-decoration: underline;
+}
+.dom-preview iframe {
+  width: 100%;
+  min-height: 360px;
+  border: 1px solid #777;
+  background: white;
+}
+.dom-preview .preview-console {
+  max-height: 180px;
+  overflow: auto;
+  white-space: pre-wrap;
+}

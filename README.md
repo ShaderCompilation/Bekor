@@ -1,6 +1,6 @@
 # Bekor
 
-Spaced-repetition practice for small JavaScript and TypeScript function problems. Learners solve a problem, the server judges it in an isolated Judge0 sandbox, and the server schedules reviews (FSRS). The browser and CLI clients will use the same API.
+Spaced-repetition practice for small JavaScript and TypeScript function problems. Learners solve a problem, the server judges it in an isolated Judge0 sandbox, and the server schedules reviews (FSRS). The browser and CLI clients use the same API. DOM exercises add browser previews and explicit self-assessment, with separate framework review cards.
 
 Scope, architecture, task status and acceptance criteria live in [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md).
 
@@ -13,6 +13,7 @@ Scope, architecture, task status and acceptance criteria live in [`docs/IMPLEMEN
 | Development Podman runner (`RUNNER=podman`, personal use only)                                    | Real execution in local rootless containers; passes `pnpm test:runner`. Weaker isolation than production, see [`docs/verification/f05-podman-runner.md`](docs/verification/f05-podman-runner.md) |
 | Real Judge0 execution                                                                             | **Not verified.** The Fedora dev host (cgroup v2, rootless Podman) cannot run Judge0 1.13.1. See [`docs/verification/f03-runner.md`](docs/verification/f03-runner.md)                            |
 | Web app (`apps/web`, React/Vite/TanStack Router+Query/Zustand/Monaco)                             | Implemented; Playwright journeys pass against the real API/worker/PostgreSQL with the Podman runner. See [`docs/verification/web.md`](docs/verification/web.md)                                  |
+| Self-assessed DOM exercises                                                                       | Original accordion with Vanilla JS, React, Vue and Svelte previews, manual completion and FSRS reviews. See [`docs/verification/dom-exercises.md`](docs/verification/dom-exercises.md).          |
 | CLI (`apps/cli`)                                                                                  | Not implemented yet                                                                                                                                                                              |
 | Deployment                                                                                        | None. `infra/compose` is for local development only                                                                                                                                              |
 
@@ -71,6 +72,11 @@ pnpm dev:web                 # http://localhost:5173; start the API (and worker)
 
 `BEKOR_API_PROXY` overrides the proxy target. `pnpm --filter @bekor/web build` writes static files to `apps/web/dist`; serving them on the API's origin in production is not set up yet.
 
+The DOM exercise is at `/problems/accessible-accordion`. Apply migrations and restart
+the API to publish it; the worker is unnecessary for DOM completion. The preview
+requires an internet connection. See [DOM setup and hosting](docs/runbooks/dom-exercises.md)
+for pinned framework versions, isolation constraints and the focused browser tests.
+
 ### Everything in containers
 
 ```bash
@@ -113,5 +119,6 @@ CI (`.github/workflows/ci.yml`) runs lint, typecheck, unit tests, content valida
 
 ## Runbooks
 
+- [`docs/runbooks/dom-exercises.md`](docs/runbooks/dom-exercises.md): DOM previews, self-assessment, framework versions and verification
 - [`docs/runbooks/development.md`](docs/runbooks/development.md): local setup details and troubleshooting
 - [`docs/runbooks/judging-recovery.md`](docs/runbooks/judging-recovery.md): stuck or failed submissions, leases, retries and safe requeueing

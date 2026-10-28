@@ -5,16 +5,18 @@ import {
   credentialSchema,
   downloadSchema,
   errorSchema,
+  exerciseDetailSchema,
+  type Framework,
   type Language,
   type Pagination,
   type ProblemListQuery,
   pageSchema,
   practiceSessionSchema,
   problemSummarySchema,
-  publicExerciseSchema,
   type Rating,
   revealSchema,
   reviewQueueSchema,
+  type SelfAssessment,
   type SessionStart,
   type Settings,
   type SubmissionCreate,
@@ -118,9 +120,12 @@ export function createApiClient(options: ClientOptions) {
       ),
     concepts: () => request("/concepts", conceptListSchema),
     problem: (slug: string, version?: string) =>
-      request(`/problems/${segment(slug)}${query({ version })}`, publicExerciseSchema),
-    download: (slug: string, language: Language, version?: string) =>
-      request(`/problems/${segment(slug)}/download${query({ language, version })}`, downloadSchema),
+      request(`/problems/${segment(slug)}${query({ version })}`, exerciseDetailSchema),
+    download: (slug: string, language: Language, version?: string, framework?: Framework) =>
+      request(
+        `/problems/${segment(slug)}/download${query({ language, version, framework })}`,
+        downloadSchema,
+      ),
     submit: (input: SubmissionCreate) => request("/submissions", submissionSchema, "POST", input),
     submission: (id: string) => request(`/submissions/${segment(id)}`, submissionSchema),
     submissions: (pagination: Partial<Pagination> = {}) =>
@@ -139,7 +144,12 @@ export function createApiClient(options: ClientOptions) {
       }),
     reveal: (id: string) =>
       request(`/practice-sessions/${segment(id)}/reveal`, revealSchema, "POST", {}),
-    completeSession: (id: string, rating: Rating) =>
-      request(`/practice-sessions/${segment(id)}/complete`, completionSchema, "POST", { rating }),
+    selfAssessments: () =>
+      request("/me/self-assessments", z.object({ items: z.array(practiceSessionSchema) })),
+    completeSession: (id: string, rating?: Rating, selfAssessment?: SelfAssessment) =>
+      request(`/practice-sessions/${segment(id)}/complete`, completionSchema, "POST", {
+        rating,
+        selfAssessment,
+      }),
   };
 }

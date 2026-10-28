@@ -118,6 +118,87 @@ export const publicExerciseSchema = z
   })
   .strict();
 export type PublicExercise = z.infer<typeof publicExerciseSchema>;
+// DOM projects use their own browser contract; Node exercise shapes remain unchanged.
+export const frameworkSchema = z.enum(["vanilla", "react", "vue", "svelte"]);
+export type Framework = z.infer<typeof frameworkSchema>;
+export const domFilesSchema = z
+  .record(
+    z.string().regex(/^[A-Za-z][A-Za-z0-9_-]*\.(?:html|css|js|jsx|ts|tsx|vue|svelte)$/),
+    z.string().max(MAX_SOURCE_BYTES),
+  )
+  .superRefine((files, ctx) => {
+    if (
+      Object.keys(files).length < 1 ||
+      Object.keys(files).length > 8 ||
+      new TextEncoder().encode(Object.values(files).join("")).byteLength > MAX_SOURCE_BYTES
+    )
+      ctx.addIssue({ code: "custom", message: "DOM project exceeds file/byte budget" });
+  });
+export const DOM_DEPENDENCIES = {
+  vanilla: {},
+  react: { react: "18.3.1", "react-dom": "18.3.1" },
+  vue: { vue: "3.5.13", "@vue/cli-plugin-babel": "5.0.8", "@vue/cli-service": "5.0.8" },
+  svelte: { svelte: "3.59.2" },
+} as const;
+export const domVariantSchema = z
+  .object({
+    id: z.string().regex(/^(vanilla|react|vue|svelte)-(javascript|typescript)$/),
+    framework: frameworkSchema,
+    language: languageSchema,
+    entry: z.string(),
+    compilerVersion: z.string().min(1).max(80),
+    dependencies: z.record(
+      z.string().regex(/^[@a-z][a-z0-9@/._-]*$/),
+      z.string().regex(/^\d+\.\d+\.\d+$/),
+    ),
+    files: domFilesSchema,
+  })
+  .strict()
+  .superRefine((variant, ctx) => {
+    const expected = DOM_DEPENDENCIES[variant.framework];
+    if (
+      variant.compilerVersion !== "sandpack-2.19.8" ||
+      Object.keys(variant.dependencies).length !== Object.keys(expected).length ||
+      Object.entries(expected).some(([name, version]) => variant.dependencies[name] !== version)
+    )
+      ctx.addIssue({
+        code: "custom",
+        message: "Unsupported compiler or framework dependency versions",
+      });
+    if (
+      variant.id !== `${variant.framework}-${variant.language}` ||
+      !Object.hasOwn(variant.files, variant.entry)
+    )
+      ctx.addIssue({ code: "custom", message: "Variant identity/entry mismatch" });
+  });
+export type DomVariant = z.infer<typeof domVariantSchema>;
+export const domExerciseSchema = publicExerciseSchema
+  .omit({ variants: true })
+  .extend({
+    kind: z.literal("dom"),
+    assessment: z.literal("self"),
+    runtime: z.literal("browser"),
+    checklist: z.array(z.string().min(1).max(1000)).min(1).max(20),
+    variants: z.array(domVariantSchema).min(1).max(8),
+  })
+  .strict()
+  .superRefine((exercise, ctx) => {
+    if (new Set(exercise.variants.map((v) => v.id)).size !== exercise.variants.length)
+      ctx.addIssue({ code: "custom", message: "Duplicate DOM variant" });
+  });
+export type DomExercise = z.infer<typeof domExerciseSchema>;
+export const exerciseDetailSchema = z.union([publicExerciseSchema, domExerciseSchema]);
+export type ExerciseDetail = z.infer<typeof exerciseDetailSchema>;
+export function isDomExercise(exercise: ExerciseDetail): exercise is DomExercise {
+  return "kind" in exercise && exercise.kind === "dom";
+}
+export const selfAssessmentSchema = z.enum(["solved", "unable"]);
+export type SelfAssessment = z.infer<typeof selfAssessmentSchema>;
+export const assessmentEvidenceSchema = z.object({
+  outcome: selfAssessmentSchema,
+  provenance: z.literal("self"),
+  assessedAt: z.iso.datetime(),
+});
 export const submissionCreateSchema = z
   .object({
     exerciseId: idSchema,
@@ -174,6 +255,8 @@ export type Pagination = z.infer<typeof paginationSchema>;
 /** Catalog list entry: just what a list row needs. Full content comes from the detail endpoint. */
 export const problemSummarySchema = z
   .object({
+    kind: z.literal("dom").optional(),
+    assessment: z.literal("self").optional(),
     id: idSchema,
     slug: idSchema,
     version: versionSchema,
@@ -248,14 +331,19 @@ export const settingsSchema = z
 export type Settings = z.infer<typeof settingsSchema>;
 export const sessionStartSchema = z
   .object({
+    requestId: z.uuid().optional(),
     exerciseId: idSchema,
     exerciseVersion: versionSchema,
     language: languageSchema,
     kind: sessionKindSchema,
+    framework: frameworkSchema.optional(),
   })
   .strict();
 export type SessionStart = z.infer<typeof sessionStartSchema>;
-export const sessionCompleteSchema = z.object({ rating: ratingSchema }).strict();
+export const sessionCompleteSchema = z
+  .object({ rating: ratingSchema.optional(), selfAssessment: selfAssessmentSchema.optional() })
+  .strict();
+export type SessionComplete = z.infer<typeof sessionCompleteSchema>;
 export const assistanceSchema = z
   .object({ kind: z.enum(["hint", "solution_reveal", "external_help"]) })
   .strict();
@@ -266,10 +354,18 @@ export const revealSchema = z
     session: z.lazy(() => practiceSessionSchema),
     explanation: z.string(),
     solution: z.string(),
+    files: domFilesSchema.optional(),
   })
   .strict();
-export type Reveal = { session: PracticeSession; explanation: string; solution: string };
+export type Reveal = {
+  session: PracticeSession;
+  explanation: string;
+  solution: string;
+  files?: Record<string, string> | undefined;
+};
 export const practiceSessionSchema = z.object({
+  framework: frameworkSchema.optional(),
+  assessment: assessmentEvidenceSchema.nullable().optional(),
   id: z.uuid(),
   exerciseId: idSchema,
   exerciseVersion: versionSchema,
@@ -284,6 +380,7 @@ export const practiceSessionSchema = z.object({
 });
 export type PracticeSession = z.infer<typeof practiceSessionSchema>;
 export const reviewCardSchema = z.object({
+  framework: frameworkSchema.optional(),
   id: z.uuid(),
   exerciseId: idSchema,
   language: languageSchema,

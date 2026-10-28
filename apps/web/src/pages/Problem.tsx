@@ -6,6 +6,7 @@ import type {
   Submission,
   SubmissionCreate,
 } from "@bekor/contracts";
+import { isDomExercise } from "@bekor/contracts";
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { getRouteApi, Link } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useState, useSyncExternalStore } from "react";
@@ -25,6 +26,7 @@ import { draftKey, useDrafts } from "../stores/drafts";
 import { usePreferences } from "../stores/preferences";
 import { SessionPanel } from "./Session";
 
+const DomProblem = lazy(() => import("./DomProblem"));
 const CodeEditor = lazy(() => import("../components/CodeEditor"));
 const route = getRouteApi("/problems/$slug");
 
@@ -41,10 +43,24 @@ function useNarrowScreen() {
 
 export function ProblemPage() {
   const { slug } = route.useParams();
+  const { user } = route.useRouteContext();
+  const latest = useSuspenseQuery(problemQuery(slug)).data;
+  if (isDomExercise(latest))
+    return (
+      <Suspense fallback={<PageLoading />}>
+        <DomProblem exercise={latest} user={user} />
+      </Suspense>
+    );
+  return <NodeProblemPage />;
+}
+function NodeProblemPage() {
+  const { slug } = route.useParams();
   const search = route.useSearch();
   const navigate = route.useNavigate();
   const { user } = route.useRouteContext();
-  const latest = useSuspenseQuery(problemQuery(slug)).data;
+  const detail = useSuspenseQuery(problemQuery(slug)).data;
+  if (isDomExercise(detail)) throw new Error("Expected a Node exercise");
+  const latest = detail;
   const reviews = useQuery({ ...reviewsQuery(user?.id ?? ""), enabled: Boolean(user) });
   const preferred = usePreferences((state) => state.language);
   const setPreferred = usePreferences((state) => state.setLanguage);
@@ -60,7 +76,8 @@ export function ProblemPage() {
   const language: Language = session?.language ?? search.language ?? preferred;
   const version = session?.exerciseVersion ?? latest.version;
   const pinned = useQuery({ ...problemQuery(slug, version), enabled: version !== latest.version });
-  const exercise = version === latest.version ? latest : pinned.data;
+  const candidate = version === latest.version ? latest : pinned.data;
+  const exercise = candidate && !isDomExercise(candidate) ? candidate : undefined;
 
   const changeLanguage = (next: Language) => {
     setPreferred(next);

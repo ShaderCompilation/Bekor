@@ -44,7 +44,10 @@ export function createSubmissionService(
     async create(userId: string, raw: SubmissionCreate) {
       const parsed = submissionCreateSchema.safeParse(raw);
       if (!parsed.success)
-        throw new ServiceError("INVALID_INPUT", "Invalid submission files or fields.");
+        throw new ServiceError(
+          "INVALID_INPUT",
+          "Invalid Node submission files or fields. DOM exercises use browser preview and explicit self-assessment.",
+        );
       const input = parsed.data;
       const payloadHash = createHash("sha256")
         .update(

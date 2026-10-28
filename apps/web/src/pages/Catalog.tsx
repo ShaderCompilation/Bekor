@@ -3,7 +3,12 @@ import { keepPreviousData, useInfiniteQuery, useQuery } from "@tanstack/react-qu
 import { getRouteApi, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Badge, EmptyState, ErrorNotice, PageLoading } from "../components/ui";
-import { conceptsQuery, problemsQuery, recentSubmissionsQuery } from "../queries";
+import {
+  conceptsQuery,
+  problemsQuery,
+  recentSubmissionsQuery,
+  selfAssessmentsQuery,
+} from "../queries";
 
 const route = getRouteApi("/");
 
@@ -17,6 +22,7 @@ export function CatalogPage() {
   const concepts = useQuery(conceptsQuery).data ?? [];
   const recent = useQuery({ ...recentSubmissionsQuery(user?.id ?? ""), enabled: Boolean(user) });
 
+  const manual = useQuery({ ...selfAssessmentsQuery(user?.id ?? ""), enabled: Boolean(user) });
   const solved = useMemo(() => {
     const ids = new Set<string>();
     for (const item of recent.data ?? [])
@@ -120,6 +126,11 @@ export function CatalogPage() {
               <Link to="/problems/$slug" params={{ slug: problem.slug }} className="problem-card">
                 <span className="problem-title">
                   {problem.title}
+                  {problem.kind === "dom" && <Badge tone="pending">Self-assessed</Badge>}
+                  {manual.data?.some(
+                    (item) =>
+                      item.exerciseId === problem.id && item.assessment?.outcome === "solved",
+                  ) && <Badge tone="ok">Completed</Badge>}
                   {solved.has(problem.id) && <Badge tone="ok">Solved</Badge>}
                 </span>
                 <span className="problem-meta">

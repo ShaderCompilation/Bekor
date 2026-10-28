@@ -30,5 +30,21 @@ for (const name of readdirSync("content/exercises")) {
       leaks.push(`${name}: ${secret.slice(0, 40)}…`);
   }
 }
+for (const name of readdirSync("content/dom")) {
+  if (!name.endsWith(".json")) continue;
+  const exercise = JSON.parse(readFileSync(join("content/dom", name), "utf8"));
+  // Entry/CSS files can legitimately be identical to public starters. Check private,
+  // distinctive solution text and explanation rather than shared boilerplate.
+  const starters = exercise.public.variants.flatMap((v) => Object.values(v.files));
+  const secrets = [
+    exercise.explanation,
+    ...Object.values(exercise.referenceSolutions)
+      .flatMap((files) => Object.values(files))
+      .filter((source) => !starters.includes(source)),
+  ];
+  for (const secret of secrets)
+    if (secret.length >= 12 && bundle.includes(secret))
+      leaks.push(`${name}: DOM reference/explanation`);
+}
 if (leaks.length) throw new Error(`Server-only content found in ${dist}:\n${leaks.join("\n")}`);
 console.log(`Web bundle check passed (${files.length} files, no server-only content).`);

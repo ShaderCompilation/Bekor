@@ -19,7 +19,7 @@ import {
   user,
 } from "../../../packages/db/src/index.js";
 import { migrateDatabase } from "../../../packages/db/src/migrate.js";
-import { listExercises } from "../../../packages/exercises/src/index.js";
+import { listDomExercises, listExercises } from "../../../packages/exercises/src/index.js";
 import { createAuth } from "../src/auth.js";
 import { createApp } from "../src/index.js";
 
@@ -106,9 +106,7 @@ describe.skipIf(!adminUrl)(
         cursor = page.nextCursor ?? undefined;
       } while (cursor);
       expect(published.sort()).toEqual(
-        listExercises()
-          .map((item) => item.public.id)
-          .sort(),
+        [...listExercises(), ...listDomExercises()].map((item) => item.public.id).sort(),
       );
       const downloaded = await catalog.download("cumulative-sums", "typescript", origin, "1.0.0");
       expect(Object.keys(downloaded.files)).toContain("solution.ts");
@@ -117,12 +115,20 @@ describe.skipIf(!adminUrl)(
       const second = await catalog.list({ limit: 1, cursor: first.nextCursor as string });
       expect(first.items[0]?.id).not.toBe(second.items[0]?.id);
       expect(Object.keys(first.items[0] ?? {}).sort()).toEqual(
-        ["concepts", "difficulty", "id", "slug", "title", "version"].sort(),
+        [
+          "concepts",
+          "difficulty",
+          "id",
+          "slug",
+          "title",
+          "version",
+          ...(first.items[0]?.kind === "dom" ? ["kind", "assessment"] : []),
+        ].sort(),
       );
     });
     it("filters the catalog on the server before paging", async () => {
       await catalog.publish();
-      const all = listExercises().map((item) => item.public);
+      const all = [...listExercises(), ...listDomExercises()].map((item) => item.public);
       const collect = async (filters: Omit<ProblemListQuery, "limit">) => {
         const slugs: string[] = [];
         let cursor: string | undefined;

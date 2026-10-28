@@ -156,3 +156,5 @@ export function contentHash(authored: AuthoredExercise): string {
     .update(JSON.stringify(authoredExerciseSchema.parse(authored)))
     .digest("hex");
 }
+
+export * from "./dom.js";
