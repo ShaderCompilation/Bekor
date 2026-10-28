@@ -1,9 +1,9 @@
-import type { PracticeSession, ReviewCard } from "@bekor/contracts";
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { getRouteApi, Link, useNavigate } from "@tanstack/react-router";
-import { api, errorCode } from "../api";
+import type { ReviewCard } from "@bekor/contracts";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { getRouteApi, Link } from "@tanstack/react-router";
 import { Badge, EmptyState, ErrorNotice } from "../components/ui";
 import { formatDateTime, formatRelative, LANGUAGE_LABEL } from "../format";
+import { useStartReview } from "../hooks/useStartReview";
 import { problemsByIdQuery, reviewExerciseIds, reviewsQuery } from "../queries";
 
 const route = getRouteApi("/authed/reviews");
@@ -12,54 +12,10 @@ export function ReviewsPage() {
   const { user } = route.useRouteContext();
   const queue = useSuspenseQuery(reviewsQuery(user.id)).data;
   const byId = useSuspenseQuery(problemsByIdQuery(reviewExerciseIds(queue))).data;
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
   const now = Date.now();
   const dueNow = queue.due.filter((card) => Date.parse(card.due) <= now);
   const laterToday = queue.due.filter((card) => Date.parse(card.due) > now);
-
-  const openSession = (session: PracticeSession) => {
-    const problem = byId.get(session.exerciseId);
-    return navigate({
-      to: "/problems/$slug",
-      params: { slug: problem?.slug ?? session.exerciseId },
-      search: {
-        session: session.id,
-        language: session.language,
-        ...(session.framework ? { framework: session.framework } : {}),
-      },
-    });
-  };
-  const start = useMutation({
-    mutationFn: async (card: ReviewCard) => {
-      const problem = byId.get(card.exerciseId);
-      if (!problem) throw new Error("This problem is no longer in the catalog.");
-      try {
-        return await api.startSession({
-          exerciseId: card.exerciseId,
-          exerciseVersion: problem.version,
-          language: card.language,
-          kind: "review",
-          ...(card.framework ? { framework: card.framework } : {}),
-        });
-      } catch (error) {
-        // An active session on an older version must be resumed with its own version.
-        const active = queue.unfinished.find(
-          (session) =>
-            session.exerciseId === card.exerciseId &&
-            session.language === card.language &&
-            session.framework === card.framework &&
-            session.kind !== "practice",
-        );
-        if (errorCode(error) === "SESSION_MISMATCH" && active) return active;
-        throw error;
-      }
-    },
-    onSuccess: async (session) => {
-      await queryClient.invalidateQueries({ queryKey: reviewsQuery(user.id).queryKey });
-      await openSession(session);
-    },
-  });
+  const { start, openSession } = useStartReview(user.id, queue, byId);
 
   const title = (exerciseId: string) => byId.get(exerciseId)?.title ?? exerciseId;
   const cardRow = (card: ReviewCard) => {
@@ -132,7 +88,7 @@ export function ReviewsPage() {
             <p className="muted">
               Nothing is due. Solve a problem in a scheduled session to add it to your reviews.
             </p>
-            <Link to="/">Browse problems</Link>
+            <Link to="/problems">Browse problems</Link>
           </EmptyState>
         ) : (
           <>

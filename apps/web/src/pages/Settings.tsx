@@ -6,6 +6,7 @@ import { api } from "../api";
 import { Badge, ErrorNotice } from "../components/ui";
 import { formatDateTime } from "../format";
 import { settingsQuery, tokensQuery } from "../queries";
+import { toast } from "../stores/toasts";
 
 const route = getRouteApi("/authed/settings");
 
@@ -33,6 +34,7 @@ function ReviewSettings() {
     onSuccess: (saved) => {
       queryClient.setQueryData(settingsQuery(user.id).queryKey, saved);
       void queryClient.invalidateQueries({ queryKey: ["user", user.id, "reviews"] });
+      toast("Review settings saved.", "ok");
     },
   });
   const onSubmit = (event: FormEvent) => {

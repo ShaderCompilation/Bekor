@@ -1,6 +1,7 @@
 import type {
   Completion,
   Language,
+  LanguageVariant,
   PracticeSession,
   PublicExercise,
   Submission,
@@ -9,12 +10,25 @@ import type {
 import { isDomExercise } from "@bekor/contracts";
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { getRouteApi, Link } from "@tanstack/react-router";
-import { lazy, Suspense, useEffect, useState, useSyncExternalStore } from "react";
+import {
+  type CSSProperties,
+  lazy,
+  Suspense,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { ApiError, api, type SessionUser } from "../api";
+import { ProblemShell } from "../components/ProblemShell";
+import { Splitter } from "../components/Splitter";
 import { judgedSource, SubmissionResult } from "../components/SubmissionResult";
+import { Tabs } from "../components/Tabs";
 import { Badge, ErrorNotice, PageLoading } from "../components/ui";
 import { formatJson, LANGUAGE_LABEL, submissionLabel, submissionTone } from "../format";
 import {
+  invalidateProgress,
   isTerminal,
   POLL_LIMIT_MS,
   problemQuery,
@@ -24,6 +38,7 @@ import {
 } from "../queries";
 import { draftKey, useDrafts } from "../stores/drafts";
 import { usePreferences } from "../stores/preferences";
+import { toast } from "../stores/toasts";
 import { SessionPanel } from "./Session";
 
 const DomProblem = lazy(() => import("./DomProblem"));
@@ -101,8 +116,13 @@ function NodeProblemPage() {
   }
 
   return (
-    <div className="problem-page">
-      <Statement exercise={exercise ?? latest} language={language} showHints={!session} />
+    <ProblemShell
+      exercise={exercise ?? latest}
+      user={user}
+      statement={
+        <Statement exercise={exercise ?? latest} language={language} showHints={!session} />
+      }
+    >
       <div className="solve-column">
         {!user ? (
           <div className="notice">
@@ -156,7 +176,7 @@ function NodeProblemPage() {
           </>
         )}
       </div>
-    </div>
+    </ProblemShell>
   );
 }
 
@@ -184,16 +204,17 @@ function Statement({
   language: Language;
   showHints: boolean;
 }) {
+  const [tab, setTab] = useState<"description" | "hints">("description");
   const variant = exercise.variants[language];
-  return (
+  const description = (
     <article className="statement" aria-labelledby="problem-title">
       <h1 id="problem-title">{exercise.title}</h1>
       <p className="problem-meta">
         <Badge tone={exercise.difficulty}>{exercise.difficulty}</Badge>
         {exercise.concepts.map((concept) => (
-          <span key={concept} className="tag">
+          <Link key={concept} to="/problems" search={{ concept }} className="tag">
             {concept}
-          </span>
+          </Link>
         ))}
         <span className="muted">v{exercise.version}</span>
       </p>
@@ -218,18 +239,40 @@ function Statement({
           </li>
         ))}
       </ol>
-      {showHints && exercise.hints.length > 0 && (
-        <details className="hints">
-          <summary>Hints ({exercise.hints.length})</summary>
-          <ol>
-            {exercise.hints.map((hint) => (
-              <li key={hint}>{hint}</li>
-            ))}
-          </ol>
-        </details>
-      )}
       <p className="attribution muted">{exercise.attribution}</p>
     </article>
+  );
+  // Hints inside a session go through the recorded flow in the session panel instead.
+  if (!showHints || exercise.hints.length === 0) return description;
+  return (
+    <Tabs
+      label="Problem"
+      selected={tab}
+      onSelect={setTab}
+      tabs={[
+        { id: "description", label: "Description", content: description },
+        {
+          id: "hints",
+          label: `Hints (${exercise.hints.length})`,
+          content: (
+            <div className="statement">
+              <h2>Hints</h2>
+              <p className="muted">Try the problem first; reveal hints one at a time.</p>
+              <ol className="hint-list">
+                {exercise.hints.map((hint, index) => (
+                  <li key={hint}>
+                    <details>
+                      <summary>Hint {index + 1}</summary>
+                      <p>{hint}</p>
+                    </details>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ),
+        },
+      ]}
+    />
   );
 }
 
@@ -259,7 +302,14 @@ function Workspace({
   const save = useDrafts((state) => state.save);
   const source = stored ?? variant.starter;
   const fontSize = usePreferences((state) => state.editorFontSize);
+  const wordWrap = usePreferences((state) => state.wordWrap);
+  const consoleHeight = usePreferences((state) => state.consoleHeight);
+  const setSizes = usePreferences((state) => state.setPaneSizes);
   const narrow = useNarrowScreen();
+  const split = useRef<HTMLDivElement>(null);
+  const editorId = useId();
+  // Until the learner picks a tab, show the latest result when there is one.
+  const [tab, setTab] = useState<"cases" | "result" | "attempts" | null>(null);
 
   const recent = useQuery(recentSubmissionsQuery(user.id));
   const attempts = (recent.data ?? []).filter(
@@ -271,6 +321,7 @@ function Workspace({
   );
   const [activeId, setActiveId] = useState<string | null>(null);
   const shownId = activeId ?? attempts[0]?.id ?? null;
+  const consoleTab = tab ?? (shownId ? "result" : "cases");
   const shown = useQuery({ ...submissionQuery(user.id, shownId ?? ""), enabled: Boolean(shownId) });
 
   const create = useMutation({
@@ -280,15 +331,29 @@ function Workspace({
     onSuccess: (submission) => {
       queryClient.setQueryData(submissionQuery(user.id, submission.id).queryKey, submission);
       setActiveId(submission.id);
+      setTab("result");
       void queryClient.invalidateQueries({ queryKey: ["user", user.id, "submissions"] });
     },
   });
 
   const status = shown.data?.status;
+  // Announce verdicts of submissions made here, once each (not ones loaded from history).
+  const announced = useRef(new Set<string>());
+  useEffect(() => {
+    const submission = shown.data;
+    if (!submission || submission.id !== activeId || !isTerminal(submission)) return;
+    if (announced.current.has(submission.id)) return;
+    announced.current.add(submission.id);
+    const tone = submissionTone(submission);
+    const label = submission.mode === "run" ? "Run" : "Submission";
+    toast(`${label}: ${submissionLabel(submission)}`, tone === "pending" ? "info" : tone);
+  }, [shown.data, activeId]);
   useEffect(() => {
     // A finished judgement changes history and session evidence.
-    if (status === "completed" || status === "infrastructure_error")
+    if (status === "completed" || status === "infrastructure_error") {
       void queryClient.invalidateQueries({ queryKey: ["user", user.id, "submissions"] });
+      void invalidateProgress(queryClient, user.id);
+    }
   }, [status, queryClient, user.id]);
 
   const judging =
@@ -315,7 +380,7 @@ function Workspace({
   };
 
   return (
-    <section className="workspace" aria-label="Solution workspace">
+    <section className="workspace workspace-node" aria-label="Solution workspace">
       {narrow && (
         <div className="notice" role="note">
           <p>Code editing is designed for larger screens. The editor may be hard to use here.</p>
@@ -340,6 +405,7 @@ function Workspace({
         <button type="button" onClick={reset} disabled={source === variant.starter}>
           Reset
         </button>
+        <EditorSettings />
         <span className="toolbar-spacer" />
         <button
           type="button"
@@ -361,39 +427,198 @@ function Workspace({
           Submit
         </button>
       </div>
-      <div className="editor-frame">
-        <Suspense fallback={<div className="editor-loading">Loading editor…</div>}>
-          <CodeEditor
-            path={`file:///${encodeURIComponent(key)}/${variant.filename}`}
-            language={language}
-            value={source}
-            fontSize={fontSize}
-            onChange={(value) => save(key, value)}
-            onRun={() => send("run")}
-            onSubmit={() => send("submit")}
-          />
-        </Suspense>
-      </div>
-      <p className="muted small">
-        Drafts are saved in this browser. Ctrl/Cmd+Enter runs, Ctrl/Cmd+Shift+Enter submits. In the
-        editor, Ctrl+M toggles whether Tab moves focus.
-      </p>
-      {create.isError && <ErrorNotice error={create.error} />}
-      {shown.data ? (
-        <SubmissionResult
-          submission={shown.data}
-          variant={variant}
-          currentSource={source}
-          onLoadSource={(code) => save(key, code)}
-          onRefresh={() => void shown.refetch()}
+      <div
+        ref={split}
+        className="editor-console"
+        style={{ "--console-height": `${consoleHeight}%` } as CSSProperties}
+      >
+        <div className="editor-frame" id={editorId}>
+          <Suspense fallback={<div className="editor-loading">Loading editor…</div>}>
+            <CodeEditor
+              path={`file:///${encodeURIComponent(key)}/${variant.filename}`}
+              language={language}
+              value={source}
+              fontSize={fontSize}
+              wordWrap={wordWrap}
+              onChange={(value) => save(key, value)}
+              onRun={() => send("run")}
+              onSubmit={() => send("submit")}
+            />
+          </Suspense>
+        </div>
+        <Splitter
+          orientation="horizontal"
+          value={100 - consoleHeight}
+          min={25}
+          max={85}
+          onChange={(editorHeight) => setSizes({ consoleHeight: 100 - editorHeight })}
+          container={split}
+          label="Resize editor and results"
+          controls={editorId}
         />
-      ) : shown.isError ? (
-        <ErrorNotice error={shown.error} />
-      ) : null}
-      {attempts.length > 0 && (
-        <Attempts attempts={attempts} shownId={shownId} onShow={setActiveId} />
-      )}
+        <div className="console">
+          <Tabs
+            label="Results"
+            selected={consoleTab}
+            onSelect={setTab}
+            tabs={[
+              {
+                id: "cases",
+                label: "Test cases",
+                content: (
+                  <TestCases
+                    variant={variant}
+                    results={
+                      shown.data?.exerciseVersion === exercise.version &&
+                      shown.data.language === language
+                        ? shown.data.publicResults
+                        : []
+                    }
+                  />
+                ),
+              },
+              {
+                id: "result",
+                label: (
+                  <>
+                    Result
+                    {shown.data && (
+                      <span className={`tab-dot tab-dot-${submissionTone(shown.data)}`} />
+                    )}
+                  </>
+                ),
+                content: shown.data ? (
+                  <SubmissionResult
+                    submission={shown.data}
+                    variant={variant}
+                    currentSource={source}
+                    onLoadSource={(code) => save(key, code)}
+                    onRefresh={() => void shown.refetch()}
+                  />
+                ) : shown.isError ? (
+                  <ErrorNotice error={shown.error} />
+                ) : (
+                  <p className="muted console-empty">
+                    Run your code to check it against the examples, or Submit to run every test.
+                  </p>
+                ),
+              },
+              {
+                id: "attempts",
+                label: `Attempts (${attempts.length})`,
+                content: (
+                  <Attempts
+                    attempts={attempts}
+                    shownId={shownId}
+                    onShow={(id) => {
+                      setActiveId(id);
+                      setTab("result");
+                    }}
+                  />
+                ),
+              },
+            ]}
+          />
+        </div>
+      </div>
+      {create.isError && <ErrorNotice error={create.error} />}
+      <p className="muted small">
+        Drafts are saved in this browser. Press <kbd>?</kbd> for keyboard shortcuts.
+      </p>
     </section>
+  );
+}
+
+function EditorSettings() {
+  const fontSize = usePreferences((state) => state.editorFontSize);
+  const setFontSize = usePreferences((state) => state.setEditorFontSize);
+  const wordWrap = usePreferences((state) => state.wordWrap);
+  const setWordWrap = usePreferences((state) => state.setWordWrap);
+  return (
+    <details className="popover">
+      <summary className="button">
+        <span aria-hidden="true">⚙ </span>Editor
+      </summary>
+      <div className="popover-body">
+        <div className="popover-row">
+          <span>Font size</span>
+          <span className="stepper">
+            <button
+              type="button"
+              aria-label="Smaller font"
+              onClick={() => setFontSize(fontSize - 1)}
+              disabled={fontSize <= 10}
+            >
+              −
+            </button>
+            <output aria-live="polite">{fontSize}px</output>
+            <button
+              type="button"
+              aria-label="Larger font"
+              onClick={() => setFontSize(fontSize + 1)}
+              disabled={fontSize >= 24}
+            >
+              +
+            </button>
+          </span>
+        </div>
+        <label className="popover-row">
+          Word wrap
+          <input
+            type="checkbox"
+            checked={wordWrap}
+            onChange={(event) => setWordWrap(event.target.checked)}
+          />
+        </label>
+      </div>
+    </details>
+  );
+}
+
+function TestCases({
+  variant,
+  results,
+}: {
+  variant: LanguageVariant;
+  results: Submission["publicResults"];
+}) {
+  const byIndex = new Map(results.map((result) => [result.caseIndex, result]));
+  return (
+    <ol className="test-cases">
+      {variant.publicTests.map((test, index) => {
+        const result = byIndex.get(index);
+        return (
+          // biome-ignore lint/suspicious/noArrayIndexKey: fixed public test order
+          <li key={index} className={result ? (result.passed ? "case-pass" : "case-fail") : ""}>
+            <div className="case-title">
+              <span aria-hidden="true">{result ? (result.passed ? "✓" : "✗") : "•"}</span> Example{" "}
+              {index + 1}
+              {result && (
+                <span className="visually-hidden">{result.passed ? " passed" : " failed"}</span>
+              )}
+            </div>
+            <dl className="case-details">
+              <dt>Input</dt>
+              <dd>
+                <code>{test.args.map(formatJson).join(", ")}</code>
+              </dd>
+              <dt>Expected</dt>
+              <dd>
+                <code>{formatJson(test.expected)}</code>
+              </dd>
+              {result?.actual !== undefined && (
+                <>
+                  <dt>Actual</dt>
+                  <dd>
+                    <code>{formatJson(result.actual)}</code>
+                  </dd>
+                </>
+              )}
+            </dl>
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 
@@ -407,8 +632,8 @@ function Attempts({
   onShow: (id: string) => void;
 }) {
   return (
-    <details className="attempts">
-      <summary>Earlier attempts here ({attempts.length})</summary>
+    <div className="attempts">
+      {attempts.length === 0 && <p className="muted console-empty">No attempts yet.</p>}
       <ul>
         {attempts.slice(0, 20).map((attempt) => (
           <li key={attempt.id}>
@@ -429,6 +654,6 @@ function Attempts({
           </li>
         ))}
       </ul>
-    </details>
+    </div>
   );
 }

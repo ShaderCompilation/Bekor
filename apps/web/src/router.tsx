@@ -1,4 +1,6 @@
 import {
+  type CatalogStatus,
+  catalogStatusSchema,
   type Difficulty,
   difficultySchema,
   type Framework,
@@ -17,6 +19,7 @@ import { ErrorNotice, PageLoading } from "./components/ui";
 import { SignInPage, SignUpPage } from "./pages/Auth";
 import { CatalogPage } from "./pages/Catalog";
 import { HistoryPage, SubmissionPage } from "./pages/History";
+import { HomePage } from "./pages/Home";
 import { Layout, NotFound } from "./pages/Layout";
 import { ProblemPage } from "./pages/Problem";
 import { ReviewsPage } from "./pages/Reviews";
@@ -66,12 +69,14 @@ const authedRoute = createRoute({
 });
 
 const difficulties: readonly Difficulty[] = difficultySchema.options;
+const statuses: readonly CatalogStatus[] = catalogStatusSchema.options;
 export type CatalogSearch = ProblemFilters;
 
-const catalogRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/",
-  validateSearch: (search: Record<string, unknown>): CatalogSearch => ({
+function validateCatalogSearch(search: Record<string, unknown>): CatalogSearch {
+  return {
+    ...(statuses.includes(search.status as CatalogStatus)
+      ? { status: search.status as CatalogStatus }
+      : {}),
     ...(typeof search.q === "string" && search.q ? { q: search.q.slice(0, 100) } : {}),
     ...(difficulties.includes(search.difficulty as Difficulty)
       ? { difficulty: search.difficulty as Difficulty }
@@ -79,11 +84,28 @@ const catalogRoute = createRoute({
     ...(typeof search.concept === "string" && search.concept
       ? { concept: search.concept.slice(0, 80) }
       : {}),
-  }),
+  };
+}
+
+const homeRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/",
+  // The catalog used to live at "/"; keep old filtered links working.
+  beforeLoad: ({ search }) => {
+    const filters = validateCatalogSearch(search as Record<string, unknown>);
+    if (Object.keys(filters).length > 0) throw redirect({ to: "/problems", search: filters });
+  },
+  component: HomePage,
+});
+
+const catalogRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/problems",
+  validateSearch: validateCatalogSearch,
   loaderDeps: ({ search }) => search,
   loader: ({ context, deps }) =>
     Promise.all([
-      context.queryClient.ensureInfiniteQueryData(problemsQuery(deps)),
+      context.queryClient.ensureInfiniteQueryData(problemsQuery(deps, context.user?.id)),
       context.queryClient.ensureQueryData(conceptsQuery),
     ]),
   component: CatalogPage,
@@ -182,6 +204,7 @@ const settingsRoute = createRoute({
 });
 
 const routeTree = rootRoute.addChildren([
+  homeRoute,
   catalogRoute,
   signInRoute,
   signUpRoute,

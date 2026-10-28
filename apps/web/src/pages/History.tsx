@@ -65,7 +65,7 @@ export function HistoryPage() {
       <h2>Submission history</h2>
       {items.length === 0 ? (
         <EmptyState title="No submissions yet">
-          <Link to="/">Pick a problem to solve</Link>
+          <Link to="/problems">Pick a problem to solve</Link>
         </EmptyState>
       ) : (
         <table className="history">

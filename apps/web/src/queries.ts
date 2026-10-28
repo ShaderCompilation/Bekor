@@ -1,4 +1,4 @@
-import type { Difficulty, ReviewQueue, Submission } from "@bekor/contracts";
+import type { CatalogStatus, Difficulty, ReviewQueue, Submission } from "@bekor/contracts";
 import {
   infiniteQueryOptions,
   MutationCache,
@@ -17,19 +17,28 @@ export const sessionQuery = queryOptions({
 });
 
 export interface ProblemFilters {
+  status?: CatalogStatus;
   q?: string;
   difficulty?: Difficulty;
   concept?: string;
 }
 export const PROBLEM_PAGE_SIZE = 30;
 
-/** Filtered catalog, fetched one page at a time; the server applies the filters. */
-export const problemsQuery = (filters: ProblemFilters) =>
-  infiniteQueryOptions({
-    queryKey: ["problems", "list", filters],
+/**
+ * Filtered catalog, fetched one page at a time; the server applies the filters. A status filter
+ * depends on the signed-in user, so those pages are cached under the private user key.
+ */
+export const problemsQuery = (filters: ProblemFilters, userId?: string) => {
+  // Anonymous visitors cannot filter by progress; ignore a status left in the URL.
+  const { status, ...rest } = filters;
+  const effective: ProblemFilters = status && userId ? { ...rest, status } : rest;
+  return infiniteQueryOptions({
+    queryKey: effective.status
+      ? ["user", userId, "problems", effective]
+      : ["problems", "list", effective],
     queryFn: ({ pageParam }) =>
       api.problems({
-        ...filters,
+        ...effective,
         limit: PROBLEM_PAGE_SIZE,
         ...(pageParam ? { cursor: pageParam } : {}),
       }),
@@ -37,6 +46,21 @@ export const problemsQuery = (filters: ProblemFilters) =>
     getNextPageParam: (page) => page.nextCursor ?? undefined,
     staleTime: 5 * 60_000,
   });
+};
+
+/** A judged result or self-assessment changes progress and progress-filtered catalog pages. */
+export function invalidateProgress(queryClient: QueryClient, userId: string) {
+  return Promise.all([
+    queryClient.invalidateQueries({ queryKey: progressQuery(userId).queryKey }),
+    queryClient.invalidateQueries({ queryKey: ["user", userId, "problems"] }),
+  ]);
+}
+
+/** One random problem matching the filters, or null when nothing matches. */
+export async function randomProblem(filters: ProblemFilters) {
+  const page = await api.problems({ ...filters, order: "random", limit: 1 });
+  return page.items[0] ?? null;
+}
 
 export const conceptsQuery = queryOptions({
   queryKey: ["problems", "concepts"],
@@ -103,6 +127,13 @@ export const recentSubmissionsQuery = (userId: string) =>
   queryOptions({
     queryKey: ["user", userId, "submissions", "recent"],
     queryFn: async () => (await api.submissions({ limit: 100 })).items,
+  });
+
+/** Solved/attempted status for every catalog problem plus daily activity. */
+export const progressQuery = (userId: string) =>
+  queryOptions({
+    queryKey: ["user", userId, "progress"],
+    queryFn: () => api.progress(),
   });
 
 export const reviewsQuery = (userId: string) =>

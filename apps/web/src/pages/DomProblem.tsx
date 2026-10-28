@@ -13,12 +13,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRouteApi, Link } from "@tanstack/react-router";
 import { lazy, Suspense, useRef, useState } from "react";
 import { ApiError, api, errorCode, type SessionUser } from "../api";
+import { ProblemShell } from "../components/ProblemShell";
 import { ErrorNotice, PageLoading } from "../components/ui";
 import { domRatingBlocker } from "../dom-rules";
 import { formatDateTime, RATING_LABEL } from "../format";
-import { problemQuery, reviewsQuery, selfAssessmentsQuery } from "../queries";
+import { invalidateProgress, problemQuery, reviewsQuery, selfAssessmentsQuery } from "../queries";
 import { draftKey, readDraft, useDrafts } from "../stores/drafts";
 import { usePreferences } from "../stores/preferences";
+import { toast } from "../stores/toasts";
 
 const Editor = lazy(() => import("../components/CodeEditor"));
 const Preview = lazy(() => import("../components/DomPreview"));
@@ -97,26 +99,32 @@ export default function DomProblem({
   if (user && search.session && queue.isPending) return <PageLoading />;
   if (user && search.session && queue.isError) return <ErrorNotice error={queue.error} />;
   return (
-    <div className="problem-page dom-problem">
-      <article className="statement">
-        <h1>{exercise.title}</h1>
-        <p>
-          <span className="tag">Self-assessed</span> {exercise.difficulty} · v{exercise.version}
-        </p>
-        {exercise.description.split(/\n{2,}/).map((text) => (
-          <p key={text}>{text}</p>
-        ))}
-        <h2>Manual verification checklist</h2>
-        <ol>
-          {exercise.checklist.map((item) => (
-            <li key={item}>{item}</li>
+    <ProblemShell
+      className="dom-problem"
+      exercise={exercise}
+      user={user}
+      statement={
+        <article className="statement">
+          <h1>{exercise.title}</h1>
+          <p>
+            <span className="tag">Self-assessed</span> {exercise.difficulty} · v{exercise.version}
+          </p>
+          {exercise.description.split(/\n{2,}/).map((text) => (
+            <p key={text}>{text}</p>
           ))}
-        </ol>
-        <p className="muted">
-          Check your own solution in the preview. Rendering does not verify correctness.
-        </p>
-        <p className="muted">{exercise.attribution}</p>
-      </article>
+          <h2>Manual verification checklist</h2>
+          <ol>
+            {exercise.checklist.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ol>
+          <p className="muted">
+            Check your own solution in the preview. Rendering does not verify correctness.
+          </p>
+          <p className="muted">{exercise.attribution}</p>
+        </article>
+      }
+    >
       <div className="solve-column">
         {!user ? (
           <div className="notice">
@@ -169,7 +177,7 @@ export default function DomProblem({
           />
         )}
       </div>
-    </div>
+    </ProblemShell>
   );
 }
 
@@ -220,6 +228,7 @@ function DomWorkspace({
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: reviewsQuery(user.id).queryKey }),
       queryClient.invalidateQueries({ queryKey: selfAssessmentsQuery(user.id).queryKey }),
+      invalidateProgress(queryClient, user.id),
     ]);
   };
   const start = useMutation({
@@ -292,6 +301,12 @@ function DomWorkspace({
     onSuccess: async (result) => {
       setCompletion(result);
       if (session) onCompleted(result);
+      toast(
+        result.card
+          ? `Marked complete. Next review ${formatDateTime(result.card.due)}.`
+          : "Marked complete.",
+        "ok",
+      );
       await invalidate();
     },
   });

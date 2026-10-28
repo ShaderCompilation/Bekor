@@ -1,6 +1,12 @@
 import { readFileSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
 
+/** History, Settings and Sign out live in the account menu. */
+async function accountMenu(page: Page, item: "History" | "Settings" | "Sign out") {
+  await page.getByRole("button", { name: /account menu/ }).click();
+  await page.getByRole("menuitem", { name: item, exact: true }).click();
+}
+
 // Real stack only: the API, worker, runner and database must be running (see the dev runbook).
 // Reference solutions come from the authored content, which the test (not the browser) reads.
 const exercise = JSON.parse(readFileSync("content/exercises/word-counts.json", "utf8")) as {
@@ -37,8 +43,15 @@ test("learn, judge, schedule and review a problem in both languages", async ({ p
   await page.getByLabel("Email").fill(email);
   await page.getByLabel(/Password/).fill("correct horse battery staple");
   await page.getByRole("button", { name: "Create account" }).click();
-  await expect(page.getByRole("heading", { name: "Problems" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible();
+  // Signed-in home is the dashboard; a new learner has nothing solved yet.
+  await expect(page.getByRole("heading", { name: /Welcome back/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /account menu/ })).toBeVisible();
+  await expect(page.locator(".progress-total")).toHaveText(/^0 \/ \d+ solved$/);
+  await page
+    .getByRole("navigation", { name: "Main" })
+    .getByRole("link", { name: "Problems" })
+    .click();
+  await expect(page.getByRole("heading", { name: "Problems", level: 1 })).toBeVisible();
 
   // Catalog filters live in the URL.
   await page.getByRole("searchbox", { name: "Search" }).fill("word");
@@ -77,7 +90,7 @@ test("learn, judge, schedule and review a problem in both languages", async ({ p
 
   await page.getByRole("button", { name: /^Good/ }).click();
   await expect(page.getByRole("heading", { name: "Session complete" })).toBeVisible();
-  await expect(page.getByText(/Next review/)).toBeVisible();
+  await expect(page.getByRole("main").getByText(/Next review/)).toBeVisible();
 
   // TypeScript free practice: a type error is a compilation error, then accepted.
   await page.getByRole("button", { name: "Keep practicing freely" }).click();
@@ -101,8 +114,18 @@ test("learn, judge, schedule and review a problem in both languages", async ({ p
   await expect(page.locator(".monaco-editor .view-lines")).toContainText("Count occurrences");
   await expect(page.getByRole("button", { name: "Reset" })).toBeDisabled();
 
+  // Progress comes from the server: the catalog marks the problem solved and filters by it.
+  await page.goto("/problems?status=solved");
+  const solvedRow = page.locator(".problem-row", { hasText: "Word Counts" });
+  await expect(solvedRow).toContainText("Solved");
+  await expect(page.locator(".problem-row")).toHaveCount(1);
+  await page.goto("/");
+  await expect(page.locator(".progress-total")).toHaveText(/^1 \/ \d+ solved$/);
+  await expect(page.getByRole("link", { name: "Word Counts" })).toBeVisible();
+  await expect(page.getByText(/Current streak/)).toBeVisible();
+
   // History lists all attempts and opens a detail view with the judged source.
-  await page.getByRole("link", { name: "History" }).click();
+  await accountMenu(page, "History");
   await expect(page.getByRole("heading", { name: "Submission history" })).toBeVisible();
   await expect(page.locator("table.history tbody tr")).toHaveCount(4);
   await page.locator("table.history tbody tr a").first().click();
@@ -110,7 +133,10 @@ test("learn, judge, schedule and review a problem in both languages", async ({ p
 
   // Reviews: FSRS schedules the new JS card a short learning step ahead, so it is listed for
   // today. A review starts from the starter code, and a reveal limits the rating to Again.
-  await page.getByRole("link", { name: "Reviews" }).click();
+  await page
+    .getByRole("navigation", { name: "Main" })
+    .getByRole("link", { name: "Reviews" })
+    .click();
   const card = page.locator(".review-row", { hasText: "Word Counts" });
   await expect(card).toContainText("JavaScript");
   await card.getByRole("button", { name: "Start review" }).click();
@@ -122,7 +148,10 @@ test("learn, judge, schedule and review a problem in both languages", async ({ p
   // Leaving keeps the session unfinished; Reviews offers to resume it.
   await page.getByRole("button", { name: "Leave session" }).click();
   await expect(page.getByText(/You have an unfinished review session/)).toBeVisible();
-  await page.getByRole("link", { name: "Reviews" }).click();
+  await page
+    .getByRole("navigation", { name: "Main" })
+    .getByRole("link", { name: "Reviews" })
+    .click();
   const unfinished = page
     .locator(".review-row")
     .filter({ has: page.getByRole("button", { name: "Resume" }) });
@@ -138,7 +167,7 @@ test("learn, judge, schedule and review a problem in both languages", async ({ p
   await expect(page.getByRole("heading", { name: "Session complete" })).toBeVisible();
 
   // Sign out clears private state.
-  await page.getByRole("button", { name: "Sign out" }).click();
+  await accountMenu(page, "Sign out");
   await expect(page.getByRole("link", { name: "Sign in" })).toBeVisible();
   await page.goto("/history");
   await expect(page).toHaveURL(/sign-in/);
@@ -146,7 +175,7 @@ test("learn, judge, schedule and review a problem in both languages", async ({ p
 
 test("narrow screens keep pages within the viewport", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 800 });
-  for (const path of ["/", "/problems/compact-spaces", "/sign-in"]) {
+  for (const path of ["/", "/problems", "/problems/compact-spaces", "/sign-in"]) {
     await page.goto(path);
     await expect(page.locator("main h1")).toBeVisible();
     const overflow = await page.evaluate(
@@ -157,8 +186,8 @@ test("narrow screens keep pages within the viewport", async ({ page }) => {
 });
 
 test("keyboard users can reach the main navigation and content", async ({ page }) => {
-  await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Problems" })).toBeVisible();
+  await page.goto("/problems");
+  await expect(page.getByRole("heading", { name: "Problems", level: 1 })).toBeVisible();
   await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: "Skip to content" })).toBeFocused();
   await page.keyboard.press("Tab");
@@ -171,17 +200,67 @@ test("an expired session sends the user back to sign-in", async ({ page, context
   await page.getByLabel("Email").fill(`e2e-expire-${Date.now()}@example.test`);
   await page.getByLabel(/Password/).fill("correct horse battery staple");
   await page.getByRole("button", { name: "Create account" }).click();
-  await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /account menu/ })).toBeVisible();
   // The server no longer recognises the browser; the next private request gets 401.
   await context.clearCookies();
   const checks: string[] = [];
   page.on("request", (request) => {
     if (/\/(auth|api)\//.test(request.url())) checks.push(request.url());
   });
-  await page.getByRole("link", { name: "History" }).click();
+  await accountMenu(page, "History");
   await expect(page).toHaveURL(/sign-in/);
   await expect(page.getByRole("heading", { name: "Sign in" })).toBeVisible();
   // One rejected request is enough; no retry or refetch loop against the server.
   await page.waitForTimeout(1000);
   expect(checks.length, checks.join("\n")).toBeLessThanOrEqual(3);
+});
+
+test("shell: legacy links, theme, search palette and resizable panes persist", async ({ page }) => {
+  // Old catalog links at "/" keep working.
+  await page.goto("/?q=word");
+  await expect(page).toHaveURL(/\/problems\?q=word/);
+  await expect(page.getByRole("link", { name: /Word Counts/ })).toBeVisible();
+
+  // An explicit theme survives a reload.
+  const theme = page.getByRole("button", { name: /^Theme:/ });
+  await theme.click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await theme.click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+
+  // Ctrl/Cmd+K searches problems and opens one with the keyboard.
+  await page.keyboard.press("ControlOrMeta+k");
+  const palette = page.getByRole("combobox", { name: "Search problems and pages" });
+  await expect(palette).toBeFocused();
+  await palette.fill("compact spaces");
+  await expect(page.getByRole("option", { name: /Compact Spaces/ })).toBeVisible();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("heading", { name: "Compact Spaces", level: 1 })).toBeVisible();
+
+  // "?" opens the shortcut help; Escape closes it.
+  await page.locator("body").press("?");
+  await expect(page.getByRole("heading", { name: "Keyboard shortcuts" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("heading", { name: "Keyboard shortcuts" })).toBeHidden();
+
+  // The statement/work splitter is keyboard operable and remembered.
+  const splitter = page.getByRole("separator", { name: "Resize problem description" });
+  await expect(splitter).toHaveAttribute("aria-valuenow", "40");
+  await splitter.focus();
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("ArrowRight");
+  await expect(splitter).toHaveAttribute("aria-valuenow", "44");
+  await page.reload();
+  await expect(page.getByRole("separator", { name: "Resize problem description" })).toHaveAttribute(
+    "aria-valuenow",
+    "44",
+  );
+
+  // Next walks the catalog; the breadcrumb returns to it.
+  await page.getByRole("button", { name: /^Next/ }).click();
+  await expect(page.getByRole("heading", { name: "Compact Spaces", level: 1 })).toBeHidden();
+  await page.getByRole("navigation", { name: "Breadcrumb" }).getByRole("link").click();
+  await expect(page.getByRole("heading", { name: "Problems", level: 1 })).toBeVisible();
 });

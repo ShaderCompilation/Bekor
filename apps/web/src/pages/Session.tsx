@@ -16,6 +16,7 @@ import { formatDateTime, formatRelative, LANGUAGE_LABEL, RATING_LABEL } from "..
 import { recentSubmissionsQuery, reviewsQuery } from "../queries";
 import { ratingBlocker } from "../rules";
 import { draftKey, readDraft, useDrafts } from "../stores/drafts";
+import { toast } from "../stores/toasts";
 
 const KIND_LABEL = {
   learning: "Learning session",
@@ -163,6 +164,10 @@ function ActiveSession({
     onSuccess: (data) => {
       onCompleted(data);
       void refreshQueue();
+      toast(
+        data.card ? `Saved. Next review ${formatDateTime(data.card.due)}.` : "Session completed.",
+        "ok",
+      );
     },
   });
 

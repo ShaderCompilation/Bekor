@@ -2,6 +2,12 @@ import { readFileSync } from "node:fs";
 import type { PracticeSession, ReviewQueue } from "@bekor/contracts";
 import { expect, type Frame, type Page, test } from "@playwright/test";
 
+/** History, Settings and Sign out live in the account menu. */
+async function accountMenu(page: Page, item: "History" | "Settings" | "Sign out") {
+  await page.getByRole("button", { name: /account menu/ }).click();
+  await page.getByRole("menuitem", { name: item, exact: true }).click();
+}
+
 // Real web/API/PostgreSQL and real browser compilers. No runner, grading fixture,
 // API interception or mocked preview is used for this self-assessed exercise.
 const authored = JSON.parse(readFileSync("content/dom/accessible-accordion.json", "utf8")) as {
@@ -41,7 +47,7 @@ async function signUp(page: Page) {
       remaining -= wait;
     }
   }
-  await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /account menu/ })).toBeVisible();
   await page.goto("/problems/accessible-accordion");
   await expect(
     page.getByRole("heading", { name: "Workshop FAQ accordion", level: 1 }),
@@ -204,7 +210,7 @@ test("all four frameworks render real references, keep separate drafts and requi
   });
   expect((await getApi<ReviewQueue>(page, "/me/reviews")).due).toHaveLength(0);
   expect((await getApi<{ items: unknown[] }>(page, "/me/submissions")).items).toHaveLength(0);
-  await page.getByRole("link", { name: "History", exact: true }).click();
+  await accountMenu(page, "History");
   await expect(page.getByRole("heading", { name: "Self-assessed DOM practice" })).toBeVisible();
   await expect(
     page.getByText(/vanilla · JavaScript · v1.0.0 · Self-assessed solved · unscheduled/),

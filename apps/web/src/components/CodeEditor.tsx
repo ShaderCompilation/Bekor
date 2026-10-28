@@ -6,6 +6,7 @@ import CssWorker from "monaco-editor/languages/features/css/css.worker?worker";
 import HtmlWorker from "monaco-editor/languages/features/html/html.worker?worker";
 import TsWorker from "monaco-editor/languages/features/typescript/ts.worker?worker";
 import { useEffect, useRef } from "react";
+import { useResolvedTheme } from "../stores/preferences";
 
 self.MonacoEnvironment = {
   getWorker: (_id: string, label: string) => {
@@ -37,6 +38,7 @@ export interface CodeEditorProps {
   preview?: boolean;
   value: string;
   fontSize: number;
+  wordWrap?: boolean;
   onChange: (value: string) => void;
   onRun: () => void;
   onSubmit: () => void;
@@ -52,8 +54,7 @@ export default function CodeEditor(props: CodeEditorProps) {
     submit.current = props.onSubmit;
     value.current = props.value;
   });
-  const prefersDark =
-    typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const theme = useResolvedTheme();
 
   const onMount: OnMount = (editor) => {
     // Monaco picks CRLF for single-line models on Windows user agents. Keep drafts LF everywhere.
@@ -79,7 +80,7 @@ export default function CodeEditor(props: CodeEditorProps) {
       path={props.path}
       language={props.language}
       value={props.value}
-      theme={prefersDark ? "vs-dark" : "vs"}
+      theme={theme === "dark" ? "vs-dark" : "vs"}
       onChange={(next) => {
         // Line-ending normalization alone is not a learner edit.
         if ((next ?? "") !== value.current) props.onChange(next ?? "");
@@ -88,6 +89,7 @@ export default function CodeEditor(props: CodeEditorProps) {
       loading={<div className="editor-loading">Loading editor…</div>}
       options={{
         fontSize: props.fontSize,
+        wordWrap: props.wordWrap ? "on" : "off",
         minimap: { enabled: false },
         scrollBeyondLastLine: false,
         tabSize: 2,
