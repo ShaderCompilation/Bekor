@@ -13,6 +13,7 @@ import {
   pageSchema,
   practiceSessionSchema,
   problemSummarySchema,
+  progressSchema,
   type Rating,
   revealSchema,
   reviewQueueSchema,
@@ -136,6 +137,7 @@ export function createApiClient(options: ClientOptions) {
     settings: () => request("/me/settings", settingsSchema),
     updateSettings: (input: Settings) => request("/me/settings", settingsSchema, "PATCH", input),
     reviews: () => request("/me/reviews", reviewQueueSchema),
+    progress: () => request("/me/progress", progressSchema),
     startSession: (input: SessionStart) =>
       request("/practice-sessions", practiceSessionSchema, "POST", input),
     assistance: (id: string, kind: AssistanceKind) =>

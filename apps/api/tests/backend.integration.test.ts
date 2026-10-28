@@ -5,6 +5,7 @@ import pg from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   createCatalogService,
+  createProgressService,
   createQueue,
   createReviewService,
   createSettingsService,
@@ -77,6 +78,7 @@ describe.skipIf(!adminUrl)(
         tokens,
         settings: createSettingsService(database),
         reviews: createReviewService(database, catalog),
+        progress: createProgressService(database, catalog, createSettingsService(database)),
         health: async () => {
           await database.pool.query("select 1");
         },

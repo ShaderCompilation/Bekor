@@ -12,6 +12,7 @@ import pg from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   createCatalogService,
+  createProgressService,
   createQueue,
   createReviewService,
   createSettingsService,
@@ -115,6 +116,12 @@ describe.skipIf(!adminUrl)(
         }),
         submissions: createSubmissionService(database, boss, catalog),
         settings: createSettingsService(database),
+        progress: createProgressService(
+          database,
+          catalog,
+          createSettingsService(database),
+          () => now,
+        ),
         health: async () => {
           await database.pool.query("select 1");
         },

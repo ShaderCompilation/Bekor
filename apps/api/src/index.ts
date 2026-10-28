@@ -14,6 +14,7 @@ import {
   practiceSessionSchema,
   problemListQuerySchema,
   problemSummarySchema,
+  progressSchema,
   revealSchema,
   reviewQueueSchema,
   sessionCompleteSchema,
@@ -29,11 +30,13 @@ import {
   type CatalogService,
   type createSettingsService,
   type createTokenService,
+  type ProgressService,
   type ReviewService,
   ServiceError,
   type SubmissionService,
 } from "@bekor/core";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
+import type { Context } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { HTTPException } from "hono/http-exception";
 import type { Auth } from "./auth.js";
@@ -48,6 +51,7 @@ export interface AppDependencies {
   tokens: ReturnType<typeof createTokenService>;
   settings: ReturnType<typeof createSettingsService>;
   reviews: ReviewService;
+  progress: ProgressService;
   health: () => Promise<void>;
 }
 const json = <T extends z.ZodType>(schema: T, description = "Success") => ({
@@ -140,6 +144,16 @@ export function createApp(deps: AppDependencies) {
       throw new ServiceError("UNAVAILABLE", "Database unavailable.", 503);
     }
   });
+  async function resolvePrincipal(c: Context<Env>): Promise<Principal | null> {
+    const authorization = c.req.header("Authorization");
+    if (authorization) {
+      const secret = /^Bearer (\S+)$/.exec(authorization)?.[1];
+      const token = secret ? await deps.tokens.authenticate(secret) : null;
+      return token ? { ...token, kind: "token" } : null;
+    }
+    const session = await deps.auth.api.getSession({ headers: c.req.raw.headers });
+    return session ? { userId: session.user.id, kind: "cookie", scopes: [] } : null;
+  }
   app.use("/api/v1/*", async (c, next) => {
     if (
       c.req.method === "GET" &&
@@ -147,18 +161,16 @@ export function createApp(deps: AppDependencies) {
         c.req.path === "/api/v1/concepts" ||
         c.req.path.startsWith("/api/v1/problems/") ||
         c.req.path === "/api/v1/openapi.json")
-    )
+    ) {
+      // The public catalog only needs the caller when filtering by their own progress.
+      if (c.req.path === "/api/v1/problems" && c.req.query("status") !== undefined) {
+        const principal = await resolvePrincipal(c);
+        if (!principal) throw new ServiceError("UNAUTHENTICATED", "Sign in required.", 401);
+        c.set("principal", principal);
+      }
       return next();
-    const authorization = c.req.header("Authorization");
-    let principal: Principal | null = null;
-    if (authorization) {
-      const secret = /^Bearer (\S+)$/.exec(authorization)?.[1];
-      const token = secret ? await deps.tokens.authenticate(secret) : null;
-      if (token) principal = { ...token, kind: "token" };
-    } else {
-      const session = await deps.auth.api.getSession({ headers: c.req.raw.headers });
-      if (session) principal = { userId: session.user.id, kind: "cookie", scopes: [] };
     }
+    const principal = await resolvePrincipal(c);
     if (!principal) throw new ServiceError("UNAUTHENTICATED", "Sign in required.", 401);
     if (
       principal.kind === "cookie" &&
@@ -181,7 +193,13 @@ export function createApp(deps: AppDependencies) {
       request: { query: problemListQuerySchema },
       responses: { 200: json(pageSchema(problemSummarySchema)), ...failures },
     }),
-    async (c) => c.json(await deps.catalog.list(c.req.valid("query")), 200),
+    async (c) => {
+      const query = c.req.valid("query");
+      const progress = query.status
+        ? await deps.progress.statuses(authorize(c.get("principal"), "submissions:read"))
+        : undefined;
+      return c.json(await deps.catalog.list(query, progress), 200);
+    },
   );
   app.openapi(
     createRoute({
@@ -354,6 +372,15 @@ export function createApp(deps: AppDependencies) {
         ),
         200,
       ),
+  );
+  app.openapi(
+    createRoute({
+      method: "get",
+      path: "/api/v1/me/progress",
+      responses: { 200: json(progressSchema), ...failures },
+    }),
+    async (c) =>
+      c.json(await deps.progress.get(authorize(c.get("principal"), "submissions:read")), 200),
   );
   app.openapi(
     createRoute({

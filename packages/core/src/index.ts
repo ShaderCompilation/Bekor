@@ -1,5 +1,6 @@
 export * from "./catalog.js";
 export * from "./errors.js";
+export * from "./progress.js";
 export * from "./queue.js";
 export * from "./reviews.js";
 export * from "./settings.js";

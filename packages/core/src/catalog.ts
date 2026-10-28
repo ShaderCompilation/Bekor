@@ -140,24 +140,48 @@ export function createCatalogService(database: Database) {
         });
       }
     },
-    async list(query: ProblemListQuery) {
+    /**
+     * `progress` maps the caller's exercise ids to their status and is required when the query
+     * filters by status; problems missing from it are "todo".
+     */
+    async list(query: ProblemListQuery, progress?: ReadonlyMap<string, "solved" | "attempted">) {
       if (query.cursor && !/^[a-z][a-z0-9-]{0,79}$/.test(query.cursor))
         throw new ServiceError("INVALID_CURSOR", "Invalid catalog cursor.");
+      if (query.status && !progress)
+        throw new ServiceError("UNAUTHENTICATED", "Sign in to filter by progress.", 401);
+      const random = query.order === "random";
       const ids = query.ids && new Set(query.ids);
       const text = query.q?.toLowerCase();
       const items: ProblemSummary[] = [];
       for (const { summary, search } of await published()) {
-        if (query.cursor && summary.slug <= query.cursor) continue;
+        if (!random && query.cursor && summary.slug <= query.cursor) continue;
         if (ids && !ids.has(summary.id)) continue;
         if (query.difficulty && summary.difficulty !== query.difficulty) continue;
         if (query.concept && !summary.concepts.includes(query.concept)) continue;
+        if (query.status && (progress?.get(summary.id) ?? "todo") !== query.status) continue;
         if (text && !search.includes(text)) continue;
         items.push(summary);
-        if (items.length > query.limit) break;
+        if (!random && items.length > query.limit) break;
+      }
+      if (random) {
+        // Partial Fisher–Yates: the first `limit` entries become a uniform random sample.
+        const count = Math.min(query.limit, items.length);
+        for (let index = 0; index < count; index += 1) {
+          const pick = index + Math.floor(Math.random() * (items.length - index));
+          [items[index], items[pick]] = [
+            items[pick] as ProblemSummary,
+            items[index] as ProblemSummary,
+          ];
+        }
+        return { items: items.slice(0, count), nextCursor: null };
       }
       const more = items.length > query.limit;
       if (more) items.pop();
       return { items, nextCursor: more ? (items.at(-1)?.slug ?? null) : null };
+    },
+    /** Every published problem's summary, ordered by slug. */
+    async summaries(): Promise<ProblemSummary[]> {
+      return (await published()).map(({ summary }) => summary);
     },
     async concepts() {
       const all = new Set((await published()).flatMap(({ summary }) => summary.concepts));

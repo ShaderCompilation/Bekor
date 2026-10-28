@@ -1,5 +1,6 @@
 import {
   createCatalogService,
+  createProgressService,
   createQueue,
   createReviewService,
   createSettingsService,
@@ -30,14 +31,16 @@ const auth = createAuth(database, {
 const boss = await createQueue(env.databaseUrl);
 const catalog = createCatalogService(database);
 await catalog.publish();
+const settings = createSettingsService(database);
 const app = createApp({
   origin,
   auth,
   catalog,
   submissions: createSubmissionService(database, boss, catalog),
   tokens: createTokenService(database),
-  settings: createSettingsService(database),
+  settings,
   reviews: createReviewService(database, catalog),
+  progress: createProgressService(database, catalog, settings),
   health: async () => {
     await database.pool.query("select 1");
   },

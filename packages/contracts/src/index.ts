@@ -266,8 +266,16 @@ export const problemSummarySchema = z
   })
   .strict();
 export type ProblemSummary = z.infer<typeof problemSummarySchema>;
-/** Filters apply before paging; `ids` (comma-separated) looks up specific problems. */
+/** Signed-in learners can filter the catalog by their own progress; "todo" means not started. */
+export const catalogStatusSchema = z.enum(["solved", "attempted", "todo"]);
+export type CatalogStatus = z.infer<typeof catalogStatusSchema>;
+/**
+ * Filters apply before paging; `ids` (comma-separated) looks up specific problems. `status`
+ * requires authentication. `order=random` returns a random sample of the matches with no cursor.
+ */
 export const problemListQuerySchema = paginationSchema.extend({
+  status: catalogStatusSchema.optional(),
+  order: z.enum(["slug", "random"]).optional(),
   q: z.string().trim().max(100).optional(),
   difficulty: difficultySchema.optional(),
   concept: z.string().max(80).optional(),
@@ -280,6 +288,37 @@ export const problemListQuerySchema = paginationSchema.extend({
 });
 export type ProblemListQuery = z.infer<typeof problemListQuerySchema>;
 export const conceptListSchema = z.object({ items: z.array(z.string()) });
+const difficultyCountsSchema = z
+  .object({ easy: z.number().int(), medium: z.number().int(), hard: z.number().int() })
+  .strict();
+/** Per-user progress over the published catalog. DOM completions count as solved (self-assessed). */
+export const progressSchema = z
+  .object({
+    timezone: z.string(),
+    items: z.array(
+      z
+        .object({
+          exerciseId: idSchema,
+          status: z.enum(["solved", "attempted"]),
+          lastActivityAt: z.iso.datetime(),
+        })
+        .strict(),
+    ),
+    /** Days with activity in the last 365 local days, oldest first. */
+    activity: z.array(
+      z
+        .object({
+          date: z.iso.date(),
+          attempts: z.number().int(),
+          solved: z.number().int(),
+        })
+        .strict(),
+    ),
+    totals: z.object({ catalog: difficultyCountsSchema, solved: difficultyCountsSchema }).strict(),
+  })
+  .strict();
+export type Progress = z.infer<typeof progressSchema>;
+export type ProgressStatus = Progress["items"][number]["status"];
 export const pageSchema = <T extends z.ZodType>(item: T) =>
   z.object({ items: z.array(item), nextCursor: z.string().nullable() });
 export type Page<T> = { items: T[]; nextCursor: string | null };
