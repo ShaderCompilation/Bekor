@@ -41,7 +41,7 @@ test("learn, judge, schedule and review a problem in both languages", async ({ p
   await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible();
 
   // Catalog filters live in the URL.
-  await page.getByLabel("Search").fill("word");
+  await page.getByRole("searchbox", { name: "Search" }).fill("word");
   await expect(page).toHaveURL(/q=word/);
   await expect(page.getByRole("link", { name: /Word Counts/ })).toBeVisible();
   await expect(page.getByRole("link", { name: /Compact Spaces/ })).toHaveCount(0);
