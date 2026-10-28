@@ -22,6 +22,7 @@
     "test": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
     "test:runner": "vitest run --project runner",
+    "db:up": "podman compose -f infra/compose/compose.yaml --env-file .env up -d postgres",
     "db:migrate": "pnpm --filter @bekor/db migrate",
     "content:validate": "pnpm --filter @bekor/exercises validate",
     "dev:web": "pnpm --filter @bekor/web dev",
