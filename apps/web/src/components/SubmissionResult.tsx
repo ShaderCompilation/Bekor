@@ -97,7 +97,7 @@ export function SubmissionResult({
                   <span aria-hidden="true">{result.passed ? "✓" : "✗"}</span> Example{" "}
                   {result.caseIndex + 1}: {result.passed ? "passed" : "failed"}
                 </div>
-                {!result.passed && (
+                {!result.passed ? (
                   <dl className="case-details">
                     {test && (
                       <>
@@ -128,6 +128,16 @@ export function SubmissionResult({
                       </>
                     )}
                   </dl>
+                ) : (
+                  // Console output from a passing case is still useful while debugging.
+                  result.diagnostic && (
+                    <dl className="case-details">
+                      <dt>Output</dt>
+                      <dd>
+                        <pre>{result.diagnostic}</pre>
+                      </dd>
+                    </dl>
+                  )
                 )}
               </li>
             );

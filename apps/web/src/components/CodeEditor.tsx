@@ -19,6 +19,9 @@ self.MonacoEnvironment = {
 // Use the bundled copy instead of @monaco-editor/react's default CDN download.
 loader.config({ monaco });
 
+// Mirror the judge's libraries (packages/runner/src/harness.ts COMPILER_OPTIONS) so the editor
+// flags what the judge rejects (e.g. ES2023 `toSorted`) and accepts what it allows (`console`,
+// `setTimeout`, which come from the DOM lib).
 const compilerOptions = {
   target: monaco.typescript.ScriptTarget.ESNext,
   module: monaco.typescript.ModuleKind.ESNext,
@@ -26,7 +29,7 @@ const compilerOptions = {
   strict: true,
   noEmit: true,
   allowNonTsExtensions: true,
-  lib: ["es2023"],
+  lib: ["es2022", "dom"],
 };
 monaco.typescript.typescriptDefaults.setCompilerOptions(compilerOptions);
 monaco.typescript.javascriptDefaults.setCompilerOptions({ ...compilerOptions, checkJs: false });
@@ -42,16 +45,20 @@ export interface CodeEditorProps {
   onChange: (value: string) => void;
   onRun: () => void;
   onSubmit: () => void;
+  /** Ctrl/Cmd+S. Drafts already save on every edit, so this only confirms it. */
+  onSave?: () => void;
 }
 
 export default function CodeEditor(props: CodeEditorProps) {
   // Monaco registers actions once; keep the latest callbacks in refs.
   const run = useRef(props.onRun);
   const submit = useRef(props.onSubmit);
+  const save = useRef(props.onSave);
   const value = useRef(props.value);
   useEffect(() => {
     run.current = props.onRun;
     submit.current = props.onSubmit;
+    save.current = props.onSave;
     value.current = props.value;
   });
   const theme = useResolvedTheme();
@@ -72,6 +79,13 @@ export default function CodeEditor(props: CodeEditorProps) {
       label: props.preview ? "Refresh preview" : "Submit solution",
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.Enter],
       run: () => submit.current(),
+    });
+    // Without this the browser's "Save page as" dialog opens.
+    editor.addAction({
+      id: "bekor.save",
+      label: "Save draft",
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
+      run: () => save.current?.(),
     });
   };
 

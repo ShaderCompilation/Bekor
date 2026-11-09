@@ -46,7 +46,8 @@ describe("generated harness protocol (local trusted fixtures, not sandbox verifi
   it("accepts a correct function, keeps debug output on stderr and removes the stdin file", () => {
     const result = run("export function add(a, b) { console.log('dbg', a); return a + b; }");
     expect(result).toMatchObject({ status: 0, verdict: "accepted" });
-    expect(result.stderr).toContain("'dbg' 2");
+    // Formatted like Node's console.log: strings unquoted, other values inspected.
+    expect(result.stderr).toContain("dbg 2");
     expect(existsSync(join(result.dir, "stdin.txt"))).toBe(false);
   });
   it("reports wrong answers and thrown errors", () => {

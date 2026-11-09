@@ -36,7 +36,13 @@ export function GlobalDialogs({ signedIn }: { signedIn: boolean }) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       const current = useDialogs.getState().open;
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+      const mod = event.ctrlKey || event.metaKey;
+      // Drafts save automatically; never open the browser's "Save page as" dialog.
+      if (mod && !event.shiftKey && !event.altKey && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        return;
+      }
+      if (mod && event.key.toLowerCase() === "k") {
         event.preventDefault();
         show(current === "palette" ? null : "palette");
       } else if (event.key === "?" && !isTyping(event.target) && current === null) {
@@ -101,11 +107,15 @@ export function GlobalDialogs({ signedIn }: { signedIn: boolean }) {
             <dt>
               <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Enter</kbd>
             </dt>
-            <dd>Run public tests (in the editor)</dd>
+            <dd>Run public tests (in the workspace)</dd>
             <dt>
               <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>Enter</kbd>
             </dt>
-            <dd>Submit solution (in the editor)</dd>
+            <dd>Submit solution (in the workspace)</dd>
+            <dt>
+              <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>S</kbd>
+            </dt>
+            <dd>Save draft (drafts also save as you type)</dd>
             <dt>
               <kbd>Ctrl</kbd> + <kbd>M</kbd>
             </dt>

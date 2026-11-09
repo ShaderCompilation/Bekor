@@ -12,6 +12,7 @@ import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tansta
 import { getRouteApi, Link } from "@tanstack/react-router";
 import {
   type CSSProperties,
+  type KeyboardEvent,
   lazy,
   Suspense,
   useEffect,
@@ -25,7 +26,7 @@ import { ProblemShell } from "../components/ProblemShell";
 import { Splitter } from "../components/Splitter";
 import { judgedSource, SubmissionResult } from "../components/SubmissionResult";
 import { Tabs } from "../components/Tabs";
-import { Badge, ErrorNotice, PageLoading } from "../components/ui";
+import { Badge, ErrorNotice, PageLoading, useDraftStatus } from "../components/ui";
 import { formatJson, LANGUAGE_LABEL, submissionLabel, submissionTone } from "../format";
 import {
   invalidateProgress,
@@ -308,6 +309,7 @@ function Workspace({
   const narrow = useNarrowScreen();
   const split = useRef<HTMLDivElement>(null);
   const editorId = useId();
+  const draft = useDraftStatus();
   // Until the learner picks a tab, show the latest result when there is one.
   const [tab, setTab] = useState<"cases" | "result" | "attempts" | null>(null);
 
@@ -379,8 +381,20 @@ function Workspace({
       save(key, variant.starter);
   };
 
+  // The editor handles these itself; this covers focus on the toolbar, tabs and results.
+  const onShortcut = (event: KeyboardEvent<HTMLElement>) => {
+    if (!(event.ctrlKey || event.metaKey) || event.key !== "Enter" || event.altKey) return;
+    // Also stops Enter from activating a focused button a second time.
+    event.preventDefault();
+    send(event.shiftKey ? "submit" : "run");
+  };
+
   return (
-    <section className="workspace workspace-node" aria-label="Solution workspace">
+    <section
+      className="workspace workspace-node"
+      aria-label="Solution workspace"
+      onKeyDown={onShortcut}
+    >
       {narrow && (
         <div className="notice" role="note">
           <p>Code editing is designed for larger screens. The editor may be hard to use here.</p>
@@ -407,6 +421,7 @@ function Workspace({
         </button>
         <EditorSettings />
         <span className="toolbar-spacer" />
+        {draft.status}
         <button
           type="button"
           onClick={() => send("run")}
@@ -443,6 +458,7 @@ function Workspace({
               onChange={(value) => save(key, value)}
               onRun={() => send("run")}
               onSubmit={() => send("submit")}
+              onSave={draft.confirm}
             />
           </Suspense>
         </div>
@@ -523,7 +539,7 @@ function Workspace({
       </div>
       {create.isError && <ErrorNotice error={create.error} />}
       <p className="muted small">
-        Drafts are saved in this browser. Press <kbd>?</kbd> for keyboard shortcuts.
+        Drafts save as you type. Press <kbd>?</kbd> for keyboard shortcuts.
       </p>
     </section>
   );

@@ -14,7 +14,7 @@ import { getRouteApi, Link } from "@tanstack/react-router";
 import { lazy, Suspense, useRef, useState } from "react";
 import { ApiError, api, errorCode, type SessionUser } from "../api";
 import { ProblemShell } from "../components/ProblemShell";
-import { ErrorNotice, PageLoading } from "../components/ui";
+import { ErrorNotice, PageLoading, useDraftStatus } from "../components/ui";
 import { domRatingBlocker } from "../dom-rules";
 import { formatDateTime, RATING_LABEL } from "../format";
 import { invalidateProgress, problemQuery, reviewsQuery, selfAssessmentsQuery } from "../queries";
@@ -216,6 +216,7 @@ function DomWorkspace({
   const [editError, setEditError] = useState("");
   const [hints, setHints] = useState(false);
   const fontSize = usePreferences((state) => state.editorFontSize);
+  const draft = useDraftStatus();
   const history = useQuery(selfAssessmentsQuery(user.id));
   const existing = unfinished.find(
     (s) =>
@@ -361,6 +362,8 @@ function DomWorkspace({
         >
           Reset files
         </button>
+        <span className="toolbar-spacer" />
+        {draft.status}
       </div>
       <p className="muted">
         Drafts save in this browser. Vue/Svelte editing provides syntax highlighting only; compiler
@@ -399,6 +402,7 @@ function DomWorkspace({
             onChange={update}
             onRun={() => setRestart((n) => n + 1)}
             onSubmit={() => setRestart((n) => n + 1)}
+            onSave={draft.confirm}
           />
         </Suspense>
       </div>

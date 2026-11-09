@@ -264,3 +264,72 @@ test("shell: legacy links, theme, search palette and resizable panes persist", a
   await page.getByRole("navigation", { name: "Breadcrumb" }).getByRole("link").click();
   await expect(page.getByRole("heading", { name: "Problems", level: 1 })).toBeVisible();
 });
+
+test("editor: Ctrl+S saves, types match the judge, logs show, shortcuts work off-editor", async ({
+  page,
+}) => {
+  await page.goto("/sign-up");
+  await page.getByLabel("Name").fill("E2E Editor");
+  await page.getByLabel("Email").fill(`e2e-editor-${Date.now()}@example.test`);
+  await page.getByLabel(/Password/).fill("correct horse battery staple");
+  // Real auth allows three registrations a minute; in a full run this is past that, so wait it out.
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const response = page.waitForResponse(
+      (item) =>
+        new URL(item.url()).pathname === "/auth/sign-up/email" &&
+        item.request().method() === "POST",
+    );
+    await page.getByRole("button", { name: "Create account" }).click();
+    const reply = await response;
+    if (reply.status() !== 429) break;
+    const wait = (Number(reply.headers()["retry-after"]) || 60) * 1000 + 1000;
+    for (let left = wait; left > 0; left -= 30_000)
+      await page.waitForTimeout(Math.min(left, 30_000));
+  }
+  await expect(page.getByRole("button", { name: /account menu/ })).toBeVisible();
+  await page.goto("/problems/word-counts?language=typescript");
+
+  // Record whether the app stopped each Ctrl/Cmd+S (otherwise the browser's "Save page as" opens).
+  await page.evaluate(() => {
+    const seen: boolean[] = [];
+    (window as unknown as { saves: boolean[] }).saves = seen;
+    window.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key.toLowerCase() === "s" && (event.ctrlKey || event.metaKey))
+          setTimeout(() => seen.push(event.defaultPrevented));
+      },
+      true,
+    );
+  });
+  const saves = () => page.evaluate(() => (window as unknown as { saves: boolean[] }).saves);
+
+  // The editor uses the judge's libraries: console and setTimeout are fine, ES2023 is not.
+  await replaceCode(
+    page,
+    "export function wordCounts(words: string[]): Record<string, number> {\n  console.log('n', words.length);\n  setTimeout(() => {}, 0);\n  const counts = new Map<string, number>();\n  for (const word of words) counts.set(word, (counts.get(word) ?? 0) + 1);\n  return Object.fromEntries(counts);\n}\n",
+  );
+  const editor = page.locator(".monaco-editor").first();
+  await page.waitForTimeout(1500); // diagnostics come from a worker
+  await expect(editor.locator(".squiggly-error")).toHaveCount(0);
+
+  await page.keyboard.press("ControlOrMeta+s");
+  await expect(page.getByRole("status").filter({ hasText: "Draft saved" })).toBeVisible();
+  await page.getByRole("heading", { name: "Word Counts", level: 1 }).click();
+  await page.keyboard.press("ControlOrMeta+s");
+  await expect.poll(saves).toEqual([true, true]);
+
+  // Ctrl/Cmd+Enter with focus on the toolbar runs once; passing cases still show console output.
+  await page.getByRole("button", { name: "Run", exact: true }).focus();
+  await page.keyboard.press("ControlOrMeta+Enter");
+  const result = await resultBadge(page);
+  await expect(result).toContainText("Accepted");
+  await expect(result.getByText("n 3", { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole("tab", { name: "Attempts (1)" })).toBeVisible();
+
+  await replaceCode(
+    page,
+    "export function wordCounts(words: string[]): Record<string, number> {\n  return Object.fromEntries(words.toSorted().map((w) => [w, 1]));\n}\n",
+  );
+  await expect(editor.locator(".squiggly-error").first()).toBeAttached({ timeout: 10_000 });
+});

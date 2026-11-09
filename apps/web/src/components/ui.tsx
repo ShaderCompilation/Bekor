@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 import { errorMessage } from "../api";
 
 export function Spinner({ label = "Loading" }: { label?: string }) {
@@ -58,4 +58,20 @@ export function ListSkeleton({ rows = 6 }: { rows?: number }) {
       <Skeleton lines={rows} />
     </div>
   );
+}
+
+/**
+ * Drafts save on every edit. Ctrl/Cmd+S calls `confirm`, which briefly highlights the status so
+ * the save habit gets a visible answer.
+ */
+export function useDraftStatus() {
+  const [saves, setSaves] = useState(0);
+  const status = (
+    // A new key restarts the highlight animation on each save.
+    <span key={saves} className={`draft-status${saves ? " draft-status-flash" : ""}`} role="status">
+      <span aria-hidden="true">✓ </span>
+      {saves ? "Draft saved" : "Saved in this browser"}
+    </span>
+  );
+  return { status, confirm: () => setSaves((count) => count + 1) };
 }

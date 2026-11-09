@@ -78,7 +78,7 @@ const SANDBOX_JSON_VALIDATOR = `(value) => {
 // closed before learner code loads, and only the harness can exit with status 0.
 export function makeHarness(entrypoint: string, outputBytes: number): string {
   return `import { closeSync, readFileSync, rmSync, writeSync } from 'node:fs';
-import { inspect } from 'node:util';
+import { formatWithOptions } from 'node:util';
 const write = writeSync;
 const stringify = JSON.stringify.bind(JSON);
 const byteLength = Buffer.byteLength.bind(Buffer);
@@ -94,7 +94,7 @@ process.reallyExit = () => fail(87);
 let debugBytes = 0;
 for (const name of ['log', 'error', 'warn', 'info', 'debug', 'dir', 'trace']) {
   console[name] = (...values) => {
-    const text = values.map(value => inspect(value, { depth: 3, maxArrayLength: 30, maxStringLength: 1000 })).join(' ') + '\\n';
+    const text = formatWithOptions({ depth: 3, maxArrayLength: 30, maxStringLength: 1000 }, ...values) + '\\n';
     debugBytes += byteLength(text);
     if (debugBytes > ${MAX_DEBUG_BYTES}) fail(86);
     write(2, text);
