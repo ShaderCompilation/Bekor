@@ -1,7 +1,7 @@
 # Judge0 1.13.1 plus the exact runtime Bekor's harness checks (packages/runner/src/harness.ts):
 # /usr/local/bekor/bin/node == v24.22.1 and /usr/local/bekor/node_modules/.bin/tsc == 7.0.2.
 # Submissions use Judge0 language 89 ("Multi-file program") with Bekor's compile/run scripts.
-# UNVERIFIED: this image has not run a real submission (see docs/verification/f03-runner.md).
+# UNVERIFIED: this image has not run a real submission (see guides/runner.md).
 FROM docker.io/judge0/judge0:1.13.1@sha256:6b5d6a66aa19a8e878a52ea3c6a560afc1086734d96e2885b561fd5c6018f082
 USER root
 ARG NODE_VERSION=24.22.1

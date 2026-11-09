@@ -2,20 +2,20 @@
 
 Spaced-repetition practice for small JavaScript and TypeScript function problems. Learners solve a problem, the server judges it in an isolated Judge0 sandbox, and the server schedules reviews (FSRS). The browser and CLI clients use the same API. DOM exercises add browser previews and explicit self-assessment, with separate framework review cards.
 
-Scope, architecture, task status and acceptance criteria live in [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md).
+Setup details, judging operations, DOM exercises and the runner decision live in [`guides/`](guides/).
 
 ## Status
 
-| Area                                                                                              | State                                                                                                                                                                                            |
-| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| API (`apps/api`, Hono), persistence (`packages/db`, Drizzle/PostgreSQL), catalog/content, reviews | Implemented, covered by unit and real-PostgreSQL integration tests                                                                                                                               |
-| Judging worker (`apps/worker`, pg-boss) and Judge0 adapter (`packages/runner`)                    | Implemented and tested against a **fake** runner only                                                                                                                                            |
-| Development Podman runner (`RUNNER=podman`, personal use only)                                    | Real execution in local rootless containers; passes `pnpm test:runner`. Weaker isolation than production, see [`docs/verification/f05-podman-runner.md`](docs/verification/f05-podman-runner.md) |
-| Real Judge0 execution                                                                             | **Not verified.** The Fedora dev host (cgroup v2, rootless Podman) cannot run Judge0 1.13.1. See [`docs/verification/f03-runner.md`](docs/verification/f03-runner.md)                            |
-| Web app (`apps/web`, React/Vite/TanStack Router+Query/Zustand/Monaco)                             | Implemented; Playwright journeys pass against the real API/worker/PostgreSQL with the Podman runner. See [`docs/verification/web.md`](docs/verification/web.md)                                  |
-| Self-assessed DOM exercises                                                                       | Original accordion with Vanilla JS, React, Vue and Svelte previews, manual completion and FSRS reviews. See [`docs/verification/dom-exercises.md`](docs/verification/dom-exercises.md).          |
-| CLI (`apps/cli`)                                                                                  | Not implemented yet                                                                                                                                                                              |
-| Deployment                                                                                        | None. `infra/compose` is for local development only                                                                                                                                              |
+| Area                                                                                              | State                                                                                                                                   |
+| ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| API (`apps/api`, Hono), persistence (`packages/db`, Drizzle/PostgreSQL), catalog/content, reviews | Implemented, covered by unit and real-PostgreSQL integration tests                                                                      |
+| Judging worker (`apps/worker`, pg-boss) and Judge0 adapter (`packages/runner`)                    | Implemented and tested against a **fake** runner only                                                                                   |
+| Development Podman runner (`RUNNER=podman`, personal use only)                                    | Real execution in local rootless containers; passes `pnpm test:runner`. Weaker isolation than production                                |
+| Real Judge0 execution                                                                             | **Not verified.** The Fedora dev host (cgroup v2, rootless Podman) cannot run Judge0 1.13.1. See [`guides/runner.md`](guides/runner.md) |
+| Web app (`apps/web`, React/Vite/TanStack Router+Query/Zustand/Monaco)                             | Implemented; Playwright journeys pass against the real API/worker/PostgreSQL with the Podman runner                                     |
+| Self-assessed DOM exercises                                                                       | Original accordion with Vanilla JS, React, Vue and Svelte previews, manual completion and FSRS reviews                                  |
+| CLI (`apps/cli`)                                                                                  | Not implemented yet                                                                                                                     |
+| Deployment                                                                                        | None. `infra/compose` is for local development only                                                                                     |
 
 ## Prerequisites
 
@@ -74,7 +74,7 @@ pnpm dev:web                 # http://localhost:5173; start the API (and worker)
 
 The DOM exercise is at `/problems/accessible-accordion`. Apply migrations and restart
 the API to publish it; the worker is unnecessary for DOM completion. The preview
-requires an internet connection. See [DOM setup and hosting](docs/runbooks/dom-exercises.md)
+requires an internet connection. See [DOM setup and hosting](guides/dom-exercises.md)
 for pinned framework versions, isolation constraints and the focused browser tests.
 
 ### Everything in containers
@@ -90,7 +90,7 @@ podman compose -f infra/compose/compose.yaml --env-file .env --profile worker up
 podman compose -f infra/compose/compose.yaml --env-file .env --profile runner up -d --build
 ```
 
-The `runner` profile is opt-in on purpose: Judge0 runs privileged containers and requires cgroup v1. It sits on an internal network that only the worker joins; the API cannot reach it, and it has no outbound route. Read [`docs/decisions/runner.md`](docs/decisions/runner.md) before enabling it.
+The `runner` profile is opt-in on purpose: Judge0 runs privileged containers and requires cgroup v1. It sits on an internal network that only the worker joins; the API cannot reach it, and it has no outbound route. Read [`guides/runner.md`](guides/runner.md) before enabling it.
 
 ## Checks
 
@@ -117,8 +117,13 @@ Worker integration tests use a **fake** runner and verify persistence/recovery, 
 
 CI (`.github/workflows/ci.yml`) runs lint, typecheck, unit tests, content validation, the web production build with the bundle check, migrations and integration tests against a PostgreSQL service. The real-runner job is a placeholder for a self-hosted Judge0 machine and has not run.
 
-## Runbooks
+## Guides
 
-- [`docs/runbooks/dom-exercises.md`](docs/runbooks/dom-exercises.md): DOM previews, self-assessment, framework versions and verification
-- [`docs/runbooks/development.md`](docs/runbooks/development.md): local setup details and troubleshooting
-- [`docs/runbooks/judging-recovery.md`](docs/runbooks/judging-recovery.md): stuck or failed submissions, leases, retries and safe requeueing
+- [`guides/dom-exercises.md`](guides/dom-exercises.md): DOM previews, self-assessment, framework versions and verification
+- [`guides/development.md`](guides/development.md): local setup details and troubleshooting
+- [`guides/judging-recovery.md`](guides/judging-recovery.md): stuck or failed submissions, leases, retries and safe requeueing
+- [`guides/runner.md`](guides/runner.md): where the Judge0 runner runs, isolation options and result-forgery defenses
+
+## License
+
+[MIT](LICENSE). This covers the code and the exercise content in `content/`.

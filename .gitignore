@@ -9,3 +9,6 @@ coverage/
 .local/
 test-results/
 playwright-report/
+
+# Private planning notes and exercise topic sources (not published)
+docs/

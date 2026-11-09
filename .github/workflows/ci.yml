@@ -65,7 +65,7 @@ jobs:
   real-runner:
     # PLACEHOLDER: no self-hosted Judge0 runner is registered yet, so this job has never run.
     # It needs a dedicated, rootful, cgroup-v1 host with the infra/compose runner profile
-    # (see docs/decisions/runner.md). It only runs on manual dispatch or the `real-runner` label
+    # (see guides/runner.md). It only runs on manual dispatch or the `real-runner` label
     # on same-repository PRs, never for forks, so untrusted code cannot reach the self-hosted machine.
     name: Real Judge0 suite (self-hosted)
     needs: checks

@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 // Browser journeys run against an already running stack (web + API + worker + PostgreSQL +
-// runner); see docs/runbooks/development.md. Nothing here starts servers or mocks the API.
+// runner); see guides/development.md. Nothing here starts servers or mocks the API.
 export default defineConfig({
   testDir: "tests/e2e",
   testMatch: "**/*.e2e.ts",

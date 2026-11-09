@@ -11,7 +11,7 @@
 # The worker is profile-gated because it refuses to start without a JUDGE0_URL; the API still
 # accepts submissions without it and they stay `queued` until a worker runs (recovery requeues them).
 #
-# Runner profile requirements (see docs/decisions/runner.md and docs/verification/f03-runner.md):
+# Runner profile requirements (see guides/runner.md):
 #   Judge0 1.13.1 uses isolate with cgroup v1 and must run `privileged`. It does NOT work on a
 #   cgroup-v2-only host or under rootless Podman (verified failure on the Fedora dev host). Use a
 #   rootful Docker/Podman engine on a dedicated VM booted with `systemd.unified_cgroup_hierarchy=0`.
