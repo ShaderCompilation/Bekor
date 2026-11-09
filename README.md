@@ -1,5 +1,15 @@
 # Bekor
 
+> [!WARNING]
+> **Do not host Bekor on a server other people can reach.** It runs code that users submit, and that code is not isolated well enough for strangers yet. Run it only on your own machine for personal use.
+>
+> Must be fixed before hosting:
+>
+> - **No production sandbox.** Real Judge0 execution has never been verified. The only working runner is the development Podman runner, which shares the host kernel. The worker refuses to use it when `NODE_ENV=production`. The planned setup is Judge0 on a dedicated cgroup v1 VM that only the worker can reach ([`guides/runner.md`](guides/runner.md)).
+> - **Results can in principle be forged.** Learner code runs in the same Node process as the code that reports results. A per-attempt nonce blocks fake results printed to stdout, but code could still read the nonce from its own memory (for example `/proc/self/mem`). The fix is to run the solution in a separate process from the reporter.
+> - **Rate limits break behind a proxy.** Sign-in rate limits need a trusted `X-Forwarded-For` header (or trusted proxies configured). Without it, all clients share one limit bucket.
+> - **Not built yet:** deployment artifacts, serving the web build from the API's origin, email verification and account recovery, and abuse controls for public sign-up.
+
 Spaced-repetition practice for small JavaScript and TypeScript function problems. Learners solve a problem, the server judges it in an isolated Judge0 sandbox, and the server schedules reviews (FSRS). The browser and CLI clients use the same API. DOM exercises add browser previews and explicit self-assessment, with separate framework review cards.
 
 Setup details, judging operations, DOM exercises and the runner decision live in [`guides/`](guides/).
